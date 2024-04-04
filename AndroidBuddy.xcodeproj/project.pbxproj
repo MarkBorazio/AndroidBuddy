@@ -1,0 +1,586 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4DDD83052BBA7CCB003F7203 /* AndroidBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */; };
+		4DDD83072BBA7CCB003F7203 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83062BBA7CCB003F7203 /* ContentView.swift */; };
+		4DDD83092BBA7CCC003F7203 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DDD83082BBA7CCC003F7203 /* Assets.xcassets */; };
+		4DDD830C2BBA7CCC003F7203 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DDD830B2BBA7CCC003F7203 /* Preview Assets.xcassets */; };
+		4DDD83172BBA7CCC003F7203 /* AndroidBuddyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83162BBA7CCC003F7203 /* AndroidBuddyTests.swift */; };
+		4DDD83212BBA7CCC003F7203 /* AndroidBuddyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83202BBA7CCC003F7203 /* AndroidBuddyUITests.swift */; };
+		4DDD83232BBA7CCC003F7203 /* AndroidBuddyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83222BBA7CCC003F7203 /* AndroidBuddyUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4DDD83132BBA7CCC003F7203 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4DDD82F92BBA7CCB003F7203 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4DDD83002BBA7CCB003F7203;
+			remoteInfo = AndroidBuddy;
+		};
+		4DDD831D2BBA7CCC003F7203 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4DDD82F92BBA7CCB003F7203 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4DDD83002BBA7CCB003F7203;
+			remoteInfo = AndroidBuddy;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		4DDD83012BBA7CCB003F7203 /* AndroidBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidBuddyApp.swift; sourceTree = "<group>"; };
+		4DDD83062BBA7CCB003F7203 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4DDD83082BBA7CCC003F7203 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		4DDD830B2BBA7CCC003F7203 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		4DDD830D2BBA7CCC003F7203 /* AndroidBuddy.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AndroidBuddy.entitlements; sourceTree = "<group>"; };
+		4DDD83122BBA7CCC003F7203 /* AndroidBuddyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AndroidBuddyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4DDD83162BBA7CCC003F7203 /* AndroidBuddyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidBuddyTests.swift; sourceTree = "<group>"; };
+		4DDD831C2BBA7CCC003F7203 /* AndroidBuddyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AndroidBuddyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4DDD83202BBA7CCC003F7203 /* AndroidBuddyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidBuddyUITests.swift; sourceTree = "<group>"; };
+		4DDD83222BBA7CCC003F7203 /* AndroidBuddyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidBuddyUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4DDD82FE2BBA7CCB003F7203 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4DDD830F2BBA7CCC003F7203 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4DDD83192BBA7CCC003F7203 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4DDD82F82BBA7CCB003F7203 = {
+			isa = PBXGroup;
+			children = (
+				4DDD83032BBA7CCB003F7203 /* AndroidBuddy */,
+				4DDD83152BBA7CCC003F7203 /* AndroidBuddyTests */,
+				4DDD831F2BBA7CCC003F7203 /* AndroidBuddyUITests */,
+				4DDD83022BBA7CCB003F7203 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4DDD83022BBA7CCB003F7203 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4DDD83012BBA7CCB003F7203 /* AndroidBuddy.app */,
+				4DDD83122BBA7CCC003F7203 /* AndroidBuddyTests.xctest */,
+				4DDD831C2BBA7CCC003F7203 /* AndroidBuddyUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4DDD83032BBA7CCB003F7203 /* AndroidBuddy */ = {
+			isa = PBXGroup;
+			children = (
+				4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */,
+				4DDD83062BBA7CCB003F7203 /* ContentView.swift */,
+				4DDD83082BBA7CCC003F7203 /* Assets.xcassets */,
+				4DDD830D2BBA7CCC003F7203 /* AndroidBuddy.entitlements */,
+				4DDD830A2BBA7CCC003F7203 /* Preview Content */,
+			);
+			path = AndroidBuddy;
+			sourceTree = "<group>";
+		};
+		4DDD830A2BBA7CCC003F7203 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				4DDD830B2BBA7CCC003F7203 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		4DDD83152BBA7CCC003F7203 /* AndroidBuddyTests */ = {
+			isa = PBXGroup;
+			children = (
+				4DDD83162BBA7CCC003F7203 /* AndroidBuddyTests.swift */,
+			);
+			path = AndroidBuddyTests;
+			sourceTree = "<group>";
+		};
+		4DDD831F2BBA7CCC003F7203 /* AndroidBuddyUITests */ = {
+			isa = PBXGroup;
+			children = (
+				4DDD83202BBA7CCC003F7203 /* AndroidBuddyUITests.swift */,
+				4DDD83222BBA7CCC003F7203 /* AndroidBuddyUITestsLaunchTests.swift */,
+			);
+			path = AndroidBuddyUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4DDD83002BBA7CCB003F7203 /* AndroidBuddy */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4DDD83262BBA7CCC003F7203 /* Build configuration list for PBXNativeTarget "AndroidBuddy" */;
+			buildPhases = (
+				4DDD82FD2BBA7CCB003F7203 /* Sources */,
+				4DDD82FE2BBA7CCB003F7203 /* Frameworks */,
+				4DDD82FF2BBA7CCB003F7203 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AndroidBuddy;
+			productName = AndroidBuddy;
+			productReference = 4DDD83012BBA7CCB003F7203 /* AndroidBuddy.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4DDD83112BBA7CCC003F7203 /* AndroidBuddyTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4DDD83292BBA7CCC003F7203 /* Build configuration list for PBXNativeTarget "AndroidBuddyTests" */;
+			buildPhases = (
+				4DDD830E2BBA7CCC003F7203 /* Sources */,
+				4DDD830F2BBA7CCC003F7203 /* Frameworks */,
+				4DDD83102BBA7CCC003F7203 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4DDD83142BBA7CCC003F7203 /* PBXTargetDependency */,
+			);
+			name = AndroidBuddyTests;
+			productName = AndroidBuddyTests;
+			productReference = 4DDD83122BBA7CCC003F7203 /* AndroidBuddyTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		4DDD831B2BBA7CCC003F7203 /* AndroidBuddyUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4DDD832C2BBA7CCC003F7203 /* Build configuration list for PBXNativeTarget "AndroidBuddyUITests" */;
+			buildPhases = (
+				4DDD83182BBA7CCC003F7203 /* Sources */,
+				4DDD83192BBA7CCC003F7203 /* Frameworks */,
+				4DDD831A2BBA7CCC003F7203 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4DDD831E2BBA7CCC003F7203 /* PBXTargetDependency */,
+			);
+			name = AndroidBuddyUITests;
+			productName = AndroidBuddyUITests;
+			productReference = 4DDD831C2BBA7CCC003F7203 /* AndroidBuddyUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4DDD82F92BBA7CCB003F7203 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1520;
+				LastUpgradeCheck = 1520;
+				TargetAttributes = {
+					4DDD83002BBA7CCB003F7203 = {
+						CreatedOnToolsVersion = 15.2;
+					};
+					4DDD83112BBA7CCC003F7203 = {
+						CreatedOnToolsVersion = 15.2;
+						TestTargetID = 4DDD83002BBA7CCB003F7203;
+					};
+					4DDD831B2BBA7CCC003F7203 = {
+						CreatedOnToolsVersion = 15.2;
+						TestTargetID = 4DDD83002BBA7CCB003F7203;
+					};
+				};
+			};
+			buildConfigurationList = 4DDD82FC2BBA7CCB003F7203 /* Build configuration list for PBXProject "AndroidBuddy" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4DDD82F82BBA7CCB003F7203;
+			productRefGroup = 4DDD83022BBA7CCB003F7203 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4DDD83002BBA7CCB003F7203 /* AndroidBuddy */,
+				4DDD83112BBA7CCC003F7203 /* AndroidBuddyTests */,
+				4DDD831B2BBA7CCC003F7203 /* AndroidBuddyUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4DDD82FF2BBA7CCB003F7203 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4DDD830C2BBA7CCC003F7203 /* Preview Assets.xcassets in Resources */,
+				4DDD83092BBA7CCC003F7203 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4DDD83102BBA7CCC003F7203 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4DDD831A2BBA7CCC003F7203 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4DDD82FD2BBA7CCB003F7203 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4DDD83072BBA7CCB003F7203 /* ContentView.swift in Sources */,
+				4DDD83052BBA7CCB003F7203 /* AndroidBuddyApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4DDD830E2BBA7CCC003F7203 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4DDD83172BBA7CCC003F7203 /* AndroidBuddyTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4DDD83182BBA7CCC003F7203 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4DDD83212BBA7CCC003F7203 /* AndroidBuddyUITests.swift in Sources */,
+				4DDD83232BBA7CCC003F7203 /* AndroidBuddyUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4DDD83142BBA7CCC003F7203 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4DDD83002BBA7CCB003F7203 /* AndroidBuddy */;
+			targetProxy = 4DDD83132BBA7CCC003F7203 /* PBXContainerItemProxy */;
+		};
+		4DDD831E2BBA7CCC003F7203 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4DDD83002BBA7CCB003F7203 /* AndroidBuddy */;
+			targetProxy = 4DDD831D2BBA7CCC003F7203 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		4DDD83242BBA7CCC003F7203 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.6;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4DDD83252BBA7CCC003F7203 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.6;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		4DDD83272BBA7CCC003F7203 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AndroidBuddy/AndroidBuddy.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AndroidBuddy/Preview Content\"";
+				DEVELOPMENT_TEAM = AVNL6MHV88;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.BorazioIndustries.AndroidBuddy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		4DDD83282BBA7CCC003F7203 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = AndroidBuddy/AndroidBuddy.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"AndroidBuddy/Preview Content\"";
+				DEVELOPMENT_TEAM = AVNL6MHV88;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.BorazioIndustries.AndroidBuddy;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		4DDD832A2BBA7CCC003F7203 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AVNL6MHV88;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.BorazioIndustries.AndroidBuddyTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AndroidBuddy.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AndroidBuddy";
+			};
+			name = Debug;
+		};
+		4DDD832B2BBA7CCC003F7203 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AVNL6MHV88;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.BorazioIndustries.AndroidBuddyTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AndroidBuddy.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/AndroidBuddy";
+			};
+			name = Release;
+		};
+		4DDD832D2BBA7CCC003F7203 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AVNL6MHV88;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.BorazioIndustries.AndroidBuddyUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = AndroidBuddy;
+			};
+			name = Debug;
+		};
+		4DDD832E2BBA7CCC003F7203 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = AVNL6MHV88;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.BorazioIndustries.AndroidBuddyUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = AndroidBuddy;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4DDD82FC2BBA7CCB003F7203 /* Build configuration list for PBXProject "AndroidBuddy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4DDD83242BBA7CCC003F7203 /* Debug */,
+				4DDD83252BBA7CCC003F7203 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4DDD83262BBA7CCC003F7203 /* Build configuration list for PBXNativeTarget "AndroidBuddy" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4DDD83272BBA7CCC003F7203 /* Debug */,
+				4DDD83282BBA7CCC003F7203 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4DDD83292BBA7CCC003F7203 /* Build configuration list for PBXNativeTarget "AndroidBuddyTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4DDD832A2BBA7CCC003F7203 /* Debug */,
+				4DDD832B2BBA7CCC003F7203 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4DDD832C2BBA7CCC003F7203 /* Build configuration list for PBXNativeTarget "AndroidBuddyUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4DDD832D2BBA7CCC003F7203 /* Debug */,
+				4DDD832E2BBA7CCC003F7203 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 4DDD82F92BBA7CCB003F7203 /* Project object */;
+}
