@@ -40,10 +40,19 @@ struct DirectoryView: View {
                 }
             }
         }
-        .contextMenu(forSelectionType: DirectoryView.Item.ID.self) { items in
-            if items.count == 1 { // Single item menu.
+        .contextMenu(forSelectionType: DirectoryView.Item.ID.self) { selectedItemIds in
+            if selectedItemIds.count == 1 { // Single item menu.
                 Button("Copy") { }
                 Button("Delete", role: .destructive) { }
+                Button("Save to downloads") {
+                    if
+                        selectedItemIds.count == 1,
+                        let selectedId = selectedItemIds.first,
+                        let selectedItem = viewModel.items.first(where: { $0.id == selectedId })
+                    {
+                        viewModel.downloadFile(remotePath: selectedItem.path)
+                    }
+                }
             } else { // Multi-item menu.
                 Button("Copy") { }
                 Button("New Folder With Selection") { }

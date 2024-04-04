@@ -12,54 +12,62 @@ class AdbService {
     static let shared = AdbService()
     private init() {}
     
-    func listCommand(path: URL) throws -> ListCommandResponse {
+    func listCommand(path: URL) async throws -> ListCommandResponse {
         let args = "shell ls -lL \(path.path())"
-        let output = try adbCommand(argsString: args)
+        let output = try await adbCommand(argsString: args)
         return ListCommandResponse(path: path, rawResponse: output)
     }
     
-    func pullCommand(remotePath: URL) throws {
+    func pullCommand(remotePath: URL) async throws {
         let args = "pull \(remotePath.path()) Downloads"
-        try adbCommand(argsString: args)
+        try await adbCommand(argsString: args)
     }
     
-    func pushCommand(localPath: URL, remotePath: URL) throws {
+    func pushCommand(localPath: URL, remotePath: URL) async throws {
         let args = "push \(localPath.path()) \(remotePath.path())"
-        let output = try adbCommand(argsString: args)
-        
-        print(args)
-        print(localPath)
-        print(output)
+        try await adbCommand(argsString: args)
     }
     
     @discardableResult
-    func manualCommand(args: String) throws -> String {
-        return try adbCommand(argsString: args)
+    func manualCommand(args: String) async throws -> String {
+        return try await adbCommand(argsString: args)
     }
     
     @discardableResult
-    private func adbCommand(argsString: String) throws -> String {
+    private func adbCommand(argsString: String) async throws -> String {
         let args = argsString.components(separatedBy: " ")
-        return try adbCommand(args: args)
+        return try await adbCommand(args: args)
+    }
+
+    @discardableResult
+    private func adbCommand(args: [String]) async throws -> String {
+        try await withCheckedThrowingContinuation { continuation in
+            let task = Process()
+            let pipe = Pipe()
+            
+            task.standardOutput = pipe
+            task.standardError = pipe
+            task.arguments = args
+            task.executableURL = Bundle.main.url(forResource: "adb", withExtension: nil)!
+            task.standardInput = nil
+
+            do {
+                try task.run()
+                let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                let output = String(data: data, encoding: .utf8)!
+                if output.hasPrefix("adb: error:") {
+                    print(output)
+                    continuation.resume(throwing: AdbError.commandError(output: output))
+                } else {
+                    continuation.resume(returning: output)
+                }
+            } catch {
+                continuation.resume(throwing: error)
+            }
+        }
     }
     
-    // TODO: Make async?
-    @discardableResult
-    private func adbCommand(args: [String]) throws -> String {
-        let task = Process()
-        let pipe = Pipe()
-        
-        task.standardOutput = pipe
-        task.standardError = pipe
-        task.arguments = args
-        task.executableURL = Bundle.main.url(forResource: "adb", withExtension: nil)!
-        task.standardInput = nil
-
-        try task.run()
-        
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(data: data, encoding: .utf8)!
-        
-        return output
+    enum AdbError: Error {
+        case commandError(output: String)
     }
 }

@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 
+@MainActor
 class ContentViewModel: ObservableObject {
     
     @Published var currentPath: URL = URL(string: "/")!
@@ -18,10 +19,11 @@ class ContentViewModel: ObservableObject {
     
     init() {
         $currentPath
-            .map { [weak self] path -> [DirectoryView.Item] in
+            .asyncMap { [weak self] path in
                 guard let self else { return [] }
-                return self.getItems(path: path)
+                return await self.getItems(path: path)
             }
+            .receive(on: DispatchQueue.main)
             .assign(to: \.items, on: self)
             .store(in: &cancellables)
         
@@ -31,8 +33,8 @@ class ContentViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
-    func getItems(path: URL) -> [DirectoryView.Item] {
-        let response = try! AdbService.shared.listCommand(path: path)
+    private func getItems(path: URL) async -> [DirectoryView.Item] {
+        let response = try! await AdbService.shared.listCommand(path: path)
         
         return response.items.map { responseItem in
 //            let indentationLevel = response.path.pathComponents.count - 1
@@ -55,13 +57,19 @@ class ContentViewModel: ObservableObject {
     }
     
     func downloadFile(remotePath: URL) {
-        try! AdbService.shared.pullCommand(remotePath: remotePath)
+        Task {
+            print("Downloading file...")
+            try! await AdbService.shared.pullCommand(remotePath: remotePath)
+            print("...file downloaded (or failed...)!")
+        }
     }
     
     func uploadFile(localPath: URL) {
-        print("Uploading file...")
-        try! AdbService.shared.pushCommand(localPath: localPath, remotePath: currentPath)
-        print("...file uploaded (or failed...)!")
+        Task {
+            print("Uploading file...")
+            try! await AdbService.shared.pushCommand(localPath: localPath, remotePath: currentPath)
+            print("...file uploaded (or failed...)!")
+        }
     }
     
     func back() {
