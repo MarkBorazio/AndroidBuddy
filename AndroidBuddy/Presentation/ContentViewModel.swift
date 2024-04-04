@@ -69,6 +69,7 @@ class ContentViewModel: ObservableObject {
             print("Uploading file...")
             try! await AdbService.shared.pushCommand(localPath: localPath, remotePath: currentPath)
             print("...file uploaded (or failed...)!")
+            items = await getItems(path: currentPath)
         }
     }
     
