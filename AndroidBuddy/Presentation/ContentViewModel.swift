@@ -19,18 +19,36 @@ class ContentViewModel: ObservableObject {
     
     init() {
         $currentPath
-            .asyncMap { [weak self] path in
-                guard let self else { return [] }
-                return await self.getItems(path: path)
-            }
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.items, on: self)
+            .sink(receiveValue: { [weak self] _ in
+                guard let self else { return }
+                self.refreshItems()
+            })
             .store(in: &cancellables)
         
         $currentPath
             .map { $0.pathComponents.count > 1 }
             .assign(to: \.backButtonEnabled, on: self)
             .store(in: &cancellables)
+        
+        AdbService.shared
+            .deviceCountChanged
+            .sink(
+                receiveCompletion: { error in
+                    fatalError("Device count publisher got error: \(error)")
+                },
+                receiveValue: { [weak self] in
+                    print("Test for now. TODO: Move this somewhere else...")
+                    guard let self else { return }
+                    refreshItems()
+                }
+            )
+            .store(in: &cancellables)
+    }
+    
+    func refreshItems() {
+        Task {
+            items = await getItems(path: currentPath)
+        }
     }
     
     private func getItems(path: URL) async -> [DirectoryView.Item] {
@@ -69,7 +87,7 @@ class ContentViewModel: ObservableObject {
             print("Uploading file...")
             try! await AdbService.shared.pushCommand(localPath: localPath, remotePath: currentPath)
             print("...file uploaded (or failed...)!")
-            items = await getItems(path: currentPath)
+            refreshItems()
         }
     }
     

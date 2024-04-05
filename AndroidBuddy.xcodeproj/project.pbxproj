@@ -14,6 +14,7 @@
 		4D2D351E2BBE710000E0E733 /* ManualCommandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D351D2BBE710000E0E733 /* ManualCommandView.swift */; };
 		4D2D35222BBE9A0500E0E733 /* ADB License.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4D2D35212BBE9A0500E0E733 /* ADB License.txt */; };
 		4D2D35262BBEA65300E0E733 /* AsyncCombineExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D35252BBEA65300E0E733 /* AsyncCombineExtensions.swift */; };
+		4D2D35422BBFEF4C00E0E733 /* DevicesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D35412BBFEF4C00E0E733 /* DevicesResponse.swift */; };
 		4DDD83052BBA7CCB003F7203 /* AndroidBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */; };
 		4DDD83072BBA7CCB003F7203 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83062BBA7CCB003F7203 /* ContentView.swift */; };
 		4DDD83092BBA7CCC003F7203 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DDD83082BBA7CCC003F7203 /* Assets.xcassets */; };
@@ -51,6 +52,7 @@
 		4D2D351D2BBE710000E0E733 /* ManualCommandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualCommandView.swift; sourceTree = "<group>"; };
 		4D2D35212BBE9A0500E0E733 /* ADB License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ADB License.txt"; sourceTree = "<group>"; };
 		4D2D35252BBEA65300E0E733 /* AsyncCombineExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncCombineExtensions.swift; sourceTree = "<group>"; };
+		4D2D35412BBFEF4C00E0E733 /* DevicesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesResponse.swift; sourceTree = "<group>"; };
 		4DDD83012BBA7CCB003F7203 /* AndroidBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidBuddyApp.swift; sourceTree = "<group>"; };
 		4DDD83062BBA7CCB003F7203 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				4D2D35122BBAA9B400E0E733 /* ListCommandResponse.swift */,
+				4D2D35412BBFEF4C00E0E733 /* DevicesResponse.swift */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -143,6 +146,14 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		4D2D353E2BBFE77500E0E733 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				4D2D350A2BBAA67F00E0E733 /* Adb Service */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 		4DDD82F82BBA7CCB003F7203 = {
 			isa = PBXGroup;
 			children = (
@@ -168,7 +179,7 @@
 			children = (
 				4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */,
 				4D2D351C2BBC028100E0E733 /* Presentation */,
-				4D2D350A2BBAA67F00E0E733 /* Adb Service */,
+				4D2D353E2BBFE77500E0E733 /* Data */,
 				4D2D351F2BBE99E600E0E733 /* Dependencies */,
 				4D2D35242BBEA63D00E0E733 /* Utilities */,
 				4DDD83082BBA7CCC003F7203 /* Assets.xcassets */,
@@ -337,6 +348,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4D2D35422BBFEF4C00E0E733 /* DevicesResponse.swift in Sources */,
 				4DDD83072BBA7CCB003F7203 /* ContentView.swift in Sources */,
 				4DDD83052BBA7CCB003F7203 /* AndroidBuddyApp.swift in Sources */,
 				4D2D35262BBEA65300E0E733 /* AsyncCombineExtensions.swift in Sources */,

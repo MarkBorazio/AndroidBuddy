@@ -75,12 +75,13 @@ struct DirectoryView: View {
         }
     }
     
-    private static func getSymbol(type: Item.ItemType) -> Image {
-        let name = switch type {
-        case .file: "doc.fill"
-        case .directory: "folder.fill"
+    private static func getSymbol(type: Item.ItemType) -> some View {
+        let image: some View = switch type {
+        case .file: Image(systemName: "doc.fill").foregroundStyle(Color.primary)
+        case .directory: Image(systemName: "folder.fill").foregroundStyle(Color.mint)
         }
-        return Image(systemName: name)
+        
+        return image.frame(width: 20)
     }
 }
 

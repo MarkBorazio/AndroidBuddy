@@ -16,43 +16,29 @@ struct ContentView: View {
         "Device 3"
     ]
     
-    @StateObject var viewModel = ContentViewModel()
-    @State private var isDraggingFileOverView = false
     private let type = UTType.fileURL
     private let encoding: UInt = 4 // Not sure what this actually represents...
+    
+    @StateObject var viewModel = ContentViewModel()
+    @State private var isDraggingFileOverView = false
     
     var body: some View {
         NavigationSplitView {
             listView
         } detail: {
             DirectoryView()
+                .border(isDraggingFileOverView ? Color.accentColor : Color.clear, width: 5)
         }
         .navigationTitle(viewModel.currentPath.path())
         .toolbar {
             ToolbarItem(placement: .navigation) {
-                Button {
-                    viewModel.back()
-                } label: {
-                    Label("Back", systemImage: "chevron.backward")
-                }
-                .disabled(!viewModel.backButtonEnabled)
+                backButton
+            }
+            ToolbarItem(placement: .primaryAction) {
+                refreshButton
             }
         }
-        .onDrop(of: [type], isTargeted: $isDraggingFileOverView, perform: { providers in
-            guard let provider = providers.first else { return false }
-            provider.loadDataRepresentation(forTypeIdentifier: type.identifier, completionHandler: { (data, error) in
-                guard
-                    let data = data,
-                    let path = NSString(data: data, encoding: encoding),
-                    let url = URL(string: path as String)
-                else {
-                    return
-                }
-                print(url)
-                viewModel.uploadFile(localPath: url)
-            })
-            return true
-        })
+        .onDrop(of: [type], isTargeted: $isDraggingFileOverView, perform: onDropItem)
         .environmentObject(viewModel)
     }
     
@@ -69,6 +55,40 @@ struct ContentView: View {
                 }
             }
         }
+    }
+    
+    var backButton: some View {
+        Button {
+            viewModel.back()
+        } label: {
+            Label("Back", systemImage: "chevron.backward")
+        }
+        .disabled(!viewModel.backButtonEnabled)
+    }
+    
+    var refreshButton: some View {
+        Button {
+            viewModel.refreshItems()
+        } label: {
+            Label("Refresh", systemImage: "arrow.clockwise")
+        }
+    }
+    
+    // Handler for when file is dropped onto window
+    private func onDropItem(providers: [NSItemProvider]) -> Bool {
+        guard let provider = providers.first else { return false }
+        provider.loadDataRepresentation(forTypeIdentifier: type.identifier, completionHandler: { (data, error) in
+            guard
+                let data = data,
+                let path = NSString(data: data, encoding: encoding),
+                let url = URL(string: path as String)
+            else {
+                return
+            }
+            print(url)
+            viewModel.uploadFile(localPath: url)
+        })
+        return true
     }
 }
 

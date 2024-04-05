@@ -64,7 +64,7 @@ struct ListCommandResponse {
         let size = Int(components[4])!
         let date = components[5]
         let time = components[6]
-        let name = components[7]
+        let name = components[7..<components.count].joined(separator: " ") // TODO: Figure out how to properly parse name... We probably will need to do a second command here...
         
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"

@@ -6,11 +6,29 @@
 //
 
 import Foundation
+import Combine
 
 class AdbService {
     
     static let shared = AdbService()
-    private init() {}
+
+    var deviceCountChanged: AnyPublisher<(), any Error>!
+    private var cancellables = Set<AnyCancellable>()
+    
+    private init() {
+        // setupDeviceMonitoring
+        deviceCountChanged = Timer.publish(every: 1, on: .main, in: .common)
+            .autoconnect()
+            .receive(on: DispatchQueue.global(qos: .background))
+            .asyncTryCompactMap { [weak self] _ -> DevicesResponse? in
+                guard let self else { return nil }
+                return try await devicesCommand()
+            }
+            .map { $0.connectedDeviceSerials.count }
+            .removeDuplicates()
+            .map { _ in () }
+            .eraseToAnyPublisher()
+    }
     
     func listCommand(path: URL) async throws -> ListCommandResponse {
         let args = "shell ls -lL \(path.path())"
@@ -28,13 +46,14 @@ class AdbService {
         try await adbCommand(argsString: args)
     }
     
-    @discardableResult
-    func manualCommand(args: String) async throws -> String {
-        return try await adbCommand(argsString: args)
+    func devicesCommand() async throws -> DevicesResponse {
+        let args = "devices"
+        let output = try! await adbCommand(argsString: args)
+        return DevicesResponse(rawOutput: output)
     }
     
     @discardableResult
-    private func adbCommand(argsString: String) async throws -> String {
+    func adbCommand(argsString: String) async throws -> String {
         let args = argsString.components(separatedBy: " ")
         return try await adbCommand(args: args)
     }

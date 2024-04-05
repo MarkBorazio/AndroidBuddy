@@ -23,7 +23,7 @@ extension Publisher {
         }
     }
     
-    func asyncMap<T>(
+    func asyncTryMap<T>(
         _ transform: @escaping (Output) async throws -> T
     ) -> Publishers.FlatMap<Future<T, Error>, Self> {
         flatMap { value in
@@ -38,6 +38,44 @@ extension Publisher {
                 }
             }
         }
+    }
+    
+    func asyncTryMap<T>(
+        _ transform: @escaping (Output) async throws -> T
+    ) -> Publishers.FlatMap<Future<T, Error>, Publishers.SetFailureType<Self, Error>> {
+        flatMap { value in
+            Future { promise in
+                Task {
+                    do {
+                        let output = try await transform(value)
+                        promise(.success(output))
+                    } catch {
+                        promise(.failure(error))
+                    }
+                }
+            }
+        }
+    }
+    
+    func asyncCompactMap<T>(
+        _ transform: @escaping (Output) async -> T?
+    ) -> Publishers.CompactMap<Publishers.FlatMap<Future<T?, Never>, Self>, T> {
+        asyncMap(transform)
+            .compactMap { $0 }
+    }
+    
+    func asyncTryCompactMap<T>(
+        _ transform: @escaping (Output) async throws -> T?
+    ) -> Publishers.CompactMap<Publishers.FlatMap<Future<T?, Error>, Self>, T> {
+        asyncTryMap(transform)
+            .compactMap { $0 }
+    }
+    
+    func asyncTryCompactMap<T>(
+        _ transform: @escaping (Output) async throws -> T?
+    ) -> Publishers.CompactMap<Publishers.FlatMap<Future<T?, Error>, Publishers.SetFailureType<Self, Error>>, T> {
+        asyncTryMap(transform)
+            .compactMap { $0 }
     }
     
 }
