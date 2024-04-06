@@ -55,6 +55,7 @@ enum ADB {
                 try task.run()
                 let data = pipe.fileHandleForReading.readDataToEndOfFile()
                 let output = String(data: data, encoding: .utf8)!
+                
                 if output.hasPrefix("adb:") {
                     assert(false, output)
                     continuation.resume(throwing: AdbError.commandError(output: output))

@@ -12,6 +12,7 @@ import Combine
 class ContentViewModel: ObservableObject {
     
     @Published var currentDeviceSerial: String? = nil
+    @Published var allDeviceSerials: [String] = []
     @Published var currentPath: URL = URL(string: "/")!
     @Published var items: [DirectoryView.Item] = []
     @Published var backButtonEnabled: Bool = false
@@ -32,9 +33,8 @@ class ContentViewModel: ObservableObject {
             .connectedDevices
             .map(\.connectedDeviceSerials)
             .replaceError(with: [])
-            .map(\.first)
             .receive(on: DispatchQueue.main)
-            .assign(to: &$currentDeviceSerial)
+            .assign(to: &$allDeviceSerials)
         
         $currentDeviceSerial
             .removeDuplicates()

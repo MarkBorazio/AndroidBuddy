@@ -14,8 +14,10 @@
 		4D2D351E2BBE710000E0E733 /* ManualCommandView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D351D2BBE710000E0E733 /* ManualCommandView.swift */; };
 		4D2D35222BBE9A0500E0E733 /* ADB License.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4D2D35212BBE9A0500E0E733 /* ADB License.txt */; };
 		4D2D35262BBEA65300E0E733 /* AsyncCombineExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D35252BBEA65300E0E733 /* AsyncCombineExtensions.swift */; };
+		4D2D353D2BBFE21D00E0E733 /* NoDevicesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D353C2BBFE21D00E0E733 /* NoDevicesView.swift */; };
 		4D2D35422BBFEF4C00E0E733 /* DevicesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D35412BBFEF4C00E0E733 /* DevicesResponse.swift */; };
 		4D2D35442BC1287A00E0E733 /* ADB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D35432BC1287A00E0E733 /* ADB.swift */; };
+		4D2D35462BC13C5F00E0E733 /* SideBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D35452BC13C5F00E0E733 /* SideBarView.swift */; };
 		4DDD83052BBA7CCB003F7203 /* AndroidBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */; };
 		4DDD83072BBA7CCB003F7203 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83062BBA7CCB003F7203 /* ContentView.swift */; };
 		4DDD83092BBA7CCC003F7203 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DDD83082BBA7CCC003F7203 /* Assets.xcassets */; };
@@ -53,8 +55,10 @@
 		4D2D351D2BBE710000E0E733 /* ManualCommandView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualCommandView.swift; sourceTree = "<group>"; };
 		4D2D35212BBE9A0500E0E733 /* ADB License.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "ADB License.txt"; sourceTree = "<group>"; };
 		4D2D35252BBEA65300E0E733 /* AsyncCombineExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncCombineExtensions.swift; sourceTree = "<group>"; };
+		4D2D353C2BBFE21D00E0E733 /* NoDevicesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoDevicesView.swift; sourceTree = "<group>"; };
 		4D2D35412BBFEF4C00E0E733 /* DevicesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesResponse.swift; sourceTree = "<group>"; };
 		4D2D35432BC1287A00E0E733 /* ADB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADB.swift; sourceTree = "<group>"; };
+		4D2D35452BC13C5F00E0E733 /* SideBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarView.swift; sourceTree = "<group>"; };
 		4DDD83012BBA7CCB003F7203 /* AndroidBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidBuddyApp.swift; sourceTree = "<group>"; };
 		4DDD83062BBA7CCB003F7203 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -120,6 +124,8 @@
 				4D2D351A2BBC027900E0E733 /* ContentViewModel.swift */,
 				4D2D35162BBBCE0800E0E733 /* DirectoryView.swift */,
 				4D2D351D2BBE710000E0E733 /* ManualCommandView.swift */,
+				4D2D353C2BBFE21D00E0E733 /* NoDevicesView.swift */,
+				4D2D35452BC13C5F00E0E733 /* SideBarView.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -358,7 +364,9 @@
 				4D2D35262BBEA65300E0E733 /* AsyncCombineExtensions.swift in Sources */,
 				4D2D351E2BBE710000E0E733 /* ManualCommandView.swift in Sources */,
 				4D2D35132BBAA9B400E0E733 /* ListCommandResponse.swift in Sources */,
+				4D2D353D2BBFE21D00E0E733 /* NoDevicesView.swift in Sources */,
 				4D2D351B2BBC027900E0E733 /* ContentViewModel.swift in Sources */,
+				4D2D35462BC13C5F00E0E733 /* SideBarView.swift in Sources */,
 				4D2D35102BBAA88F00E0E733 /* AdbService.swift in Sources */,
 				4D2D35172BBBCE0800E0E733 /* DirectoryView.swift in Sources */,
 			);

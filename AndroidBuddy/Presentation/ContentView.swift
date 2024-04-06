@@ -23,8 +23,16 @@ struct ContentView: View {
     @State private var isDraggingFileOverView = false
     
     var body: some View {
+        if viewModel.allDeviceSerials.isEmpty {
+            NoDevicesView()
+        } else {
+            navigationSplitView
+        }
+    }
+    
+    var navigationSplitView: some View {
         NavigationSplitView {
-            listView
+            SideBarView()
         } detail: {
             DirectoryView()
                 .border(isDraggingFileOverView ? Color.accentColor : Color.clear, width: 5)
@@ -40,21 +48,6 @@ struct ContentView: View {
         }
         .onDrop(of: [type], isTargeted: $isDraggingFileOverView, perform: onDropItem)
         .environmentObject(viewModel)
-    }
-    
-    var listView: some View {
-        List {
-            Section("Wired") {
-                ForEach(testDeviceNames, id: \.self) { name in
-                    Text(name)
-                }
-            }
-            Section("Wireless") {
-                ForEach(testDeviceNames, id: \.self) { name in
-                    Text(name)
-                }
-            }
-        }
     }
     
     var backButton: some View {
