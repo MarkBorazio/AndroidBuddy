@@ -7,14 +7,14 @@
 
 import Foundation
 
-/// Response for the `adb devices` command
+/// Response for the `adb devices -l` command
 ///
 /// # Example Output
 /// ```
 /// List of devices attached
 /// R5CT638F8ST    device
 /// ```
-struct DevicesResponse {
+struct DevicesResponse: Equatable {
     
     let connectedDeviceSerials: [String]
     
@@ -26,7 +26,8 @@ struct DevicesResponse {
             .filter { !$0.isEmpty } // Remove newline at end
         
         connectedDeviceSerials = rawLines.compactMap { rawLine in
-            let components = rawLine.components(separatedBy: " ")
+            let components = rawLine
+                .components(separatedBy: " ")
                 .filter { !$0.isEmpty }
             guard components.count > 0 else { return nil }
             return components[0]

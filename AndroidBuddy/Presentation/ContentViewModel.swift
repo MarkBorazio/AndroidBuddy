@@ -11,6 +11,7 @@ import Combine
 @MainActor
 class ContentViewModel: ObservableObject {
     
+    @Published var currentDeviceSerial: String? = nil
     @Published var currentPath: URL = URL(string: "/")!
     @Published var items: [DirectoryView.Item] = []
     @Published var backButtonEnabled: Bool = false
@@ -19,24 +20,39 @@ class ContentViewModel: ObservableObject {
     
     init() {
         $currentPath
-            .sink(receiveValue: { [weak self] _ in
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] path in
                 guard let self else { return }
-                self.refreshItems()
-            })
-            .store(in: &cancellables)
-        
-        $currentPath
-            .map { $0.pathComponents.count > 1 }
-            .assign(to: \.backButtonEnabled, on: self)
+                refreshItems()
+                backButtonEnabled = path.pathComponents.count > 1
+            }
             .store(in: &cancellables)
         
         AdbService.shared
-            .deviceCountChanged
+            .connectedDevices
+            .map(\.connectedDeviceSerials)
+            .replaceError(with: [])
+            .map(\.first)
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$currentDeviceSerial)
+        
+        $currentDeviceSerial
+            .removeDuplicates()
+            .sink { [weak self] serial in
+                guard let self else { return }
+                currentPath = URL(string: "/")!
+                refreshItems() // TODO: Reconsider this... The same thing happens when currentPath changes...
+            }
+            .store(in: &cancellables)
+        
+        // TODO: Move elsewhere...
+        AdbService.shared
+            .connectedDevices
             .sink(
                 receiveCompletion: { error in
                     fatalError("Device count publisher got error: \(error)")
                 },
-                receiveValue: { [weak self] in
+                receiveValue: { [weak self] _ in
                     print("Test for now. TODO: Move this somewhere else...")
                     guard let self else { return }
                     refreshItems()
@@ -52,7 +68,10 @@ class ContentViewModel: ObservableObject {
     }
     
     private func getItems(path: URL) async -> [DirectoryView.Item] {
-        let response = try! await AdbService.shared.listCommand(path: path)
+        guard let currentDeviceSerial else {
+            return []
+        }
+        let response = try! await ADB.list(serial: currentDeviceSerial, path: path)
         
         return response.items.map { responseItem in
 //            let indentationLevel = response.path.pathComponents.count - 1
@@ -75,17 +94,25 @@ class ContentViewModel: ObservableObject {
     }
     
     func downloadFile(remotePath: URL) {
+        guard let currentDeviceSerial else {
+            print("Tried to download file when no serial was selected")
+            return
+        }
         Task {
             print("Downloading file...")
-            try! await AdbService.shared.pullCommand(remotePath: remotePath)
+            try! await ADB.pull(serial: currentDeviceSerial, remotePath: remotePath)
             print("...file downloaded (or failed...)!")
         }
     }
     
     func uploadFile(localPath: URL) {
+        guard let currentDeviceSerial else {
+            print("Tried to upload file when no serial was selected")
+            return
+        }
         Task {
             print("Uploading file...")
-            try! await AdbService.shared.pushCommand(localPath: localPath, remotePath: currentPath)
+            try! await ADB.push(serial: currentDeviceSerial, localPath: localPath, remotePath: currentPath)
             print("...file uploaded (or failed...)!")
             refreshItems()
         }
