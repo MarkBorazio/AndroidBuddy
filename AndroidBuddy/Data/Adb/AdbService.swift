@@ -12,12 +12,12 @@ class AdbService {
     
     static let shared = AdbService()
 
-    var connectedDevices = PassthroughSubject<DevicesResponse, Error>()
+    var connectedDevices = CurrentValueSubject<DevicesResponse, Error>(.emptyResponse)
     private var cancellables = Set<AnyCancellable>()
     
     private init() {
         
-        // setupDeviceMonitoring
+        // Setup Device Monitoring
         Timer.publish(every: 1, on: .main, in: .common)
             .autoconnect()
             .receive(on: DispatchQueue.global(qos: .background))
