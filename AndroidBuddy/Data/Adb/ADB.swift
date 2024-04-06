@@ -27,6 +27,11 @@ enum ADB {
         try await command(argsString: args)
     }
     
+    static func delete(serial: String, remotePath: URL) async throws {
+        let args = "-s \(serial) shell rm -f \(remotePath.path())"
+        try await command(argsString: args)
+    }
+    
     static func devices() async throws -> DevicesResponse {
         let args = "devices -l"
         let output = try! await command(argsString: args)

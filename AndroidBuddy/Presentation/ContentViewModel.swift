@@ -118,6 +118,20 @@ class ContentViewModel: ObservableObject {
         }
     }
     
+    func deleteFile(remotePath: URL) {
+        guard let currentDeviceSerial else {
+            print("Tried to delete file when no serial was selected")
+            return
+        }
+        print("Deleting file at \(remotePath.path())")
+        Task {
+            print("Deleting file...")
+            try! await ADB.delete(serial: currentDeviceSerial, remotePath: remotePath)
+            print("...file deleted (or failed...)!")
+            refreshItems()
+        }
+    }
+    
     func back() {
         guard backButtonEnabled else { return }
         currentPath = currentPath.deletingLastPathComponent()

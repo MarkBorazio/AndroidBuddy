@@ -41,30 +41,22 @@ struct DirectoryView: View {
             }
         }
         .contextMenu(forSelectionType: DirectoryView.Item.ID.self) { selectedItemIds in
-            if selectedItemIds.count == 1 { // Single item menu.
-                Button("Copy") { }
-                Button("Delete", role: .destructive) { }
+            let selectedItems = getItemsFromIds(selectedItemIds)
+            if selectedItems.count == 1, let selectedItem = selectedItems.first { // Single item menu.
+                Button("Delete", role: .destructive) {
+                    viewModel.deleteFile(remotePath: selectedItem.path)
+                }
                 Button("Save to downloads") {
-                    if
-                        selectedItemIds.count == 1,
-                        let selectedId = selectedItemIds.first,
-                        let selectedItem = viewModel.items.first(where: { $0.id == selectedId })
-                    {
-                        viewModel.downloadFile(remotePath: selectedItem.path)
-                    }
+                    viewModel.downloadFile(remotePath: selectedItem.path)
                 }
             } else { // Multi-item menu.
-                Button("Copy") { }
-                Button("New Folder With Selection") { }
                 Button("Delete Selected", role: .destructive) { }
+                Button("Save to downloads") { }
             }
         } primaryAction: { selectedItemIds in
             // This is executed when the row is double clicked
-            if 
-                selectedItemIds.count == 1,
-                let selectedId = selectedItemIds.first,
-                let selectedItem = viewModel.items.first(where: { $0.id == selectedId })
-            {
+            let selectedItems = getItemsFromIds(selectedItemIds)
+            if selectedItems.count == 1, let selectedItem = selectedItems.first {
                 switch selectedItem.type {
                 case .file:
                     viewModel.downloadFile(remotePath: selectedItem.path)
@@ -72,6 +64,12 @@ struct DirectoryView: View {
                     viewModel.currentPath = selectedItem.path
                 }
             }
+        }
+    }
+    
+    private func getItemsFromIds(_ ids: Set<DirectoryView.Item.ID>) -> [DirectoryView.Item] {
+        ids.flatMap { id in
+            viewModel.items.filter { $0.id == id }
         }
     }
     
