@@ -34,7 +34,14 @@ class ContentViewModel: ObservableObject {
             .map(\.connectedDeviceSerials)
             .replaceError(with: [])
             .receive(on: DispatchQueue.main)
-            .assign(to: &$allDeviceSerials)
+            .sink { [weak self] devices in
+                guard let self else { return }
+                allDeviceSerials = devices
+                if currentDeviceSerial == nil {
+                    currentDeviceSerial = devices.first
+                }
+            }
+            .store(in: &cancellables)
         
         $currentDeviceSerial
             .removeDuplicates()
