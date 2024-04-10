@@ -18,6 +18,7 @@
 		4D2D35422BBFEF4C00E0E733 /* DevicesResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D35412BBFEF4C00E0E733 /* DevicesResponse.swift */; };
 		4D2D35442BC1287A00E0E733 /* ADB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D35432BC1287A00E0E733 /* ADB.swift */; };
 		4D2D35462BC13C5F00E0E733 /* SideBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D35452BC13C5F00E0E733 /* SideBarView.swift */; };
+		4D2D35482BC157B900E0E733 /* URLExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D35472BC157B900E0E733 /* URLExtensions.swift */; };
 		4DDD83052BBA7CCB003F7203 /* AndroidBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */; };
 		4DDD83072BBA7CCB003F7203 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83062BBA7CCB003F7203 /* ContentView.swift */; };
 		4DDD83092BBA7CCC003F7203 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DDD83082BBA7CCC003F7203 /* Assets.xcassets */; };
@@ -59,6 +60,7 @@
 		4D2D35412BBFEF4C00E0E733 /* DevicesResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DevicesResponse.swift; sourceTree = "<group>"; };
 		4D2D35432BC1287A00E0E733 /* ADB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADB.swift; sourceTree = "<group>"; };
 		4D2D35452BC13C5F00E0E733 /* SideBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarView.swift; sourceTree = "<group>"; };
+		4D2D35472BC157B900E0E733 /* URLExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLExtensions.swift; sourceTree = "<group>"; };
 		4DDD83012BBA7CCB003F7203 /* AndroidBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidBuddyApp.swift; sourceTree = "<group>"; };
 		4DDD83062BBA7CCB003F7203 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -151,6 +153,7 @@
 			isa = PBXGroup;
 			children = (
 				4D2D35252BBEA65300E0E733 /* AsyncCombineExtensions.swift */,
+				4D2D35472BC157B900E0E733 /* URLExtensions.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -361,6 +364,7 @@
 				4D2D35422BBFEF4C00E0E733 /* DevicesResponse.swift in Sources */,
 				4DDD83072BBA7CCB003F7203 /* ContentView.swift in Sources */,
 				4DDD83052BBA7CCB003F7203 /* AndroidBuddyApp.swift in Sources */,
+				4D2D35482BC157B900E0E733 /* URLExtensions.swift in Sources */,
 				4D2D35262BBEA65300E0E733 /* AsyncCombineExtensions.swift in Sources */,
 				4D2D351E2BBE710000E0E733 /* ManualCommandView.swift in Sources */,
 				4D2D35132BBAA9B400E0E733 /* ListCommandResponse.swift in Sources */,

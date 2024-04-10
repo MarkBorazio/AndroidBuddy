@@ -71,7 +71,7 @@ struct ListCommandResponse {
         let dateTime = dateFormatter.date(from: "\(date) \(time)")!
         
         return Item(
-            path: path.appending(path: name, directoryHint: .inferFromPath),
+            path: path.appending(path: name),
             name: name,
             permissions: permissions,
             numberOfLinks: numberOfLinks,
