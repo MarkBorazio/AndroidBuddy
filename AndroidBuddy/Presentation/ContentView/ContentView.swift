@@ -10,12 +10,6 @@ import UniformTypeIdentifiers
 
 struct ContentView: View {
     
-    let testDeviceNames = [
-        "Device 1",
-        "Device 2",
-        "Device 3"
-    ]
-    
     private static let contentType: UTType = .fileURL
     private static let contentTypeEncoding: UInt = 4
     
@@ -49,7 +43,7 @@ struct ContentView: View {
             DirectoryView()
                 .border(isDraggingFileOverView ? Color.accentColor : Color.clear, width: 5)
         }
-        .navigationTitle(viewModel.currentPath.path())
+        .navigationTitle(viewModel.title)
         .toolbar {
             ToolbarItem(placement: .navigation) {
                 backButton

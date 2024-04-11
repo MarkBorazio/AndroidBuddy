@@ -12,11 +12,13 @@ import Combine
 class ContentViewModel: ObservableObject {
     
     @Published var viewState: ViewState = .loading
+    @Published var title: String = ""
     @Published var currentDeviceSerial: String? = nil
     @Published var allDeviceSerials: [String] = []
-    @Published var currentPath: URL = URL(string: "/")!
     @Published var items: [DirectoryView.Item] = []
     @Published var backButtonEnabled: Bool = false
+    
+    @Published private var currentPath: URL = URL(string: "/")!
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -42,6 +44,10 @@ class ContentViewModel: ObservableObject {
             }
             .store(in: &cancellables)
         
+        $currentPath
+            .map { $0.path(percentEncoded: false) }
+            .assign(to: &$title)
+        
         AdbService.shared
             .connectedDevices
             .map(\.connectedDeviceSerials)
@@ -50,7 +56,13 @@ class ContentViewModel: ObservableObject {
             .sink { [weak self] devices in
                 guard let self else { return }
                 allDeviceSerials = devices
-                if currentDeviceSerial == nil {
+                
+                var currentDeviceLostConnection = false
+                if let currentDeviceSerial, !devices.contains(currentDeviceSerial) {
+                    currentDeviceLostConnection = true
+                }
+                
+                if currentDeviceSerial == nil || currentDeviceLostConnection {
                     currentDeviceSerial = devices.first
                 }
             }
@@ -61,7 +73,6 @@ class ContentViewModel: ObservableObject {
             .sink { [weak self] serial in
                 guard let self else { return }
                 currentPath = URL(string: "/")!
-                refreshItems() // TODO: Reconsider this... The same thing happens when currentPath changes...
             }
             .store(in: &cancellables)
         
@@ -155,6 +166,10 @@ class ContentViewModel: ObservableObject {
     func back() {
         guard backButtonEnabled else { return }
         currentPath = currentPath.deletingLastPathComponent()
+    }
+    
+    func navigateToDirectory(path: URL) {
+        currentPath = path
     }
     
     enum ViewState {

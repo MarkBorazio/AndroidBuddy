@@ -61,7 +61,7 @@ struct DirectoryView: View {
                 case .file:
                     viewModel.downloadFile(remotePath: selectedItem.path)
                 case .directory:
-                    viewModel.currentPath = selectedItem.path
+                    viewModel.navigateToDirectory(path: selectedItem.path)
                 }
             }
         }
