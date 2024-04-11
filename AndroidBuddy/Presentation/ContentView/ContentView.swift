@@ -16,13 +16,25 @@ struct ContentView: View {
         "Device 3"
     ]
     
-    private let type = UTType.fileURL
-    private let encoding: UInt = 4 // Not sure what this actually represents...
+    private static let contentType: UTType = .fileURL
+    private static let contentTypeEncoding: UInt = 4
     
     @StateObject var viewModel = ContentViewModel()
     @State private var isDraggingFileOverView = false
     
     var body: some View {
+        switch viewModel.viewState {
+        case .loading:
+            LoadingView()
+        case .loaded:
+            loadedView
+        case .error:
+            ADBErrorView()
+        }
+    }
+    
+    @ViewBuilder
+    var loadedView: some View {
         if viewModel.allDeviceSerials.isEmpty {
             NoDevicesView()
         } else {
@@ -46,7 +58,7 @@ struct ContentView: View {
                 refreshButton
             }
         }
-        .onDrop(of: [type], isTargeted: $isDraggingFileOverView, perform: onDropItem)
+        .onDrop(of: [Self.contentType], isTargeted: $isDraggingFileOverView, perform: onDropItem)
         .environmentObject(viewModel)
     }
     
@@ -70,10 +82,10 @@ struct ContentView: View {
     // Handler for when file is dropped onto window
     private func onDropItem(providers: [NSItemProvider]) -> Bool {
         guard let provider = providers.first else { return false }
-        provider.loadDataRepresentation(forTypeIdentifier: type.identifier, completionHandler: { (data, error) in
+        provider.loadDataRepresentation(forTypeIdentifier: Self.contentType.identifier, completionHandler: { (data, error) in
             guard
                 let data = data,
-                let path = NSString(data: data, encoding: encoding),
+                let path = NSString(data: data, encoding: Self.contentTypeEncoding),
                 let url = URL(string: path as String)
             else {
                 return

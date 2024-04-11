@@ -38,37 +38,61 @@ enum ADB {
         return DevicesResponse(rawOutput: output)
     }
     
+    static func killServer() async throws {
+        let args = ["kill-server"]
+        try await command(args: args)
+    }
+    
+    static func startServer() async throws {
+        let args = ["start-server"]
+        try await command(args: args)
+    }
 
     @discardableResult
     private static func command(args: [String]) async throws -> String {
         try await withCheckedThrowingContinuation { continuation in
-            let task = Process()
+            let process = Process()
             let pipe = Pipe()
             
-            task.standardOutput = pipe
-            task.standardError = pipe
-            task.arguments = args
-            task.executableURL = executableUrl
-            task.standardInput = nil
+            process.standardOutput = pipe
+            process.standardError = pipe
+            process.arguments = args
+            process.executableURL = executableUrl
+            process.standardInput = nil
             do {
-                try task.run()
+                try process.run()
                 let data = pipe.fileHandleForReading.readDataToEndOfFile()
                 let output = String(data: data, encoding: .utf8)!
                 
-                if output.hasPrefix("adb:") {
-                    assert(false, output)
-                    continuation.resume(throwing: AdbError.commandError(output: output))
-                } else {
-                    continuation.resume(returning: output)
-                }
+                print(output)
+
+                try checkForDaemonError(output) // Should check first
+                try checkForCommandError(output)
+                continuation.resume(returning: output)
             } catch {
-                print("Unexpected ADB Error: \(error)")
+                assert(false, "ADB Error: \(error)")
                 continuation.resume(throwing: error)
             }
         }
     }
     
+    private static func checkForDaemonError(_ rawOutput: String) throws {
+        let components = rawOutput.components(separatedBy: .newlines)
+        let errorLine = "* failed to start daemon"
+        if components.contains(errorLine) {
+            throw AdbError.daemonError
+        }
+    }
+    
+    // From what I can tell, command errors start with "adb:" on the first line
+    private static func checkForCommandError(_ rawOutput: String) throws {
+        if rawOutput.hasPrefix("adb:") {
+            throw AdbError.commandError(output: rawOutput)
+        }
+    }
+    
     enum AdbError: Error {
+        case daemonError
         case commandError(output: String)
     }
 }

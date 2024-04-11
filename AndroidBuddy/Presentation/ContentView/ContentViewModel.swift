@@ -11,6 +11,7 @@ import Combine
 @MainActor
 class ContentViewModel: ObservableObject {
     
+    @Published var viewState: ViewState = .loading
     @Published var currentDeviceSerial: String? = nil
     @Published var allDeviceSerials: [String] = []
     @Published var currentPath: URL = URL(string: "/")!
@@ -20,6 +21,18 @@ class ContentViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     
     init() {
+        
+        AdbService.shared.state
+            .map { state -> ViewState in
+                return switch state {
+                case .notRunning, .settingUp: .loading
+                case .running: .loaded
+                case .error: .error
+                }
+            }
+            .receive(on: DispatchQueue.main)
+            .assign(to: &$viewState)
+
         $currentPath
             .receive(on: DispatchQueue.main)
             .sink { [weak self] path in
@@ -142,5 +155,11 @@ class ContentViewModel: ObservableObject {
     func back() {
         guard backButtonEnabled else { return }
         currentPath = currentPath.deletingLastPathComponent()
+    }
+    
+    enum ViewState {
+        case loading
+        case loaded
+        case error
     }
 }
