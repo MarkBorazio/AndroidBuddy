@@ -50,7 +50,11 @@ class ContentViewModel: ObservableObject {
             .store(in: &cancellables)
         
         $currentPath
-            .map { $0.path(percentEncoded: false) }
+            .map {
+                $0.path(percentEncoded: false)
+                    .replacingOccurrences(of: "/", with: " / ")
+                    .trimmingCharacters(in: .whitespacesAndNewlines)
+            }
             .assign(to: &$title)
         
         AdbService.shared
