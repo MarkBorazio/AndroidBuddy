@@ -83,21 +83,6 @@ class ContentViewModel: ObservableObject {
                 currentPath = URL(string: "/")!
             }
             .store(in: &cancellables)
-        
-        // TODO: Move elsewhere...
-        AdbService.shared
-            .connectedDevices
-            .sink(
-                receiveCompletion: { error in
-                    fatalError("Device count publisher got error: \(error)")
-                },
-                receiveValue: { [weak self] _ in
-                    print("Test for now. TODO: Move this somewhere else...")
-                    guard let self else { return }
-                    refreshItems()
-                }
-            )
-            .store(in: &cancellables)
     }
     
     func refreshItems() {
@@ -113,9 +98,6 @@ class ContentViewModel: ObservableObject {
         let response = try! await ADB.list(serial: currentDevice.serial, path: path)
         
         return response.items.map { responseItem in
-//            let indentationLevel = response.path.pathComponents.count - 1
-//            let sanitisedIndentationLevel = max(0, indentationLevel)
-            
             let itemType: DirectoryView.Item.ItemType = switch responseItem.fileType {
             case .directory: .directory
             case .file: .file
@@ -126,7 +108,6 @@ class ContentViewModel: ObservableObject {
                 path: responseItem.path,
                 name: responseItem.name,
                 isSymlink: responseItem.fileType == .symlink,
-                indentationLevel: 0, //sanitisedIndentationLevel, // TODO: Add back in if I ever decide to have vertical list view
                 type: itemType
             )
         }
