@@ -29,7 +29,7 @@ struct ContentView: View {
     
     @ViewBuilder
     var loadedView: some View {
-        if viewModel.allDeviceSerials.isEmpty {
+        if viewModel.allDevices.isEmpty {
             NoDevicesView()
         } else {
             navigationSplitView

@@ -14,13 +14,18 @@ class ContentViewModel: ObservableObject {
     @Published var viewState: ViewState = .loading
     @Published var title: String = ""
     @Published var currentDeviceSerial: String? = nil
-    @Published var allDeviceSerials: [String] = []
+    @Published var allDevices: [Device] = []
     @Published var items: [DirectoryView.Item] = []
     @Published var backButtonEnabled: Bool = false
-    
     @Published private var currentPath: URL = URL(string: "/")!
     
+    var currentDevice: Device? {
+        guard let currentDeviceSerial else { return nil }
+        return allDevices.first { $0.serial == currentDeviceSerial }
+    }
+    
     private var cancellables = Set<AnyCancellable>()
+    
     
     init() {
         
@@ -50,27 +55,26 @@ class ContentViewModel: ObservableObject {
         
         AdbService.shared
             .connectedDevices
-            .map(\.connectedDeviceSerials)
             .replaceError(with: [])
             .receive(on: DispatchQueue.main)
             .sink { [weak self] devices in
                 guard let self else { return }
-                allDeviceSerials = devices
+                allDevices = devices
                 
                 var currentDeviceLostConnection = false
-                if let currentDeviceSerial, !devices.contains(currentDeviceSerial) {
-                    currentDeviceLostConnection = true
+                if let currentDevice {
+                    currentDeviceLostConnection = !devices.contains { $0.serial == currentDevice.serial }
                 }
                 
                 if currentDeviceSerial == nil || currentDeviceLostConnection {
-                    currentDeviceSerial = devices.first
+                    currentDeviceSerial = devices.first?.serial
                 }
             }
             .store(in: &cancellables)
         
         $currentDeviceSerial
             .removeDuplicates()
-            .sink { [weak self] serial in
+            .sink { [weak self] _ in
                 guard let self else { return }
                 currentPath = URL(string: "/")!
             }
@@ -99,10 +103,10 @@ class ContentViewModel: ObservableObject {
     }
     
     private func getItems(path: URL) async -> [DirectoryView.Item] {
-        guard let currentDeviceSerial else {
+        guard let currentDevice else {
             return []
         }
-        let response = try! await ADB.list(serial: currentDeviceSerial, path: path)
+        let response = try! await ADB.list(serial: currentDevice.serial, path: path)
         
         return response.items.map { responseItem in
 //            let indentationLevel = response.path.pathComponents.count - 1
@@ -125,39 +129,39 @@ class ContentViewModel: ObservableObject {
     }
     
     func downloadFile(remotePath: URL) {
-        guard let currentDeviceSerial else {
+        guard let currentDevice else {
             print("Tried to download file when no serial was selected")
             return
         }
         Task {
             print("Downloading file...")
-            try! await ADB.pull(serial: currentDeviceSerial, remotePath: remotePath)
+            try! await ADB.pull(serial: currentDevice.serial, remotePath: remotePath)
             print("...file downloaded (or failed...)!")
         }
     }
     
     func uploadFile(localPath: URL) {
-        guard let currentDeviceSerial else {
+        guard let currentDevice else {
             print("Tried to upload file when no serial was selected")
             return
         }
         Task {
             print("Uploading file...")
-            try! await ADB.push(serial: currentDeviceSerial, localPath: localPath, remotePath: currentPath)
+            try! await ADB.push(serial: currentDevice.serial, localPath: localPath, remotePath: currentPath)
             print("...file uploaded (or failed...)!")
             refreshItems()
         }
     }
     
     func deleteFile(remotePath: URL) {
-        guard let currentDeviceSerial else {
+        guard let currentDevice else {
             print("Tried to delete file when no serial was selected")
             return
         }
         print("Deleting file at \(remotePath.path())")
         Task {
             print("Deleting file...")
-            try! await ADB.delete(serial: currentDeviceSerial, remotePath: remotePath)
+            try! await ADB.delete(serial: currentDevice.serial, remotePath: remotePath)
             print("...file deleted (or failed...)!")
             refreshItems()
         }

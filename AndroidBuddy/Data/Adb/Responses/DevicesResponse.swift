@@ -33,12 +33,4 @@ struct DevicesResponse: Equatable {
             return components[0]
         }
     }
-    
-    // MARK: - Default Empty response
-    
-    static let emptyResponse = DevicesResponse()
-    
-    private init() {
-        connectedDeviceSerials = []
-    }
 }

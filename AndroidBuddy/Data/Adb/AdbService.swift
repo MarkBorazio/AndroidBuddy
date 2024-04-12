@@ -12,7 +12,7 @@ class AdbService {
     
     static let shared = AdbService()
 
-    var connectedDevices = CurrentValueSubject<DevicesResponse, Error>(.emptyResponse)
+    var connectedDevices = CurrentValueSubject<[Device], Error>([])
     var state = CurrentValueSubject<ADBState, Never>(.notRunning)
     
     private var cancellables = Set<AnyCancellable>()
@@ -41,8 +41,9 @@ class AdbService {
         let periodicDeviceRefresh = Timer.publish(every: 1, on: .main, in: .common)
             .autoconnect()
             .receive(on: backgroundQueue)
-            .asyncTryMap { _ in
-                return try await ADB.devices()
+            .asyncTryCompactMap { [weak self] _ -> [Device]? in
+                guard let self else { return nil }
+                return try await getAllDevices()
             }
             .removeDuplicates()
         
@@ -56,6 +57,19 @@ class AdbService {
         }
         .subscribe(connectedDevices)
         .store(in: &cancellables)
+    }
+    
+    private func getAllDevices() async throws -> [Device] {
+        var devices: [Device] = []
+        
+        let devicesResponse = try await ADB.devices()
+        for serial in devicesResponse.connectedDeviceSerials {
+            let name = try await ADB.getBluetoothName(serial: serial)
+            let device = Device(bluetoothName: name, serial: serial)
+            devices.append(device)
+        }
+        
+        return devices
     }
     
     enum ADBState {

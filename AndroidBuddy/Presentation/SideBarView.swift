@@ -14,9 +14,9 @@ struct SideBarView: View {
     var body: some View {
         List(selection: $viewModel.currentDeviceSerial) {
             Section("Devices") {
-                ForEach(viewModel.allDeviceSerials, id: \.self) { serial in
-                    Text(serial)
-                        .tag(serial)
+                ForEach(viewModel.allDevices, id: \.serial) { device in
+                    Text(device.bluetoothName)
+                        .tag(device.serial)
                 }
             }
         }

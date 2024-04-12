@@ -12,24 +12,29 @@ enum ADB {
     private static let executableUrl = Bundle.main.url(forResource: "adb", withExtension: nil)!
     
     static func list(serial: String, path: URL) async throws -> ListCommandResponse {
-        let args = ["-s", "\(serial)", "shell", "ls", "-lL", "\(path.pathForShellCommand)"]
+        let args = ["-s", serial, "shell", "ls", "-lL", "\(path.pathForShellCommand)"]
         let output = try await command(args: args)
         return ListCommandResponse(path: path, rawResponse: output)
     }
     
     static func pull(serial: String, remotePath: URL) async throws {
-        let args = ["-s", "\(serial)", "pull", "\(remotePath.pathForADBCommand)", "Downloads"]
+        let args = ["-s", serial, "pull", "\(remotePath.pathForADBCommand)", "Downloads"]
         try await command(args: args)
     }
     
     static func push(serial: String, localPath: URL, remotePath: URL) async throws {
-        let args = ["-s", "\(serial)", "push", "\(localPath.pathForADBCommand)", "\(remotePath.pathForADBCommand)"]
+        let args = ["-s", serial, "push", "\(localPath.pathForADBCommand)", "\(remotePath.pathForADBCommand)"]
         try await command(args: args)
     }
     
     static func delete(serial: String, remotePath: URL) async throws {
-        let args = ["-s", "\(serial)", "shell", "rm", "-f", "\(remotePath.pathForShellCommand)"]
+        let args = ["-s", serial, "shell", "rm", "-f", "\(remotePath.pathForShellCommand)"]
         try await command(args: args)
+    }
+    
+    static func getBluetoothName(serial: String) async throws -> String {
+        let args = ["-s", serial, "shell", "dumpsys", "bluetooth_manager", "|", "grep", "'name:'", "|", "cut", "-c9-"]
+        return try await command(args: args)
     }
     
     static func devices() async throws -> DevicesResponse {
@@ -63,12 +68,12 @@ enum ADB {
                 try process.run()
                 let data = pipe.fileHandleForReading.readDataToEndOfFile()
                 let output = String(data: data, encoding: .utf8)!
-                
-                print(output)
 
                 try checkForDaemonError(output) // Should check first
                 try checkForCommandError(output)
-                continuation.resume(returning: output)
+                
+                let sanitisedOutput = output.trimmingCharacters(in: .whitespacesAndNewlines)
+                continuation.resume(returning: sanitisedOutput)
             } catch {
                 assert(false, "ADB Error: \(error)")
                 continuation.resume(throwing: error)
