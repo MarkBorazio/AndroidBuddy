@@ -64,13 +64,7 @@ class ContentViewModel: ObservableObject {
             .sink { [weak self] devices in
                 guard let self else { return }
                 allDevices = devices
-                
-                var currentDeviceLostConnection = false
-                if let currentDevice {
-                    currentDeviceLostConnection = !devices.contains { $0.serial == currentDevice.serial }
-                }
-                
-                if currentDeviceSerial == nil || currentDeviceLostConnection {
+                if currentDevice == nil {
                     currentDeviceSerial = devices.first?.serial
                 }
             }
