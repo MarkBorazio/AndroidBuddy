@@ -10,13 +10,9 @@ import SwiftUI
 @main
 struct AndroidBuddyApp: App {
     
-    init() {
-        _ = AdbService.shared
-    }
-    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(adbService: StandardDependencies.shared.adbService)
         }
     }
 }

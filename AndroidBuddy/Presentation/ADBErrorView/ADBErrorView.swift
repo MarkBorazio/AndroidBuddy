@@ -9,7 +9,11 @@ import SwiftUI
 
 struct ADBErrorView: View {
     
-    let viewModel = ADBErrorViewModel()
+    let viewModel: ADBErrorViewModel
+    
+    init(viewModel: ADBErrorViewModel) {
+        self.viewModel = viewModel
+    }
     
     var body: some View {
         VStack(spacing: ViewConstants.commonSpacing) {
@@ -24,5 +28,5 @@ struct ADBErrorView: View {
 }
 
 #Preview {
-    ADBErrorView()
+    ADBErrorView(viewModel: .init(adbService: MockAdbService(adbState: .error, devices: [])))
 }

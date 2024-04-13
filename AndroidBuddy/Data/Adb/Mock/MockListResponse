@@ -1,0 +1,47 @@
+total 192
+dr-xr-xr-x   4 root   root          0 2019-11-24 04:47 acct
+drwxr-xr-x  62 root   root       1300 2024-04-06 20:28 apex
+-rw-r--r--   1 root   root      46450 2009-01-01 02:00 audit_filter_table
+lrw-r--r--   1 root   root         11 2009-01-01 02:00 bin -> /system/bin
+lrw-r--r--   1 root   root         50 2009-01-01 02:00 bugreports -> /data/user_de/0/com.android.shell/files/bugreports
+drwxrwx---   7 system cache      4096 2019-09-02 00:23 cache
+drwxr-xr-x   2 root   root       4096 2009-01-01 02:00 carrier
+drwxr-xr-x   5 root   root          0 2019-11-24 04:47 config
+lrw-r--r--   1 root   root         17 2009-01-01 02:00 d -> /sys/kernel/debug
+drwxrwx--x  71 system system     4096 2024-04-06 18:33 data
+d?????????   ? ?      ?             ?                ? data_mirror
+drwxr-xr-x   2 root   root       4096 2009-01-01 02:00 debug_ramdisk
+drwxr-xr-x  26 root   root       5620 2024-04-13 19:33 dev
+-rw-r--r--   1 root   root       6188 2009-01-01 02:00 dpolicy_system
+drwxrwx--x  28 system radio      4096 2022-01-13 15:15 efs
+lrw-r--r--   1 root   root         11 2009-01-01 02:00 etc -> /system/etc
+l?????????   ? ?      ?             ?                ? init -> ?
+-rwxr-x---   1 root   shell      3623 2009-01-01 02:00 init.container.rc
+-rwxr-x---   1 root   shell       463 2009-01-01 02:00 init.environ.rc
+-rwxr-x---   1 root   shell       454 2009-01-01 02:00 init.rilmptcp.rc
+drwxrwx--x   6 system system     4096 2019-01-01 11:00 keydata
+drwxrwx--x   6 system system     4096 2021-08-21 14:35 keyrefuge
+d?????????   ? ?      ?             ?                ? linkerconfig
+drwx------   2 root   root      16384 2009-01-01 02:00 lost+found
+d?????????   ? ?      ?             ?                ? metadata
+drwxr-xr-x  18 root   system      380 2019-11-24 04:47 mnt
+drwxr-xr-x   4 root   root       4096 2009-01-01 02:00 odm
+drwxr-xr-x   2 root   root       4096 2009-01-01 02:00 odm_dlkm
+drwxr-xr-x   2 root   root       4096 2009-01-01 02:00 oem
+drwxrwxr-x   3 radio  system     4096 2019-01-01 11:00 omr
+drwxr-xr-x   4 root   root       4096 2009-01-01 02:00 optics
+d?????????   ? ?      ?             ?                ? postinstall
+drwxr-xr-x   9 root   root       4096 2009-01-01 02:00 prism
+dr-xr-xr-x 823 root   root          0 1970-01-01 10:00 proc
+drwxr-xr-x   9 root   root       4096 2009-01-01 02:00 product
+-rw-r--r--   1 root   root      14344 2009-01-01 02:00 publiccert.pem
+lrw-r--r--   1 root   root         21 2009-01-01 02:00 sdcard -> /storage/self/primary
+drwxr-xr-x   2 root   root       4096 2009-01-01 02:00 second_stage_resources
+-rw-r--r--   1 root   root        206 2009-01-01 02:00 sepolicy_version
+drwxrwx--x   3 system system     4096 2009-01-01 02:00 spu
+drwx--x--x   4 shell  everybody    80 2019-11-24 04:47 storage
+dr-xr-xr-x  15 root   root          0 2019-11-24 04:47 sys
+drwxr-xr-x  22 root   root       4096 2009-01-01 02:00 system
+lrw-r--r--   1 root   root         18 2009-01-01 02:00 system_ext -> /system/system_ext
+drwxr-xr-x  18 root   shell      4096 2009-01-01 02:00 vendor
+drwxr-xr-x   2 root   root       4096 2009-01-01 02:00 vendor_dlkm

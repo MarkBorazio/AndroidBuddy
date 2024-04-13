@@ -25,11 +25,13 @@ class ContentViewModel: ObservableObject {
     }
     
     private var cancellables = Set<AnyCancellable>()
+    private let adbService: ADBService
     
-    
-    init() {
+    init(adbService: ADBService) {
+        self.adbService = adbService
         
-        AdbService.shared.state
+        adbService.state
+            .eraseToAnyPublisher()
             .map { state -> ViewState in
                 return switch state {
                 case .notRunning, .settingUp: .loading
@@ -57,8 +59,8 @@ class ContentViewModel: ObservableObject {
             }
             .assign(to: &$title)
         
-        AdbService.shared
-            .connectedDevices
+        adbService.connectedDevices
+            .eraseToAnyPublisher()
             .replaceError(with: [])
             .receive(on: DispatchQueue.main)
             .sink { [weak self] devices in
@@ -89,7 +91,7 @@ class ContentViewModel: ObservableObject {
         guard let currentDevice else {
             return []
         }
-        let response = try! await ADB.list(serial: currentDevice.serial, path: path)
+        let response = try! await adbService.list(serial: currentDevice.serial, path: path)
         
         return response.items.map { responseItem in
             let itemType: DirectoryView.Item.ItemType = switch responseItem.fileType {
@@ -114,7 +116,7 @@ class ContentViewModel: ObservableObject {
         }
         Task {
             print("Downloading file...")
-            try! await ADB.pull(serial: currentDevice.serial, remotePath: remotePath)
+            try! await adbService.pull(serial: currentDevice.serial, remotePath: remotePath)
             print("...file downloaded (or failed...)!")
         }
     }
@@ -126,7 +128,7 @@ class ContentViewModel: ObservableObject {
         }
         Task {
             print("Uploading file...")
-            try! await ADB.push(serial: currentDevice.serial, localPath: localPath, remotePath: currentPath)
+            try! await adbService.push(serial: currentDevice.serial, localPath: localPath, remotePath: currentPath)
             print("...file uploaded (or failed...)!")
             refreshItems()
         }
@@ -140,7 +142,7 @@ class ContentViewModel: ObservableObject {
         print("Deleting file at \(remotePath.path())")
         Task {
             print("Deleting file...")
-            try! await ADB.delete(serial: currentDevice.serial, remotePath: remotePath)
+            try! await adbService.delete(serial: currentDevice.serial, remotePath: remotePath)
             print("...file deleted (or failed...)!")
             refreshItems()
         }
@@ -153,6 +155,10 @@ class ContentViewModel: ObservableObject {
     
     func navigateToDirectory(path: URL) {
         currentPath = path
+    }
+    
+    func createAdbErrorViewModel() -> ADBErrorViewModel {
+        ADBErrorViewModel(adbService: adbService)
     }
     
     enum ViewState {

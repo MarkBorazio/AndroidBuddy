@@ -13,8 +13,12 @@ struct ContentView: View {
     private static let contentType: UTType = .fileURL
     private static let contentTypeEncoding: UInt = 4
     
-    @StateObject var viewModel = ContentViewModel()
+    @StateObject var viewModel: ContentViewModel
     @State private var isDraggingFileOverView = false
+    
+    init(adbService: ADBService) {
+        _viewModel = StateObject(wrappedValue: { ContentViewModel(adbService: adbService) }())
+    }
     
     var body: some View {
         switch viewModel.viewState {
@@ -23,7 +27,7 @@ struct ContentView: View {
         case .loaded:
             loadedView
         case .error:
-            ADBErrorView()
+            ADBErrorView(viewModel: viewModel.createAdbErrorViewModel())
         }
     }
     
@@ -91,6 +95,28 @@ struct ContentView: View {
     }
 }
 
-#Preview {
-    ContentView()
+#Preview("Not Running") {
+    ContentView(adbService: MockAdbService(adbState: .notRunning, devices: []))
+}
+
+#Preview("Setting Up") {
+    ContentView(adbService: MockAdbService(adbState: .settingUp, devices: []))
+}
+
+#Preview("Running - No Devices Connected") {
+    ContentView(adbService: MockAdbService(adbState: .running, devices: []))
+}
+
+#Preview("Running - Devices Connected") {
+    ContentView(adbService: MockAdbService(
+        adbState: .running,
+        devices: [
+            .init(bluetoothName: "Device 1", serial: "1"),
+            .init(bluetoothName: "Device 2", serial: "2")
+        ]
+    ))
+}
+
+#Preview("Error") {
+    ContentView(adbService: MockAdbService(adbState: .error, devices: []))
 }

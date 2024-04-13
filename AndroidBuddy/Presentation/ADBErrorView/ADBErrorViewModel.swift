@@ -9,7 +9,13 @@ import Foundation
 
 class ADBErrorViewModel {
     
+    private let adbService: ADBService
+    
+    init(adbService: ADBService) {
+        self.adbService = adbService
+    }
+    
     func restartAdb() {
-        AdbService.shared.startServer()
+        adbService.startServer()
     }
 }

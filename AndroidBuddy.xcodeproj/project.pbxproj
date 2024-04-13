@@ -11,7 +11,7 @@
 		4D1319612BC8385C004CA803 /* ADBErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1319602BC8385C004CA803 /* ADBErrorView.swift */; };
 		4D1319632BC839BA004CA803 /* ADBErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1319622BC839BA004CA803 /* ADBErrorViewModel.swift */; };
 		4D1319672BC83C66004CA803 /* ViewConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D1319662BC83C66004CA803 /* ViewConstants.swift */; };
-		4D2D35102BBAA88F00E0E733 /* AdbService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D350F2BBAA88F00E0E733 /* AdbService.swift */; };
+		4D2D35102BBAA88F00E0E733 /* StandardAdbService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D350F2BBAA88F00E0E733 /* StandardAdbService.swift */; };
 		4D2D35132BBAA9B400E0E733 /* ListCommandResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D35122BBAA9B400E0E733 /* ListCommandResponse.swift */; };
 		4D2D35172BBBCE0800E0E733 /* DirectoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D35162BBBCE0800E0E733 /* DirectoryView.swift */; };
 		4D2D351B2BBC027900E0E733 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D351A2BBC027900E0E733 /* ContentViewModel.swift */; };
@@ -24,6 +24,11 @@
 		4D2D35462BC13C5F00E0E733 /* SideBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D35452BC13C5F00E0E733 /* SideBarView.swift */; };
 		4D2D35482BC157B900E0E733 /* URLExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2D35472BC157B900E0E733 /* URLExtensions.swift */; };
 		4D5077C52BC98A29008E099B /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5077C42BC98A29008E099B /* Device.swift */; };
+		4D5077C72BCA6807008E099B /* ADBService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5077C62BCA6807008E099B /* ADBService.swift */; };
+		4D5077C92BCA6B70008E099B /* StandardDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5077C82BCA6B70008E099B /* StandardDependencies.swift */; };
+		4D5077CB2BCA83F0008E099B /* MockAdbService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5077CA2BCA83F0008E099B /* MockAdbService.swift */; };
+		4D5077CE2BCAE0B9008E099B /* MockListResponse in Resources */ = {isa = PBXBuildFile; fileRef = 4D5077CD2BCAE0B9008E099B /* MockListResponse */; };
+		4D5077D02BCAE252008E099B /* MockDevicesResponse in Resources */ = {isa = PBXBuildFile; fileRef = 4D5077CF2BCAE252008E099B /* MockDevicesResponse */; };
 		4DDD83052BBA7CCB003F7203 /* AndroidBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */; };
 		4DDD83072BBA7CCB003F7203 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83062BBA7CCB003F7203 /* ContentView.swift */; };
 		4DDD83092BBA7CCC003F7203 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DDD83082BBA7CCC003F7203 /* Assets.xcassets */; };
@@ -58,7 +63,7 @@
 		4D1319602BC8385C004CA803 /* ADBErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADBErrorView.swift; sourceTree = "<group>"; };
 		4D1319622BC839BA004CA803 /* ADBErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADBErrorViewModel.swift; sourceTree = "<group>"; };
 		4D1319662BC83C66004CA803 /* ViewConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewConstants.swift; sourceTree = "<group>"; };
-		4D2D350F2BBAA88F00E0E733 /* AdbService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdbService.swift; sourceTree = "<group>"; };
+		4D2D350F2BBAA88F00E0E733 /* StandardAdbService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardAdbService.swift; sourceTree = "<group>"; };
 		4D2D35122BBAA9B400E0E733 /* ListCommandResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListCommandResponse.swift; sourceTree = "<group>"; };
 		4D2D35162BBBCE0800E0E733 /* DirectoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryView.swift; sourceTree = "<group>"; };
 		4D2D351A2BBC027900E0E733 /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
@@ -71,6 +76,11 @@
 		4D2D35452BC13C5F00E0E733 /* SideBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SideBarView.swift; sourceTree = "<group>"; };
 		4D2D35472BC157B900E0E733 /* URLExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLExtensions.swift; sourceTree = "<group>"; };
 		4D5077C42BC98A29008E099B /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
+		4D5077C62BCA6807008E099B /* ADBService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADBService.swift; sourceTree = "<group>"; };
+		4D5077C82BCA6B70008E099B /* StandardDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardDependencies.swift; sourceTree = "<group>"; };
+		4D5077CA2BCA83F0008E099B /* MockAdbService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAdbService.swift; sourceTree = "<group>"; };
+		4D5077CD2BCAE0B9008E099B /* MockListResponse */ = {isa = PBXFileReference; lastKnownFileType = text; path = MockListResponse; sourceTree = "<group>"; };
+		4D5077CF2BCAE252008E099B /* MockDevicesResponse */ = {isa = PBXFileReference; lastKnownFileType = text; path = MockDevicesResponse; sourceTree = "<group>"; };
 		4DDD83012BBA7CCB003F7203 /* AndroidBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidBuddyApp.swift; sourceTree = "<group>"; };
 		4DDD83062BBA7CCB003F7203 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -132,7 +142,8 @@
 			isa = PBXGroup;
 			children = (
 				4D2D35432BC1287A00E0E733 /* ADB.swift */,
-				4D2D350F2BBAA88F00E0E733 /* AdbService.swift */,
+				4D2D350F2BBAA88F00E0E733 /* StandardAdbService.swift */,
+				4D5077CC2BCAE08E008E099B /* Mock */,
 				4D2D35112BBAA9A700E0E733 /* Responses */,
 			);
 			path = Adb;
@@ -199,9 +210,29 @@
 		4D5077C32BC989F9008E099B /* Domain */ = {
 			isa = PBXGroup;
 			children = (
-				4D5077C42BC98A29008E099B /* Device.swift */,
+				4D5077C62BCA6807008E099B /* ADBService.swift */,
+				4D5077C82BCA6B70008E099B /* StandardDependencies.swift */,
+				4D5077D12BCAEF5D008E099B /* Model */,
 			);
 			path = Domain;
+			sourceTree = "<group>";
+		};
+		4D5077CC2BCAE08E008E099B /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				4D5077CA2BCA83F0008E099B /* MockAdbService.swift */,
+				4D5077CD2BCAE0B9008E099B /* MockListResponse */,
+				4D5077CF2BCAE252008E099B /* MockDevicesResponse */,
+			);
+			path = Mock;
+			sourceTree = "<group>";
+		};
+		4D5077D12BCAEF5D008E099B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				4D5077C42BC98A29008E099B /* Device.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 		4DDD82F82BBA7CCB003F7203 = {
@@ -372,6 +403,8 @@
 				4DDD83832BBA886F003F7203 /* adb in Resources */,
 				4DDD830C2BBA7CCC003F7203 /* Preview Assets.xcassets in Resources */,
 				4D2D35222BBE9A0500E0E733 /* ADB License.txt in Resources */,
+				4D5077D02BCAE252008E099B /* MockDevicesResponse in Resources */,
+				4D5077CE2BCAE0B9008E099B /* MockListResponse in Resources */,
 				4DDD83092BBA7CCC003F7203 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -405,6 +438,7 @@
 				4DDD83052BBA7CCB003F7203 /* AndroidBuddyApp.swift in Sources */,
 				4D2D35482BC157B900E0E733 /* URLExtensions.swift in Sources */,
 				4D2D35262BBEA65300E0E733 /* AsyncCombineExtensions.swift in Sources */,
+				4D5077C72BCA6807008E099B /* ADBService.swift in Sources */,
 				4D2D351E2BBE710000E0E733 /* ManualCommandView.swift in Sources */,
 				4D2D35132BBAA9B400E0E733 /* ListCommandResponse.swift in Sources */,
 				4D13195F2BC83056004CA803 /* LoadingView.swift in Sources */,
@@ -413,8 +447,10 @@
 				4D2D353D2BBFE21D00E0E733 /* NoDevicesView.swift in Sources */,
 				4D2D351B2BBC027900E0E733 /* ContentViewModel.swift in Sources */,
 				4D1319672BC83C66004CA803 /* ViewConstants.swift in Sources */,
+				4D5077CB2BCA83F0008E099B /* MockAdbService.swift in Sources */,
 				4D2D35462BC13C5F00E0E733 /* SideBarView.swift in Sources */,
-				4D2D35102BBAA88F00E0E733 /* AdbService.swift in Sources */,
+				4D2D35102BBAA88F00E0E733 /* StandardAdbService.swift in Sources */,
+				4D5077C92BCA6B70008E099B /* StandardDependencies.swift in Sources */,
 				4D1319632BC839BA004CA803 /* ADBErrorViewModel.swift in Sources */,
 				4D2D35172BBBCE0800E0E733 /* DirectoryView.swift in Sources */,
 			);
