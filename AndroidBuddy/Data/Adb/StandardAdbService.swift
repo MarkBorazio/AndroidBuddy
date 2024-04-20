@@ -10,6 +10,7 @@ import Combine
 
 class StandardAdbService: ADBService {
     
+    
     private var connectedDevicesSubject = CurrentValueSubject<[Device], Error>([])
     private var stateSubject = CurrentValueSubject<ADBServiceState, Never>(.notRunning)
     
@@ -86,8 +87,11 @@ class StandardAdbService: ADBService {
         try await ADB.list(serial: serial, path: path)
     }
     
-    func pull(serial: String, remotePath: URL) async throws {
-        try await ADB.pull(serial: serial, remotePath: remotePath)
+    func pull(serial: String, remotePath: URL) -> any Publisher<PullProgressResponse, Error> {
+        ADB.pull(serial: serial, remotePath: remotePath)
+            .eraseToAnyPublisher()
+            .map { PullProgressResponse(rawOutput: $0) }
+            .removeDuplicates()
     }
     
     func push(serial: String, localPath: URL, remotePath: URL) async throws {

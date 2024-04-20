@@ -58,6 +58,7 @@ struct ListCommandResponse {
             return nil
         }
         
+        // TODO: Throws errors instead of unwrapping explicitly
         let numberOfLinks = Int(components[1])!
         let owner = components[2]
         let group = components[3]

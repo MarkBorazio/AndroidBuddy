@@ -27,7 +27,7 @@ class MockAdbService: ADBService {
         return ListCommandResponse(path: path, rawResponse: response)
     }
     
-    func pull(serial: String, remotePath: URL) async throws {}
+    func pull(serial: String, remotePath: URL) -> any Publisher<PullProgressResponse, Error> { Empty() }
     
     func push(serial: String, localPath: URL, remotePath: URL) async throws {}
     

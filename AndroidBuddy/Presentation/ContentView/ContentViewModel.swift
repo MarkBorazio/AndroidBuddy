@@ -114,11 +114,20 @@ class ContentViewModel: ObservableObject {
             print("Tried to download file when no serial was selected")
             return
         }
-        Task {
-            print("Downloading file...")
-            try! await adbService.pull(serial: currentDevice.serial, remotePath: remotePath)
-            print("...file downloaded (or failed...)!")
-        }
+        print("Downloading file...")
+        adbService.pull(serial: currentDevice.serial, remotePath: remotePath)
+            .sink(
+                receiveCompletion: { completion in
+                    switch completion {
+                    case .finished: print("Download successful!")
+                    case let .failure(error): print("Download successful! Error: \(error)")
+                    }
+                },
+                receiveValue: { value in
+                    print("Got value in sink! Value: \(value)")
+                }
+            )
+            .store(in: &cancellables)
     }
     
     func uploadFile(localPath: URL) {

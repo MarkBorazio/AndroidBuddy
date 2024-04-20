@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Combine
 
 enum ADB {
     
@@ -17,9 +18,9 @@ enum ADB {
         return ListCommandResponse(path: path, rawResponse: output)
     }
     
-    static func pull(serial: String, remotePath: URL) async throws {
-        let args = ["-s", serial, "pull", "\(remotePath.pathForADBCommand)", "Downloads"]
-        try await command(args: args)
+    static func pull(serial: String, remotePath: URL) -> any Publisher<String, Error> {
+        let args = ["-s", serial, "pull", "\(remotePath.pathForADBCommand)", "/Users/Mark/Downloads"]
+        return commandPublisher(args: args)
     }
     
     static func push(serial: String, localPath: URL, remotePath: URL) async throws {
@@ -44,33 +45,113 @@ enum ADB {
     }
     
     static func killServer() async throws {
+        print("Killing server")
         let args = ["kill-server"]
         try await command(args: args)
     }
     
     static func startServer() async throws {
+        print("Starting server")
         let args = ["start-server"]
         try await command(args: args)
     }
-
+    
+    // Used for debugging - I am not sure how tightly written the regex is - Needs proper tests written for it
     @discardableResult
-    private static func command(args: [String]) async throws -> String {
-        try await withCheckedThrowingContinuation { continuation in
+    static func command(args: String) async throws -> String {
+        let regex = try! NSRegularExpression(pattern: #""[^"]*"|\S+"#) // Split args into array - Parts eclosed in quotes *should* be treated as one arg
+        let argsArray = regex.matches(in: args, range: NSRange(args.startIndex..., in: args))
+            .map { String(args[Range($0.range, in: args)!]) }
+            .map { arg in
+                arg.filter { $0 != "\"" }
+            }
+        return try await command(args: argsArray)
+    }
+    
+    static func commandPublisher(args: [String]) -> any Publisher<String, Error> {
+        
+        return Deferred {
+            // Setup the PTY handles
+            var primaryDescriptor: Int32 = 0
+            var replicaDescriptor: Int32 = 0
+            guard openpty(&primaryDescriptor, &replicaDescriptor, nil, nil, nil) != -1 else {
+                return Fail<String, Error>(error: AdbError.failedToOpenPty).eraseToAnyPublisher()
+            }
+            let primaryHandle = FileHandle(fileDescriptor: primaryDescriptor, closeOnDealloc: true)
+            let replicaHandle = FileHandle(fileDescriptor: replicaDescriptor, closeOnDealloc: true)
+            
             let process = Process()
+            process.standardInput = replicaHandle
+            process.standardOutput = replicaHandle
+            process.standardError = replicaHandle
+            process.arguments = args
+            process.executableURL = executableUrl
+            process.environment = [
+                "TERM": "SMART"
+            ]
+            
+            let subject = PassthroughSubject<String, Error>()
+            
+            DispatchQueue.global(qos: .userInitiated).async {
+                primaryHandle.readabilityHandler = { handle in
+                    let data = handle.availableData
+                    guard let rawOutput = String(data: data, encoding: .utf8) else { return }
+                    guard !rawOutput.isEmpty else { return }
+                    do {
+                        try checkForErrors(rawOutput)
+                        let sanitisedOutput = sanistiseOutput(rawOutput)
+                        subject.send(sanitisedOutput)
+                    } catch {
+                        assert(false, "ADB Error: \(error)")
+                        subject.send(completion: .failure(error))
+                    }
+                }
+                
+                do {
+                    try process.run()
+                    process.waitUntilExit()
+                    subject.send(completion: .finished)
+                } catch {
+                    assert(false, "ADB Error: \(error)")
+                    subject.send(completion: .failure(error))
+                }
+            }
+            
+            func cleanUp() {
+                try? primaryHandle.close()
+                try? replicaHandle.close()
+            }
+            
+            return subject
+                .handleEvents(
+                    receiveCompletion: { _ in
+                        cleanUp()
+                    },
+                    receiveCancel: {
+                        cleanUp()
+                    }
+                )
+                .eraseToAnyPublisher()
+        }
+    }
+    
+    @discardableResult
+    static func command(args: [String]) async throws -> String {
+        try await withCheckedThrowingContinuation { continuation in
             let pipe = Pipe()
             
+            let process = Process()
             process.standardOutput = pipe
             process.standardError = pipe
             process.arguments = args
             process.executableURL = executableUrl
-            process.standardInput = nil
+            
             do {
                 try process.run()
-                let data = pipe.fileHandleForReading.readDataToEndOfFile()
+                let data = try pipe.fileHandleForReading.readToEnd() ?? Data()
                 let output = String(data: data, encoding: .utf8)!
 
-                try checkForDaemonError(output) // Should check first
-                try checkForCommandError(output)
+                try checkForErrors(output)
                 
                 let sanitisedOutput = output.trimmingCharacters(in: .whitespacesAndNewlines)
                 continuation.resume(returning: sanitisedOutput)
@@ -78,7 +159,23 @@ enum ADB {
                 assert(false, "ADB Error: \(error)")
                 continuation.resume(throwing: error)
             }
+            
+            process.terminate()
         }
+    }
+    
+    // Errors must be checked prior to calling this
+    private static func sanistiseOutput(_ rawOutput: String) -> String {
+        return rawOutput
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .components(separatedBy: .newlines)
+            .filter { !$0.hasPrefix("*") } // Lines that start with "*" are just logging statements that can be discarded
+            .joined(separator: "\n")
+    }
+    
+    private static func checkForErrors(_ rawOutput: String) throws {
+        try checkForDaemonError(rawOutput) // Should check first
+        try checkForCommandError(rawOutput)
     }
     
     private static func checkForDaemonError(_ rawOutput: String) throws {
@@ -99,5 +196,6 @@ enum ADB {
     enum AdbError: Error {
         case daemonError
         case commandError(output: String)
+        case failedToOpenPty
     }
 }
