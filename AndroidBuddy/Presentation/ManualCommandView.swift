@@ -9,15 +9,30 @@ import SwiftUI
 
 struct ManualCommandView: View {
     
-    @State var commandText: String = ""
+    @State var shellCommandText: String = ""
+    @State var adbCommandText: String = ""
     
     var body: some View {
         VStack {
-            TextField("Command", text: $commandText)
+            TextField("Shell Command", text: $shellCommandText)
             Button(
                 action: {
-                    let output = try! shellCommand(args: commandText)
+                    let output = try! shellCommand(args: shellCommandText)
                     print(output)
+                },
+                label: {
+                    Text("Run Command")
+                }
+            )
+            
+            Spacer().frame(height: 40)
+            
+            TextField("ADB Command", text: $adbCommandText)
+            Button(
+                action: {
+                    Task {
+                        try? await ADB.command(args: adbCommandText)
+                    }
                 },
                 label: {
                     Text("Run Command")
@@ -44,8 +59,4 @@ struct ManualCommandView: View {
         
         return output
     }
-}
-
-#Preview {
-    ManualCommandView()
 }
