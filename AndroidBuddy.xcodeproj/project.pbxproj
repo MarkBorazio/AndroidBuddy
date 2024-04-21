@@ -40,6 +40,8 @@
 		4DDD83842BBA886F003F7203 /* adb in Resources */ = {isa = PBXBuildFile; fileRef = 4DDD836D2BBA886E003F7203 /* adb */; };
 		4DDD83852BBA886F003F7203 /* adb in Resources */ = {isa = PBXBuildFile; fileRef = 4DDD836D2BBA886E003F7203 /* adb */; };
 		4DE1148E2BD42A76005E9679 /* PullProgressResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE1148D2BD42A76005E9679 /* PullProgressResponse.swift */; };
+		4DE114922BD43858005E9679 /* FileTransferProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE114912BD43858005E9679 /* FileTransferProgressView.swift */; };
+		4DE114962BD5446A005E9679 /* FileTransferProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE114952BD5446A005E9679 /* FileTransferProgressViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +97,8 @@
 		4DDD83222BBA7CCC003F7203 /* AndroidBuddyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidBuddyUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4DDD836D2BBA886E003F7203 /* adb */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = adb; sourceTree = "<group>"; };
 		4DE1148D2BD42A76005E9679 /* PullProgressResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullProgressResponse.swift; sourceTree = "<group>"; };
+		4DE114912BD43858005E9679 /* FileTransferProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTransferProgressView.swift; sourceTree = "<group>"; };
+		4DE114952BD5446A005E9679 /* FileTransferProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTransferProgressViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -166,6 +170,7 @@
 			children = (
 				4D1319652BC83AFE004CA803 /* ADBErrorView */,
 				4D1319642BC83AF0004CA803 /* ContentView */,
+				4DE114932BD542D3005E9679 /* FileTransferProgressView */,
 				4D2D35162BBBCE0800E0E733 /* DirectoryView.swift */,
 				4D13195E2BC83056004CA803 /* LoadingView.swift */,
 				4D2D351D2BBE710000E0E733 /* ManualCommandView.swift */,
@@ -297,6 +302,15 @@
 				4DDD83222BBA7CCC003F7203 /* AndroidBuddyUITestsLaunchTests.swift */,
 			);
 			path = AndroidBuddyUITests;
+			sourceTree = "<group>";
+		};
+		4DE114932BD542D3005E9679 /* FileTransferProgressView */ = {
+			isa = PBXGroup;
+			children = (
+				4DE114912BD43858005E9679 /* FileTransferProgressView.swift */,
+				4DE114952BD5446A005E9679 /* FileTransferProgressViewModel.swift */,
+			);
+			path = FileTransferProgressView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -449,6 +463,7 @@
 				4D2D351E2BBE710000E0E733 /* ManualCommandView.swift in Sources */,
 				4DE1148E2BD42A76005E9679 /* PullProgressResponse.swift in Sources */,
 				4D2D35132BBAA9B400E0E733 /* ListCommandResponse.swift in Sources */,
+				4DE114922BD43858005E9679 /* FileTransferProgressView.swift in Sources */,
 				4D13195F2BC83056004CA803 /* LoadingView.swift in Sources */,
 				4D1319612BC8385C004CA803 /* ADBErrorView.swift in Sources */,
 				4D5077C52BC98A29008E099B /* Device.swift in Sources */,
@@ -458,6 +473,7 @@
 				4D5077CB2BCA83F0008E099B /* MockAdbService.swift in Sources */,
 				4D2D35462BC13C5F00E0E733 /* SideBarView.swift in Sources */,
 				4D2D35102BBAA88F00E0E733 /* StandardAdbService.swift in Sources */,
+				4DE114962BD5446A005E9679 /* FileTransferProgressViewModel.swift in Sources */,
 				4D5077C92BCA6B70008E099B /* StandardDependencies.swift in Sources */,
 				4D1319632BC839BA004CA803 /* ADBErrorViewModel.swift in Sources */,
 				4D2D35172BBBCE0800E0E733 /* DirectoryView.swift in Sources */,

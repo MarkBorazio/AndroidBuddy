@@ -9,6 +9,8 @@ import SwiftUI
 
 struct DirectoryView: View {
     
+    @Environment(\.openWindow) private var openWindow
+    
     struct Item: Identifiable {
         
         var id: URL { path } // Based on assumption that two things can't have same path in unix TODO: I think the assumption is wrong - double check it.
@@ -43,7 +45,13 @@ struct DirectoryView: View {
                     viewModel.deleteFile(remotePath: selectedItem.path)
                 }
                 Button("Save to downloads") {
-                    viewModel.downloadFile(remotePath: selectedItem.path)
+                    if let currentSerial = viewModel.currentDeviceSerial {
+                        openWindow(value: FileTransferProgressViewModel.Model(
+                            action: .download,
+                            serial: currentSerial,
+                            remoteUrl: selectedItem.path
+                        ))
+                    }
                 }
             } else { // Multi-item menu.
                 Button("Delete Selected", role: .destructive) { }
