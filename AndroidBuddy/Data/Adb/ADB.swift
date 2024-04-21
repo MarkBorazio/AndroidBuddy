@@ -120,6 +120,7 @@ enum ADB {
             func cleanUp() {
                 try? primaryHandle.close()
                 try? replicaHandle.close()
+                process.terminate()
             }
             
             return subject
