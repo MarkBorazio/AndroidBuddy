@@ -68,7 +68,7 @@ class StandardAdbService: ADBService {
             do {
                 stateSubject.send(.settingUp)
                 try await ADB.killServer()
-                try await Task.sleep(for: .seconds(2)) // Running kill server and then start server too close together causes issues
+                try await Task.sleep(for: .seconds(3)) // Running kill server and then start server too close together causes issues
                 try await ADB.startServer()
                 let devices = try await getAllDevices()
                 connectedDevicesSubject.send(devices) // Get initial data so there isn't a one second peroid of no data at the start
