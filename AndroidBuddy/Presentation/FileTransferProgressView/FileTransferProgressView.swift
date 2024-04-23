@@ -7,28 +7,33 @@
 
 import SwiftUI
 
-// TODO: Prevent window resizing?
 struct FileTransferProgressView: View {
     
     @Environment(\.dismiss) private var dismiss
     
     private let commonSpacing: CGFloat = 10
+    @State var isHoveringOverCancel = false
+    
+    private var descriptionText: String {
+        isHoveringOverCancel ? "Cancel" : viewModel.transferDescription
+    }
     
     @StateObject var viewModel: FileTransferProgressViewModel
     
     var body: some View {
         Group {
-            switch viewModel.viewState {
-            case .notStarted:
+            if viewModel.showView {
+                inProgressView(percentage: viewModel.completionPercentage)
+            } else {
                 EmptyView()
-            case .inProgress(let percentage):
-                inProgressView(percentage: percentage)
-            case .completed:
-                completedView
-            case .failed:
-                EmptyView()
-            case .cancelled:
-                cancelledView
+            }
+        }
+        .frame(height: 80)
+        .frame(idealWidth: 500)
+        .frame(minWidth: 500)
+        .onChange(of: viewModel.viewState) { newValue in
+            if newValue == .completed {
+                dismiss()
             }
         }
     }
@@ -40,7 +45,7 @@ struct FileTransferProgressView: View {
                 .resizable()
                 .scaledToFill()
                 .fixedSize(horizontal: false, vertical: true)
-                .frame(width: 35)
+                .frame(width: 25)
                 
             
             VStack(alignment: .leading, spacing: 0) {
@@ -49,23 +54,18 @@ struct FileTransferProgressView: View {
                     ProgressView(value: percentage)
                     
                     Image(systemName: "xmark.circle.fill")
+                        .onHover { hovering in
+                            isHoveringOverCancel = hovering
+                        }
                         .onTapGesture {
                             viewModel.cancelTransfer()
+                            dismiss()
                         }
                 }
-                Text(viewModel.transferDecription)
+                Text(descriptionText)
             }
         }
         .padding(commonSpacing)
-    }
-    
-    private var completedView: some View {
-        VStack {
-            Text("Download complete")
-            Button("Dismiss") {
-                dismiss()
-            }
-        }
     }
     
     private var cancelledView: some View {

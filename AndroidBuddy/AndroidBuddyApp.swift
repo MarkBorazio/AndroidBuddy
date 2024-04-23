@@ -21,5 +21,6 @@ struct AndroidBuddyApp: App {
                 FileTransferProgressView(viewModel: viewModel)
             }
         }
+        .windowResizability(.contentSize)
     }
 }

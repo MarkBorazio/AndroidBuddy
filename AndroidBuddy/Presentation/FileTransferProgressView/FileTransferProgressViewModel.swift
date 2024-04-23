@@ -16,22 +16,22 @@ class FileTransferProgressViewModel: ObservableObject {
     }
     
     enum ViewState: Equatable {
-        case notStarted
-        case inProgress(percentage: Double) // 0 to 1
+        case inProgress
         case completed
         case failed
-        case cancelled
     }
     
     let action: Action
     let serial: String
     let remoteUrl: URL
     let adbService: ADBService
-    let transferDecription: String
+    let transferDescription: String
     
     private var cancellables = Set<AnyCancellable>()
     
-    @Published var viewState: ViewState = .notStarted
+    @Published var viewState: ViewState = .inProgress
+    @Published var completionPercentage: Double = 0 // 0 to 1
+    @Published var showView = false // Only show view if download is taking longer than a second
     
     init(model: Model, adbService: ADBService) {
         action = model.action
@@ -39,8 +39,8 @@ class FileTransferProgressViewModel: ObservableObject {
         remoteUrl = model.remoteUrl
         self.adbService = adbService
         
-        transferDecription = switch action {
-        case .download: "\(remoteUrl.absoluteString) → Downloads"
+        transferDescription = switch action {
+        case .download: "\(remoteUrl.path(percentEncoded: false)) → Downloads"
         case .upload: fatalError("TODO: Implement.")
         }
         
@@ -58,25 +58,49 @@ class FileTransferProgressViewModel: ObservableObject {
         cancellables.forEach {
             $0.cancel()
         }
-        viewState = .cancelled
+    }
+    
+    private func show() {
+        DispatchQueue.main.async { [weak self] in
+            self?.showView = true
+        }
     }
     
     private func beginDownload() {
-        viewState = .inProgress(percentage: 0)
+        viewState = .inProgress
+        completionPercentage = 0
+        showView = false
+        
+        Task {
+            do {
+                try await Task.sleep(for: .seconds(1))
+                show()
+            } catch {
+                show()
+            }
+        }
+        
         adbService.pull(serial: serial, remotePath: remoteUrl)
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .sink(
                 receiveCompletion: { [weak self] completion in
-                    self?.viewState = switch completion {
-                    case .finished: .completed
-                    case .failure(_): .failed
+                    switch completion {
+                    case .finished: 
+                        self?.viewState = .completed
+                        self?.completionPercentage = 1
+                    case .failure(_):
+                        self?.viewState = .failed
                     }
                 },
                 receiveValue: { [weak self] value in
-                    self?.viewState = switch value.progress {
-                    case let .inProgress(percentage): .inProgress(percentage: percentage)
-                    case .completed: .completed
+                    switch value.progress {
+                    case let .inProgress(percentage): 
+                        self?.viewState = .inProgress
+                        self?.completionPercentage = percentage
+                    case .completed:
+                        self?.viewState = .completed
+                        self?.completionPercentage = 1
                     }
                 }
             )
