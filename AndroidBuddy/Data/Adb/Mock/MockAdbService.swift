@@ -24,27 +24,27 @@ class MockAdbService {
     
     init(
         adbState: ADBServiceState,
-        devices: [Device],
-        startServerBlock: @escaping () -> Void = defaultStartServerBlock,
-        killServerBlock: @escaping () -> Void = defaultKillServerBlock,
-        listBlock: @escaping (URL) -> ListCommandResponse = defaultListBlock,
-        pullBlock: @escaping () -> any Publisher<PullProgressResponse, Error> = defaultPullBlock,
-        pushBlock: @escaping () -> Void = defaultPushBlock,
-        deleteBlock: @escaping () -> Void = defaultDeleteBlock,
-        getBluetoothNameBlock: @escaping () -> String = defaultGetBluetoothNameBlock,
-        devicesBlock: @escaping () -> DevicesResponse = defaultDevicesBlock
+        connectedDevices: [Device],
+        startServer: @escaping () -> Void = defaultStartServerBlock,
+        killServer: @escaping () -> Void = defaultKillServerBlock,
+        list: @escaping (URL) -> ListCommandResponse = defaultListBlock,
+        pull: @escaping () -> any Publisher<PullProgressResponse, Error> = defaultPullBlock,
+        push: @escaping () -> Void = defaultPushBlock,
+        delete: @escaping () -> Void = defaultDeleteBlock,
+        getBluetoothName: @escaping () -> String = defaultGetBluetoothNameBlock,
+        devices: @escaping () -> DevicesResponse = defaultDevicesBlock
     ) {
-        connectedDevices = CurrentValueSubject(devices).eraseToAnyPublisher()
+        self.connectedDevices = CurrentValueSubject(connectedDevices).eraseToAnyPublisher()
         state = CurrentValueSubject(adbState).eraseToAnyPublisher()
         
-        self.startServerBlock = startServerBlock
-        self.killServerBlock = killServerBlock
-        self.listBlock = listBlock
-        self.pullBlock = pullBlock
-        self.pushBlock = pushBlock
-        self.deleteBlock = deleteBlock
-        self.getBluetoothNameBlock = getBluetoothNameBlock
-        self.devicesBlock = devicesBlock
+        startServerBlock = startServer
+        killServerBlock = killServer
+        listBlock = list
+        pullBlock = pull
+        pushBlock = push
+        deleteBlock = delete
+        getBluetoothNameBlock = getBluetoothName
+        devicesBlock = devices
     }
     
     private static func getResponse(fileName: String) -> String {

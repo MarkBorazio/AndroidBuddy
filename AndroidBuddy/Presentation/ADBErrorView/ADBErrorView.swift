@@ -28,5 +28,5 @@ struct ADBErrorView: View {
 }
 
 #Preview {
-    ADBErrorView(viewModel: .init(adbService: MockAdbService(adbState: .error, devices: [])))
+    ADBErrorView(viewModel: .init(adbService: MockAdbService(adbState: .error, connectedDevices: [])))
 }

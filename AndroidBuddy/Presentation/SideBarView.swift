@@ -27,7 +27,7 @@ struct SideBarView: View {
     SideBarView()
         .environmentObject(ContentViewModel(adbService: MockAdbService(
             adbState: .running,
-            devices: (0...10).map {
+            connectedDevices: (0...10).map {
                 .init(bluetoothName: "Device \($0)", serial: "\($0)")
             }
         )))

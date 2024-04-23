@@ -96,21 +96,21 @@ struct ContentView: View {
 }
 
 #Preview("Not Running") {
-    ContentView(adbService: MockAdbService(adbState: .notRunning, devices: []))
+    ContentView(adbService: MockAdbService(adbState: .notRunning, connectedDevices: []))
 }
 
 #Preview("Setting Up") {
-    ContentView(adbService: MockAdbService(adbState: .settingUp, devices: []))
+    ContentView(adbService: MockAdbService(adbState: .settingUp, connectedDevices: []))
 }
 
 #Preview("Running - No Devices Connected") {
-    ContentView(adbService: MockAdbService(adbState: .running, devices: []))
+    ContentView(adbService: MockAdbService(adbState: .running, connectedDevices: []))
 }
 
 #Preview("Running - Devices Connected") {
     ContentView(adbService: MockAdbService(
         adbState: .running,
-        devices: [
+        connectedDevices: [
             .init(bluetoothName: "Device 1", serial: "1"),
             .init(bluetoothName: "Device 2", serial: "2")
         ]
@@ -118,5 +118,5 @@ struct ContentView: View {
 }
 
 #Preview("Error") {
-    ContentView(adbService: MockAdbService(adbState: .error, devices: []))
+    ContentView(adbService: MockAdbService(adbState: .error, connectedDevices: []))
 }

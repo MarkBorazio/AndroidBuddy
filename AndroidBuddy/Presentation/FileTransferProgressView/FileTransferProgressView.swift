@@ -92,7 +92,7 @@ import Combine
             serial: "Cereal Box",
             remoteUrl: URL(string: "/sdcard/roms/gamecube/SuperMarioStrikers")!
         ),
-        adbService: MockAdbService(adbState: .running, devices: [])
+        adbService: MockAdbService(adbState: .running, connectedDevices: [])
     ))
 }
 
@@ -105,8 +105,8 @@ import Combine
         ),
         adbService: MockAdbService(
             adbState: .running,
-            devices: [],
-            pullBlock: {
+            connectedDevices: [],
+            pull: {
                 Just(.init(rawOutput: "[100%] /sdcard/Roms/Gamecube/Super Mario Strikers.iso"))
                     .setFailureType(to: Error.self)
             }
