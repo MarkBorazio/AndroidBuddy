@@ -11,9 +11,9 @@ extension URL {
     
     /// Return a path string that is compatible with adb shell
     ///
-    /// Example command:
+    /// Example compatible command:
     /// ```
-    /// adb -s R5CT638F8ST shell ls -lL /sdcard
+    /// adb shell ls -lL /sdcard
     /// ```
     ///
     /// For standard adb commands that don't use `shell`, use `URL.pathForADBCommand` instead.
@@ -24,7 +24,7 @@ extension URL {
     
     /// Return a path string that is compatible with adb commands that aren't shell
     ///
-    /// Example command:
+    /// Example compatible command:
     /// ```
     /// adb pull "/sdcard/Voice Recorder/" /Users/Mark/Downloads
     /// ```
