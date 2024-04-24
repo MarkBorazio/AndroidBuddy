@@ -13,14 +13,11 @@ protocol ADBService {
     var connectedDevices: any Publisher<[Device], Error> { get }
     var state: any Publisher<ADBServiceState, Never> { get }
     
-    func startServer()
-    func killServer() async throws
+    func resetServer()
     func list(serial: String, path: URL) async throws -> ListCommandResponse
     func pull(serial: String, remotePath: URL) -> any Publisher<PullProgressResponse, Error>
     func push(serial: String, localPath: URL, remotePath: URL) async throws
     func delete(serial: String, remotePath: URL) async throws
-    func getBluetoothName(serial: String) async throws -> String
-    func devices() async throws -> DevicesResponse
 }
 
 enum ADBServiceState {

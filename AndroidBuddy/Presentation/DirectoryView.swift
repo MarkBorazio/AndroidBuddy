@@ -45,17 +45,11 @@ struct DirectoryView: View {
                     viewModel.deleteFile(remotePath: selectedItem.path)
                 }
                 Button("Save to downloads") {
-                    if let currentSerial = viewModel.currentDeviceSerial {
-                        openWindow(value: FileTransferProgressViewModel.Model(
-                            action: .download,
-                            serial: currentSerial,
-                            remoteUrl: selectedItem.path
-                        ))
-                    }
+                    openFileTransferWindow(remoteUrl: selectedItem.path, action: .download)
                 }
             } else { // Multi-item menu.
                 Button("Delete Selected", role: .destructive) { }
-                Button("Save to downloads") { }
+                Button("Save to downloads") {}
             }
         } primaryAction: { selectedItemIds in
             // This is executed when the row is double clicked
@@ -63,7 +57,7 @@ struct DirectoryView: View {
             if selectedItems.count == 1, let selectedItem = selectedItems.first {
                 switch selectedItem.type {
                 case .file:
-                    viewModel.downloadFile(remotePath: selectedItem.path)
+                    openFileTransferWindow(remoteUrl: selectedItem.path, action: .download)
                 case .directory:
                     viewModel.navigateToDirectory(path: selectedItem.path)
                 }
@@ -84,6 +78,18 @@ struct DirectoryView: View {
         }
         
         return image.frame(width: 20, height: 20)
+    }
+    
+    private func openFileTransferWindow(remoteUrl: URL, action: FileTransferProgressViewModel.Action) {
+        guard let currentSerial = viewModel.currentDeviceSerial else {
+            Logger.error("Attempted to open transfer file window when no serial was selected.")
+            return
+        }
+        openWindow(value: FileTransferProgressViewModel.Model(
+            action: action,
+            serial: currentSerial,
+            remoteUrl: remoteUrl
+        ))
     }
 }
 

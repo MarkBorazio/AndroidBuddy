@@ -109,50 +109,24 @@ class ContentViewModel: ObservableObject {
         }
     }
     
-    func downloadFile(remotePath: URL) {
-        guard let currentDevice else {
-            print("Tried to download file when no serial was selected")
-            return
-        }
-        print("Downloading file...")
-        adbService.pull(serial: currentDevice.serial, remotePath: remotePath)
-            .sink(
-                receiveCompletion: { completion in
-                    switch completion {
-                    case .finished: print("Download successful!")
-                    case let .failure(error): print("Download successful! Error: \(error)")
-                    }
-                },
-                receiveValue: { value in
-                    print("Got value in sink! Value: \(value)")
-                }
-            )
-            .store(in: &cancellables)
-    }
-    
     func uploadFile(localPath: URL) {
         guard let currentDevice else {
-            print("Tried to upload file when no serial was selected")
+            Logger.error("Tried to upload file when no serial was selected.")
             return
         }
         Task {
-            print("Uploading file...")
             try! await adbService.push(serial: currentDevice.serial, localPath: localPath, remotePath: currentPath)
-            print("...file uploaded (or failed...)!")
             refreshItems()
         }
     }
     
     func deleteFile(remotePath: URL) {
         guard let currentDevice else {
-            print("Tried to delete file when no serial was selected")
+            Logger.error("Tried to delete file when no serial was selected.")
             return
         }
-        print("Deleting file at \(remotePath.path())")
         Task {
-            print("Deleting file...")
             try! await adbService.delete(serial: currentDevice.serial, remotePath: remotePath)
-            print("...file deleted (or failed...)!")
             refreshItems()
         }
     }

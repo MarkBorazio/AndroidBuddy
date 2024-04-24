@@ -13,38 +13,29 @@ class MockAdbService {
     var connectedDevices: any Publisher<[Device], Error>
     var state: any Publisher<ADBServiceState, Never>
     
-    var startServerBlock: () -> Void
-    var killServerBlock: () -> Void
-    var listBlock: (URL) -> ListCommandResponse
-    var pullBlock: () -> any Publisher<PullProgressResponse, Error>
-    var pushBlock: () -> Void
-    var deleteBlock: () -> Void
-    var getBluetoothNameBlock: () -> String
-    var devicesBlock: () -> DevicesResponse
+    private var resetServerBlock: () -> Void
+    private var listBlock: (URL) -> ListCommandResponse
+    private var pullBlock: () -> any Publisher<PullProgressResponse, Error>
+    private var pushBlock: () -> Void
+    private var deleteBlock: () -> Void
     
     init(
         adbState: ADBServiceState,
         connectedDevices: [Device],
-        startServer: @escaping () -> Void = defaultStartServerBlock,
-        killServer: @escaping () -> Void = defaultKillServerBlock,
+        resetServer: @escaping () -> Void = defaultResetServerBlock,
         list: @escaping (URL) -> ListCommandResponse = defaultListBlock,
         pull: @escaping () -> any Publisher<PullProgressResponse, Error> = defaultPullBlock,
         push: @escaping () -> Void = defaultPushBlock,
-        delete: @escaping () -> Void = defaultDeleteBlock,
-        getBluetoothName: @escaping () -> String = defaultGetBluetoothNameBlock,
-        devices: @escaping () -> DevicesResponse = defaultDevicesBlock
+        delete: @escaping () -> Void = defaultDeleteBlock
     ) {
         self.connectedDevices = CurrentValueSubject(connectedDevices).eraseToAnyPublisher()
         state = CurrentValueSubject(adbState).eraseToAnyPublisher()
-        
-        startServerBlock = startServer
-        killServerBlock = killServer
+
+        resetServerBlock = resetServer
         listBlock = list
         pullBlock = pull
         pushBlock = push
         deleteBlock = delete
-        getBluetoothNameBlock = getBluetoothName
-        devicesBlock = devices
     }
     
     private static func getResponse(fileName: String) -> String {
@@ -58,45 +49,29 @@ class MockAdbService {
 
 extension MockAdbService {
     
-    static var defaultStartServerBlock: () -> Void = {}
+    private static var defaultResetServerBlock: () -> Void = {}
     
-    static var defaultKillServerBlock: () -> Void = {}
-    
-    static var defaultListBlock: (URL) -> ListCommandResponse = { path in
+    private static var defaultListBlock: (URL) -> ListCommandResponse = { path in
         let response = getResponse(fileName: "MockListResponse")
         return ListCommandResponse(path: path, rawResponse: response)
     }
     
-    static var defaultPullBlock: () -> any Publisher<PullProgressResponse, Error> = {
+    private static var defaultPullBlock: () -> any Publisher<PullProgressResponse, Error> = {
         let response = PullProgressResponse(rawOutput: "[ 39%] /sdcard/Roms/Gamecube/Super Mario Strikers.iso")
         return CurrentValueSubject<PullProgressResponse, Error>(response)
     }
     
-    static var defaultPushBlock: () -> Void = {}
+    private static var defaultPushBlock: () -> Void = {}
     
-    static var defaultDeleteBlock: () -> Void = {}
-    
-    static var defaultGetBluetoothNameBlock: () -> String = {
-        "Mock Device Name"
-    }
-    
-    static var defaultDevicesBlock: () -> DevicesResponse = {
-        let response = getResponse(fileName: "MockDevicesResponse")
-        return DevicesResponse(rawOutput: response)
-    }
-    
+    private static var defaultDeleteBlock: () -> Void = {}
 }
 
 // MARK: - ADB Service Implementation
 
 extension MockAdbService: ADBService {
     
-    func startServer() {
-        startServerBlock()
-    }
-    
-    func killServer() async throws {
-        killServerBlock()
+    func resetServer() {
+        
     }
     
     func list(serial: String, path: URL) async throws -> ListCommandResponse {
@@ -114,13 +89,4 @@ extension MockAdbService: ADBService {
     func delete(serial: String, remotePath: URL) async throws {
         deleteBlock()
     }
-    
-    func getBluetoothName(serial: String) async throws -> String {
-        getBluetoothNameBlock()
-    }
-    
-    func devices() async throws -> DevicesResponse {
-        devicesBlock()
-    }
-    
 }

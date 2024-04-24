@@ -45,13 +45,11 @@ enum ADB {
     }
     
     static func killServer() async throws {
-        print("Killing server")
         let args = ["kill-server"]
         try await command(args: args)
     }
     
     static func startServer() async throws {
-        print("Starting server")
         let args = ["start-server"]
         try await command(args: args)
     }
@@ -102,7 +100,7 @@ enum ADB {
                         let sanitisedOutput = sanistiseOutput(rawOutput)
                         subject.send(sanitisedOutput)
                     } catch {
-                        assert(false, "ADB Error: \(error)")
+                        Logger.error("ADB readabilityHandler error.", error: error)
                         subject.send(completion: .failure(error))
                     }
                 }
@@ -112,7 +110,7 @@ enum ADB {
                     process.waitUntilExit()
                     subject.send(completion: .finished)
                 } catch {
-                    assert(false, "ADB Error: \(error)")
+                    Logger.error("ADB error.", error: error)
                     subject.send(completion: .failure(error))
                 }
             }
@@ -157,7 +155,7 @@ enum ADB {
                 let sanitisedOutput = output.trimmingCharacters(in: .whitespacesAndNewlines)
                 continuation.resume(returning: sanitisedOutput)
             } catch {
-                assert(false, "ADB Error: \(error)")
+                Logger.error("ADB error.", error: error)
                 continuation.resume(throwing: error)
             }
             

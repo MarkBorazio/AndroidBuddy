@@ -88,7 +88,6 @@ struct ContentView: View {
             else {
                 return
             }
-            print(url)
             viewModel.uploadFile(localPath: url)
         })
         return true

@@ -16,6 +16,6 @@ class ADBErrorViewModel {
     }
     
     func restartAdb() {
-        adbService.startServer()
+        adbService.resetServer()
     }
 }
