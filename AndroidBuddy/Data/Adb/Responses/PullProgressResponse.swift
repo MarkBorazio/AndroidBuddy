@@ -27,7 +27,7 @@ struct PullProgressResponse: Equatable {
     
     let progress: Progress
     
-    init(rawOutput: String) {
+    init(rawOutput: String) throws {
         
         if rawOutput.hasPrefix("[") {
             let lowerBound = rawOutput.index(rawOutput.startIndex, offsetBy: 1)
@@ -35,7 +35,9 @@ struct PullProgressResponse: Equatable {
             let range = lowerBound...upperBound
             
             let percentageString = String(rawOutput[range]).trimmingCharacters(in: .whitespacesAndNewlines)
-            let percentageInt = Int(percentageString)! // TODO: Throw error instead of explicitly unwrapping
+            guard let percentageInt = Int(percentageString) else {
+                throw ADB.AdbError.responseParseError
+            }
             
             if percentageInt >= 100 {
                 progress = .completed

@@ -7,6 +7,9 @@
 
 import SwiftUI
 
+// Presents an alert if a given data source is not nil.
+// I didn't want to write this, but I didn't want to use SwiftUI's stock implementations either.
+// For some reason they deprecated the function that did just this.
 private struct AlertDataSourceViewModifier<T, A: View, M: View>: ViewModifier {
     
     private let titleKey: LocalizedStringKey
@@ -68,6 +71,7 @@ extension View {
     /// Presents an alert when the data source is not nil.
     ///
     /// Set the data source to nil to dismiss the alert.
+    /// The data source is also no expected to change while the alert is being presented.
     func alert<T, A: View, M: View>(
         _ titleKey: LocalizedStringKey,
         dataSource: Binding<T?>,

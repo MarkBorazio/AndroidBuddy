@@ -53,11 +53,11 @@ extension MockAdbService {
     
     private static var defaultListBlock: (URL) -> ListCommandResponse = { path in
         let response = getResponse(fileName: "MockListResponse")
-        return ListCommandResponse(path: path, rawResponse: response)
+        return try! ListCommandResponse(path: path, rawResponse: response)
     }
     
     private static var defaultPullBlock: () -> any Publisher<PullProgressResponse, Error> = {
-        let response = PullProgressResponse(rawOutput: "[ 39%] /sdcard/Roms/Gamecube/Super Mario Strikers.iso")
+        let response = try! PullProgressResponse(rawOutput: "[ 39%] /sdcard/Roms/Gamecube/Super Mario Strikers.iso")
         return CurrentValueSubject<PullProgressResponse, Error>(response)
     }
     

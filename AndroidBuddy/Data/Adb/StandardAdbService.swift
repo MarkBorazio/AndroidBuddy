@@ -96,7 +96,7 @@ class StandardAdbService: ADBService {
         Logger.info("Pulling \(remotePath.path(percentEncoded: false))")
         return ADB.pull(serial: serial, remotePath: remotePath)
             .eraseToAnyPublisher()
-            .map { PullProgressResponse(rawOutput: $0) }
+            .tryMap { try PullProgressResponse(rawOutput: $0) }
             .removeDuplicates()
     }
     

@@ -15,7 +15,7 @@ enum ADB {
     static func list(serial: String, path: URL) async throws -> ListCommandResponse {
         let args = ["-s", serial, "shell", "ls", "-lL", "\(path.pathForShellCommand)"]
         let output = try await command(args: args)
-        return ListCommandResponse(path: path, rawResponse: output)
+        return try ListCommandResponse(path: path, rawResponse: output)
     }
     
     static func pull(serial: String, remotePath: URL) -> any Publisher<String, Error> {
@@ -40,7 +40,7 @@ enum ADB {
     
     static func devices() async throws -> DevicesResponse {
         let args = ["devices", "-l"]
-        let output = try! await command(args: args)
+        let output = try await command(args: args)
         return DevicesResponse(rawOutput: output)
     }
     
@@ -148,7 +148,10 @@ enum ADB {
             do {
                 try process.run()
                 let data = try pipe.fileHandleForReading.readToEnd() ?? Data()
-                let output = String(data: data, encoding: .utf8)!
+                
+                guard let output = String(data: data, encoding: .utf8) else {
+                    throw AdbError.dataNotUtf8
+                }
 
                 try checkForErrors(output)
                 
@@ -196,5 +199,7 @@ enum ADB {
         case daemonError
         case commandError(output: String)
         case failedToOpenPty
+        case dataNotUtf8
+        case responseParseError
     }
 }

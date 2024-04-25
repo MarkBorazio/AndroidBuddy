@@ -20,20 +20,26 @@ import Foundation
 /// ```
 struct ListCommandResponse {
     
+    private static let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm"
+        return formatter
+    }()
+    
     let path: URL
     let items: [Item]
     
-    init(path: URL, rawResponse: String) {
+    init(path: URL, rawResponse: String) throws {
         self.path = path
         
         let rawLines = rawResponse.components(separatedBy: "\n")
             .dropFirst() // First line tells us the total of something (not sure what though)
             .filter { !$0.isEmpty } // Remove newline at end
         
-        items = rawLines.compactMap { Self.parseRawLine($0, path: path) }
+        items = try rawLines.compactMap { try Self.parseRawLine($0, path: path) }
     }
     
-    private static func parseRawLine(_ line: String, path: URL) -> Item? {
+    private static func parseRawLine(_ line: String, path: URL) throws -> Item? {
         let components = line.components(separatedBy: " ")
             .filter { !$0.isEmpty }
         
@@ -58,18 +64,24 @@ struct ListCommandResponse {
             return nil
         }
         
-        // TODO: Throws errors instead of unwrapping explicitly
-        let numberOfLinks = Int(components[1])!
+        
+        guard 
+            components.count >= 8,
+            let numberOfLinks = Int(components[1]),
+            let size = Int(components[4])
+        else {
+            throw ADB.AdbError.responseParseError
+        }
+            
         let owner = components[2]
         let group = components[3]
-        let size = Int(components[4])!
         let date = components[5]
         let time = components[6]
         let name = components[7..<components.count].joined(separator: " ") // TODO: Figure out how to properly parse name... We probably will need to do a second command here...
         
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm"
-        let dateTime = dateFormatter.date(from: "\(date) \(time)")!
+        guard let dateTime = Self.dateFormatter.date(from: "\(date) \(time)") else {
+            throw ADB.AdbError.responseParseError
+        }
         
         return Item(
             path: path.appending(path: name),

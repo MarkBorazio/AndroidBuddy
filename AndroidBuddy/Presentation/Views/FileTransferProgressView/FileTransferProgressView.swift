@@ -107,7 +107,7 @@ import Combine
             adbState: .running,
             connectedDevices: [],
             pull: {
-                Just(.init(rawOutput: "[100%] /sdcard/Roms/Gamecube/Super Mario Strikers.iso"))
+                Just(try! .init(rawOutput: "[100%] /sdcard/Roms/Gamecube/Super Mario Strikers.iso"))
                     .setFailureType(to: Error.self)
             }
         )
