@@ -58,6 +58,17 @@ struct ContentView: View {
         }
         .onDrop(of: [Self.contentType], isTargeted: $isDraggingFileOverView, perform: onDropItem)
         .environmentObject(viewModel)
+        .alert(
+            "Something went wrong",
+            dataSource: $viewModel.errorAlert,
+            actions: { data in
+                Button(data.retryButton.title, action: data.retryButton.action)
+                Button(data.cancelButton.title, role: .cancel, action: data.cancelButton.action)
+            },
+            message: { data in
+                Text(data.message)
+            }
+        )
     }
     
     var backButton: some View {

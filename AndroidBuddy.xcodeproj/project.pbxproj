@@ -43,6 +43,7 @@
 		4DE114922BD43858005E9679 /* FileTransferProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE114912BD43858005E9679 /* FileTransferProgressView.swift */; };
 		4DE114962BD5446A005E9679 /* FileTransferProgressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE114952BD5446A005E9679 /* FileTransferProgressViewModel.swift */; };
 		4DF0C6112BD94F67009862E5 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6102BD94F67009862E5 /* Logger.swift */; };
+		4DF0C6152BDA5730009862E5 /* Alert+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6142BDA5730009862E5 /* Alert+DataSource.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +102,7 @@
 		4DE114912BD43858005E9679 /* FileTransferProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTransferProgressView.swift; sourceTree = "<group>"; };
 		4DE114952BD5446A005E9679 /* FileTransferProgressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTransferProgressViewModel.swift; sourceTree = "<group>"; };
 		4DF0C6102BD94F67009862E5 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		4DF0C6142BDA5730009862E5 /* Alert+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alert+DataSource.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +181,7 @@
 				4D2D353C2BBFE21D00E0E733 /* NoDevicesView.swift */,
 				4D2D35452BC13C5F00E0E733 /* SideBarView.swift */,
 				4D1319662BC83C66004CA803 /* ViewConstants.swift */,
+				4DF0C6142BDA5730009862E5 /* Alert+DataSource.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -479,6 +482,7 @@
 				4DF0C6112BD94F67009862E5 /* Logger.swift in Sources */,
 				4DE114962BD5446A005E9679 /* FileTransferProgressViewModel.swift in Sources */,
 				4D5077C92BCA6B70008E099B /* StandardDependencies.swift in Sources */,
+				4DF0C6152BDA5730009862E5 /* Alert+DataSource.swift in Sources */,
 				4D1319632BC839BA004CA803 /* ADBErrorViewModel.swift in Sources */,
 				4D2D35172BBBCE0800E0E733 /* DirectoryView.swift in Sources */,
 			);

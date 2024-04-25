@@ -33,4 +33,9 @@ extension URL {
     var pathForADBCommand: String {
         return path(percentEncoded: false)
     }
+    
+    /// Creates a URL where the path is `/`.
+    static var shellRoot: URL {
+        return URL(string: "/")!
+    }
 }

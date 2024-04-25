@@ -17,7 +17,10 @@ class ContentViewModel: ObservableObject {
     @Published var allDevices: [Device] = []
     @Published var items: [DirectoryView.Item] = []
     @Published var backButtonEnabled: Bool = false
-    @Published private var currentPath: URL = URL(string: "/")!
+    @Published var errorAlert: AlertModel? = nil
+    
+    @Published private var currentPath: URL = .shellRoot
+    
     
     var currentDevice: Device? {
         guard let currentDeviceSerial else { return nil }
@@ -76,23 +79,26 @@ class ContentViewModel: ObservableObject {
             .removeDuplicates()
             .sink { [weak self] _ in
                 guard let self else { return }
-                currentPath = URL(string: "/")!
+                currentPath = .shellRoot
             }
             .store(in: &cancellables)
     }
     
     func refreshItems() {
+        guard let currentDevice else { return }
         Task {
-            items = await getItems(path: currentPath)
+            do {
+                let response = try await adbService.list(serial: currentDevice.serial, path: currentPath)
+                items = Self.mapListResponseToItems(response)
+            } catch {
+                presentErrorAlert(message: "Failed to load directory.") { [weak self] in
+                    self?.refreshItems()
+                }
+            }
         }
     }
     
-    private func getItems(path: URL) async -> [DirectoryView.Item] {
-        guard let currentDevice else {
-            return []
-        }
-        let response = try! await adbService.list(serial: currentDevice.serial, path: path)
-        
+    private static func mapListResponseToItems(_ response: ListCommandResponse) -> [DirectoryView.Item] {
         return response.items.map { responseItem in
             let itemType: DirectoryView.Item.ItemType = switch responseItem.fileType {
             case .directory: .directory
@@ -115,8 +121,14 @@ class ContentViewModel: ObservableObject {
             return
         }
         Task {
-            try! await adbService.push(serial: currentDevice.serial, localPath: localPath, remotePath: currentPath)
-            refreshItems()
+            do {
+                try await adbService.push(serial: currentDevice.serial, localPath: localPath, remotePath: currentPath)
+                refreshItems()
+            } catch {
+                presentErrorAlert(message: "Failed to upload file.") { [weak self] in
+                    self?.uploadFile(localPath: localPath)
+                }
+            }
         }
     }
     
@@ -126,8 +138,14 @@ class ContentViewModel: ObservableObject {
             return
         }
         Task {
-            try! await adbService.delete(serial: currentDevice.serial, remotePath: remotePath)
-            refreshItems()
+            do {
+                try await adbService.delete(serial: currentDevice.serial, remotePath: remotePath)
+                refreshItems()
+            } catch {
+                presentErrorAlert(message: "Failed to delete file.") { [weak self] in
+                    self?.deleteFile(remotePath: remotePath)
+                }
+            }
         }
     }
     
@@ -144,9 +162,32 @@ class ContentViewModel: ObservableObject {
         ADBErrorViewModel(adbService: adbService)
     }
     
+    private func presentErrorAlert(message: String, retry: @escaping () -> Void) {
+        errorAlert = .init(
+            message: message,
+            retryButton: .init(title: "Retry", action: retry),
+            cancelButton: .init(title: "Cancel", action: { [weak self] in
+                self?.errorAlert = nil
+            })
+        )
+    }
+    
     enum ViewState {
         case loading
         case loaded
         case error
+    }
+    
+    struct AlertModel: Identifiable {
+        let id = UUID()
+        let message: String
+        let retryButton: Button
+        let cancelButton: Button
+        
+        struct Button: Identifiable {
+            let id = UUID()
+            let title: String
+            let action: () -> Void
+        }
     }
 }
