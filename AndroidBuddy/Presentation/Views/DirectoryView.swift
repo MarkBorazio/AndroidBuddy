@@ -45,7 +45,7 @@ struct DirectoryView: View {
                     viewModel.deleteFile(remotePath: selectedItem.path)
                 }
                 Button("Save to downloads") {
-                    openFileTransferWindow(remoteUrl: selectedItem.path, action: .download)
+                    viewModel.downloadFile(remotePath: selectedItem.path)
                 }
             } else { // Multi-item menu.
                 Button("Delete Selected", role: .destructive) { }
@@ -57,7 +57,7 @@ struct DirectoryView: View {
             if selectedItems.count == 1, let selectedItem = selectedItems.first {
                 switch selectedItem.type {
                 case .file:
-                    openFileTransferWindow(remoteUrl: selectedItem.path, action: .download)
+                    viewModel.downloadFile(remotePath: selectedItem.path)
                 case .directory:
                     viewModel.navigateToDirectory(path: selectedItem.path)
                 }
@@ -78,18 +78,6 @@ struct DirectoryView: View {
         }
         
         return image.frame(width: 20, height: 20)
-    }
-    
-    private func openFileTransferWindow(remoteUrl: URL, action: FileTransferProgressViewModel.Action) {
-        guard let currentSerial = viewModel.currentDeviceSerial else {
-            Logger.error("Attempted to open transfer file window when no serial was selected.")
-            return
-        }
-        openWindow(value: FileTransferProgressViewModel.Model(
-            action: action,
-            serial: currentSerial,
-            remoteUrl: remoteUrl
-        ))
     }
 }
 

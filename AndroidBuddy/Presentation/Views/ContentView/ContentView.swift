@@ -57,6 +57,9 @@ struct ContentView: View {
             }
         }
         .onDrop(of: [Self.contentType], isTargeted: $isDraggingFileOverView, perform: onDropItem)
+        .sheet(item: $viewModel.fileTransferModel) { model in
+            FileTransferProgressView(model: model)
+        }
         .environmentObject(viewModel)
         .alert(
             "Something went wrong",

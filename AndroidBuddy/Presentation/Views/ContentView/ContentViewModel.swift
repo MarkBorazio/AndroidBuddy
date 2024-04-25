@@ -17,6 +17,7 @@ class ContentViewModel: ObservableObject {
     @Published var allDevices: [Device] = []
     @Published var items: [DirectoryView.Item] = []
     @Published var backButtonEnabled: Bool = false
+    @Published var fileTransferModel: FileTransferProgressView.Model? = nil
     @Published var errorAlert: AlertModel? = nil
     
     @Published private var currentPath: URL = .shellRoot
@@ -28,6 +29,7 @@ class ContentViewModel: ObservableObject {
     }
     
     private var cancellables = Set<AnyCancellable>()
+    private var fileTransferCancellable: AnyCancellable? = nil
     private let adbService: ADBService
     
     init(adbService: ADBService) {
@@ -115,6 +117,49 @@ class ContentViewModel: ObservableObject {
         }
     }
     
+    func downloadFile(remotePath: URL) {
+        guard let currentDevice else {
+            Logger.error("Tried to download file when no serial was selected.")
+            return
+        }
+        
+        let transferDetails = "\(remotePath.path(percentEncoded: false)) → Downloads"
+        
+        func updateTransfer(_ percentage: Double) {
+            fileTransferModel = .init(
+                completionPercentage: percentage,
+                transferDetails: transferDetails
+            )
+        }
+        
+        updateTransfer(0)
+        
+        fileTransferCancellable = adbService.pull(serial: currentDevice.serial, remotePath: remotePath)
+            .eraseToAnyPublisher()
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    self?.fileTransferModel = nil
+                    switch completion {
+                    case .finished:
+                        break
+                    case .failure(_):
+                        self?.presentErrorAlert(message: "Download failed") { [weak self] in
+                            self?.downloadFile(remotePath: remotePath)
+                        }
+                    }
+                },
+                receiveValue: { value in
+                    switch value.progress {
+                    case let .inProgress(percentage):
+                        updateTransfer(percentage)
+                    case .completed:
+                        updateTransfer(1)
+                    }
+                }
+            )
+    }
+    
     func uploadFile(localPath: URL) {
         guard let currentDevice else {
             Logger.error("Tried to upload file when no serial was selected.")
@@ -147,6 +192,12 @@ class ContentViewModel: ObservableObject {
                 }
             }
         }
+    }
+    
+    func cancelTransfer() {
+        fileTransferCancellable?.cancel()
+        fileTransferCancellable = nil
+        fileTransferModel = nil
     }
     
     func back() {

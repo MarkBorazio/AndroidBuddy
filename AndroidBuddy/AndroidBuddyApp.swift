@@ -14,13 +14,5 @@ struct AndroidBuddyApp: App {
         WindowGroup {
             ContentView(adbService: StandardDependencies.shared.adbService)
         }
-        
-        WindowGroup("", for: FileTransferProgressViewModel.Model.self) { $model in
-            if let model {
-                let viewModel = FileTransferProgressViewModel(model: model, adbService: StandardDependencies.shared.adbService)
-                FileTransferProgressView(viewModel: viewModel)
-            }
-        }
-        .windowResizability(.contentSize)
     }
 }
