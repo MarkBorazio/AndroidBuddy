@@ -172,16 +172,9 @@
 		4D2D351C2BBC028100E0E733 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				4D1319652BC83AFE004CA803 /* ADBErrorView */,
-				4D1319642BC83AF0004CA803 /* ContentView */,
-				4DE114932BD542D3005E9679 /* FileTransferProgressView */,
-				4D2D35162BBBCE0800E0E733 /* DirectoryView.swift */,
-				4D13195E2BC83056004CA803 /* LoadingView.swift */,
-				4D2D351D2BBE710000E0E733 /* ManualCommandView.swift */,
-				4D2D353C2BBFE21D00E0E733 /* NoDevicesView.swift */,
-				4D2D35452BC13C5F00E0E733 /* SideBarView.swift */,
+				4DF0C6162BDA6E95009862E5 /* Views */,
+				4DF0C6172BDA6EB0009862E5 /* Extensions */,
 				4D1319662BC83C66004CA803 /* ViewConstants.swift */,
-				4DF0C6142BDA5730009862E5 /* Alert+DataSource.swift */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -317,6 +310,29 @@
 				4DE114952BD5446A005E9679 /* FileTransferProgressViewModel.swift */,
 			);
 			path = FileTransferProgressView;
+			sourceTree = "<group>";
+		};
+		4DF0C6162BDA6E95009862E5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				4D1319652BC83AFE004CA803 /* ADBErrorView */,
+				4D1319642BC83AF0004CA803 /* ContentView */,
+				4DE114932BD542D3005E9679 /* FileTransferProgressView */,
+				4D2D35162BBBCE0800E0E733 /* DirectoryView.swift */,
+				4D13195E2BC83056004CA803 /* LoadingView.swift */,
+				4D2D351D2BBE710000E0E733 /* ManualCommandView.swift */,
+				4D2D353C2BBFE21D00E0E733 /* NoDevicesView.swift */,
+				4D2D35452BC13C5F00E0E733 /* SideBarView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		4DF0C6172BDA6EB0009862E5 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				4DF0C6142BDA5730009862E5 /* Alert+DataSource.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
