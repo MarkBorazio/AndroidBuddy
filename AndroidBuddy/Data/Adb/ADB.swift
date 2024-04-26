@@ -152,6 +152,8 @@ enum ADB {
                 guard let output = String(data: data, encoding: .utf8) else {
                     throw AdbError.dataNotUtf8
                 }
+                
+                Logger.verbose(output)
 
                 try checkForErrors(output)
                 

@@ -18,8 +18,8 @@ extension URL {
     ///
     /// For standard adb commands that don't use `shell`, use `URL.pathForADBCommand` instead.
     var pathForShellCommand: String {
-        return path(percentEncoded: false)
-            .replacingOccurrences(of: " ", with: "\\ ") // Escape spaces
+        let path = path(percentEncoded: false)
+        return "\"\(path)\"" // Need to wrap in quotes
     }
     
     /// Return a path string that is compatible with adb commands that aren't shell
