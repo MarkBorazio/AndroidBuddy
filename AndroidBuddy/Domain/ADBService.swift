@@ -15,8 +15,8 @@ protocol ADBService {
     
     func resetServer()
     func list(serial: String, path: URL) async throws -> ListCommandResponse
-    func pull(serial: String, remotePath: URL) -> any Publisher<PullProgressResponse, Error>
-    func push(serial: String, localPath: URL, remotePath: URL) async throws
+    func pull(serial: String, remotePath: URL) -> any Publisher<FileTransferResponse, Error>
+    func push(serial: String, localPath: URL, remotePath: URL) -> any Publisher<FileTransferResponse, Error>
     func delete(serial: String, remotePath: URL) async throws
 }
 

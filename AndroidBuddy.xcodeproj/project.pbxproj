@@ -39,7 +39,7 @@
 		4DDD83832BBA886F003F7203 /* adb in Resources */ = {isa = PBXBuildFile; fileRef = 4DDD836D2BBA886E003F7203 /* adb */; };
 		4DDD83842BBA886F003F7203 /* adb in Resources */ = {isa = PBXBuildFile; fileRef = 4DDD836D2BBA886E003F7203 /* adb */; };
 		4DDD83852BBA886F003F7203 /* adb in Resources */ = {isa = PBXBuildFile; fileRef = 4DDD836D2BBA886E003F7203 /* adb */; };
-		4DE1148E2BD42A76005E9679 /* PullProgressResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE1148D2BD42A76005E9679 /* PullProgressResponse.swift */; };
+		4DE1148E2BD42A76005E9679 /* FileTransferResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE1148D2BD42A76005E9679 /* FileTransferResponse.swift */; };
 		4DE114922BD43858005E9679 /* FileTransferProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE114912BD43858005E9679 /* FileTransferProgressView.swift */; };
 		4DF0C6112BD94F67009862E5 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6102BD94F67009862E5 /* Logger.swift */; };
 		4DF0C6152BDA5730009862E5 /* Alert+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6142BDA5730009862E5 /* Alert+DataSource.swift */; };
@@ -97,7 +97,7 @@
 		4DDD83202BBA7CCC003F7203 /* AndroidBuddyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidBuddyUITests.swift; sourceTree = "<group>"; };
 		4DDD83222BBA7CCC003F7203 /* AndroidBuddyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidBuddyUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		4DDD836D2BBA886E003F7203 /* adb */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = adb; sourceTree = "<group>"; };
-		4DE1148D2BD42A76005E9679 /* PullProgressResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullProgressResponse.swift; sourceTree = "<group>"; };
+		4DE1148D2BD42A76005E9679 /* FileTransferResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTransferResponse.swift; sourceTree = "<group>"; };
 		4DE114912BD43858005E9679 /* FileTransferProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTransferProgressView.swift; sourceTree = "<group>"; };
 		4DF0C6102BD94F67009862E5 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		4DF0C6142BDA5730009862E5 /* Alert+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alert+DataSource.swift"; sourceTree = "<group>"; };
@@ -162,7 +162,7 @@
 			children = (
 				4D2D35122BBAA9B400E0E733 /* ListCommandResponse.swift */,
 				4D2D35412BBFEF4C00E0E733 /* DevicesResponse.swift */,
-				4DE1148D2BD42A76005E9679 /* PullProgressResponse.swift */,
+				4DE1148D2BD42A76005E9679 /* FileTransferResponse.swift */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -472,7 +472,7 @@
 				4D2D35262BBEA65300E0E733 /* AsyncCombineExtensions.swift in Sources */,
 				4D5077C72BCA6807008E099B /* ADBService.swift in Sources */,
 				4D2D351E2BBE710000E0E733 /* ManualCommandView.swift in Sources */,
-				4DE1148E2BD42A76005E9679 /* PullProgressResponse.swift in Sources */,
+				4DE1148E2BD42A76005E9679 /* FileTransferResponse.swift in Sources */,
 				4D2D35132BBAA9B400E0E733 /* ListCommandResponse.swift in Sources */,
 				4DE114922BD43858005E9679 /* FileTransferProgressView.swift in Sources */,
 				4D13195F2BC83056004CA803 /* LoadingView.swift in Sources */,

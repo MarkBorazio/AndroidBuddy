@@ -127,6 +127,7 @@ class ContentViewModel: ObservableObject {
         
         func updateTransfer(_ percentage: Double) {
             fileTransferModel = .init(
+                title: "Downloading...",
                 completionPercentage: percentage,
                 transferDetails: transferDetails
             )
@@ -142,7 +143,7 @@ class ContentViewModel: ObservableObject {
                     self?.fileTransferModel = nil
                     switch completion {
                     case .finished:
-                        break
+                        self?.refreshItems()
                     case .failure(_):
                         self?.presentErrorAlert(message: "Download failed") { [weak self] in
                             self?.downloadFile(remotePath: remotePath)
@@ -165,16 +166,43 @@ class ContentViewModel: ObservableObject {
             Logger.error("Tried to upload file when no serial was selected.")
             return
         }
-        Task {
-            do {
-                try await adbService.push(serial: currentDevice.serial, localPath: localPath, remotePath: currentPath)
-                refreshItems()
-            } catch {
-                presentErrorAlert(message: "Failed to upload file.") { [weak self] in
-                    self?.uploadFile(localPath: localPath)
-                }
-            }
+        
+        let transferDetails = "\(localPath.path(percentEncoded: false)) → \(currentPath.path(percentEncoded: false))"
+        
+        func updateTransfer(_ percentage: Double) {
+            fileTransferModel = .init(
+                title: "Uploading...",
+                completionPercentage: percentage,
+                transferDetails: transferDetails
+            )
         }
+        
+        updateTransfer(0)
+        
+        fileTransferCancellable = adbService.push(serial: currentDevice.serial, localPath: localPath, remotePath: currentPath)
+            .eraseToAnyPublisher()
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    self?.fileTransferModel = nil
+                    switch completion {
+                    case .finished:
+                        self?.refreshItems()
+                    case .failure(_):
+                        self?.presentErrorAlert(message: "Upload failed") { [weak self] in
+                            self?.uploadFile(localPath: localPath)
+                        }
+                    }
+                },
+                receiveValue: { value in
+                    switch value.progress {
+                    case let .inProgress(percentage):
+                        updateTransfer(percentage)
+                    case .completed:
+                        updateTransfer(1)
+                    }
+                }
+            )
     }
     
     func deleteFile(remotePath: URL) {

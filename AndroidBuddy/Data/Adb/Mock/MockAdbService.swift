@@ -15,8 +15,8 @@ class MockAdbService {
     
     private var resetServerBlock: () -> Void
     private var listBlock: (URL) -> ListCommandResponse
-    private var pullBlock: () -> any Publisher<PullProgressResponse, Error>
-    private var pushBlock: () -> Void
+    private var pullBlock: () -> any Publisher<FileTransferResponse, Error>
+    private var pushBlock: () -> any Publisher<FileTransferResponse, Error>
     private var deleteBlock: () -> Void
     
     init(
@@ -24,8 +24,8 @@ class MockAdbService {
         connectedDevices: [Device],
         resetServer: @escaping () -> Void = defaultResetServerBlock,
         list: @escaping (URL) -> ListCommandResponse = defaultListBlock,
-        pull: @escaping () -> any Publisher<PullProgressResponse, Error> = defaultPullBlock,
-        push: @escaping () -> Void = defaultPushBlock,
+        pull: @escaping () -> any Publisher<FileTransferResponse, Error> = defaultPullBlock,
+        push: @escaping () -> any Publisher<FileTransferResponse, Error> = defaultPushBlock,
         delete: @escaping () -> Void = defaultDeleteBlock
     ) {
         self.connectedDevices = CurrentValueSubject(connectedDevices).eraseToAnyPublisher()
@@ -56,12 +56,15 @@ extension MockAdbService {
         return try! ListCommandResponse(path: path, rawResponse: response)
     }
     
-    private static var defaultPullBlock: () -> any Publisher<PullProgressResponse, Error> = {
-        let response = try! PullProgressResponse(rawOutput: "[ 39%] /sdcard/Roms/Gamecube/Super Mario Strikers.iso")
-        return CurrentValueSubject<PullProgressResponse, Error>(response)
+    private static var defaultPullBlock: () -> any Publisher<FileTransferResponse, Error> = {
+        let response = try! FileTransferResponse(rawOutput: "[ 39%] /sdcard/Roms/Gamecube/Super Mario Strikers.iso")
+        return CurrentValueSubject<FileTransferResponse, Error>(response)
     }
     
-    private static var defaultPushBlock: () -> Void = {}
+    private static var defaultPushBlock: () -> any Publisher<FileTransferResponse, Error> = {
+        let response = try! FileTransferResponse(rawOutput: "[ 39%] /sdcard/Roms/Gamecube/Super Mario Strikers.iso")
+        return CurrentValueSubject<FileTransferResponse, Error>(response)
+    }
     
     private static var defaultDeleteBlock: () -> Void = {}
 }
@@ -78,11 +81,11 @@ extension MockAdbService: ADBService {
         listBlock(path)
     }
     
-    func pull(serial: String, remotePath: URL) -> any Publisher<PullProgressResponse, Error> {
+    func pull(serial: String, remotePath: URL) -> any Publisher<FileTransferResponse, Error> {
         pullBlock()
     }
     
-    func push(serial: String, localPath: URL, remotePath: URL) async throws {
+    func push(serial: String, localPath: URL, remotePath: URL) -> any Publisher<FileTransferResponse, Error>{
         pushBlock()
     }
     

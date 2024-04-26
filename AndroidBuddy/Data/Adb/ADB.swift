@@ -23,9 +23,9 @@ enum ADB {
         return commandPublisher(args: args)
     }
     
-    static func push(serial: String, localPath: URL, remotePath: URL) async throws {
+    static func push(serial: String, localPath: URL, remotePath: URL) -> any Publisher<String, Error> {
         let args = ["-s", serial, "push", "\(localPath.pathForADBCommand)", "\(remotePath.pathForADBCommand)"]
-        try await command(args: args)
+        return commandPublisher(args: args)
     }
     
     static func delete(serial: String, remotePath: URL) async throws {

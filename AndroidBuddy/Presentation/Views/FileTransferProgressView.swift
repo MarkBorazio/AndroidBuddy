@@ -11,6 +11,7 @@ struct FileTransferProgressView: View {
     
     struct Model: Identifiable {
         let id = UUID()
+        let title: String
         let completionPercentage: Double
         let transferDetails: String
     }
@@ -32,7 +33,7 @@ struct FileTransferProgressView: View {
                 .frame(width: 25)
                 
             VStack(alignment: .leading, spacing: 0) {
-                Text("Downloading...")
+                Text(model.title)
                 HStack {
                     ProgressView(value: model.completionPercentage)
                     
@@ -54,6 +55,7 @@ struct FileTransferProgressView: View {
 
 #Preview("Downloading") {
     FileTransferProgressView(model: .init(
+        title: "Downloading...",
         completionPercentage: 35,
         transferDetails: "/sdcard/roms/SuperMarioStrikers.iso → Downloads"
     ))

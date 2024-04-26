@@ -92,17 +92,20 @@ class StandardAdbService: ADBService {
         return try await ADB.list(serial: serial, path: path)
     }
     
-    func pull(serial: String, remotePath: URL) -> any Publisher<PullProgressResponse, Error> {
+    func pull(serial: String, remotePath: URL) -> any Publisher<FileTransferResponse, Error> {
         Logger.info("Pulling \(remotePath.path(percentEncoded: false))")
         return ADB.pull(serial: serial, remotePath: remotePath)
             .eraseToAnyPublisher()
-            .tryMap { try PullProgressResponse(rawOutput: $0) }
+            .tryMap { try FileTransferResponse(rawOutput: $0) }
             .removeDuplicates()
     }
     
-    func push(serial: String, localPath: URL, remotePath: URL) async throws {
+    func push(serial: String, localPath: URL, remotePath: URL) -> any Publisher<FileTransferResponse, Error> {
         Logger.info("Pushing \(localPath.path(percentEncoded: false)) to \(remotePath.path(percentEncoded: false))")
-        try await ADB.push(serial: serial, localPath: localPath, remotePath: remotePath)
+        return ADB.push(serial: serial, localPath: localPath, remotePath: remotePath)
+            .eraseToAnyPublisher()
+            .tryMap { try FileTransferResponse(rawOutput: $0) }
+            .removeDuplicates()
     }
     
     func delete(serial: String, remotePath: URL) async throws {

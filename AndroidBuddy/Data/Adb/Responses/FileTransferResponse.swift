@@ -1,5 +1,5 @@
 //
-//  PullProgressResponse.swift
+//  FileTransferResponse.swift
 //  AndroidBuddy
 //
 //  Created by Mark Borazio [Personal] on 21/4/2024.
@@ -7,18 +7,26 @@
 
 import Foundation
 
-/// Response for the `pull <remote> <local>` command
+/// Response parser for the `pull <remote> <local>` command and the `push <local> <remote>` command.
 ///
-/// # Example Outputs
-/// Progress Update:
+/// # Example outputs from ADB
+/// ## Progress Update (Pull):
 /// ```
 /// [ 39%] /sdcard/Roms/Gamecube/Super Mario Strikers.iso
 /// ```
-/// Transfer completion:
+/// ## Transfer completion (Pull):
 /// ```
 /// /sdcard/Roms/Gamecube/Super Mario Strikers.iso: 1 file pulled, 0 skipped. 35.9 MB/s (1459978240 bytes in 38.753s)
 /// ```
-struct PullProgressResponse: Equatable {
+/// ## Progress Update (Push):
+/// ```
+/// [ 10%] sdcard/roms/Gamecube/F-Zero GX (USA).iso
+/// ```
+/// ## Transfer completion (Push):
+/// ```
+/// /Users/Mark/Downloads/F-Zero GX (USA).iso: 1 file pushed, 0 skipped. 33.4 MB/s (1459978240 bytes in 41.748s)s
+/// ```
+struct FileTransferResponse: Equatable {
     
     enum Progress: Equatable {
         case inProgress(percentage: Double)
