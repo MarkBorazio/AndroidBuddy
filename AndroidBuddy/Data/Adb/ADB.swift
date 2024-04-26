@@ -18,8 +18,8 @@ enum ADB {
         return try ListCommandResponse(path: path, rawResponse: output)
     }
     
-    static func pull(serial: String, remotePath: URL) -> any Publisher<String, Error> {
-        let args = ["-s", serial, "pull", "\(remotePath.pathForADBCommand)", "/Users/Mark/Downloads"]
+    static func pull(serial: String, remotePath: URL, localPath: URL) -> any Publisher<String, Error> {
+        let args = ["-s", serial, "pull", "\(remotePath.pathForADBCommand)", "\(localPath.pathForADBCommand)"]
         return commandPublisher(args: args)
     }
     

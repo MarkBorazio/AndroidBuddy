@@ -18,7 +18,7 @@ class ContentViewModel: ObservableObject {
     @Published var items: [DirectoryView.Item] = []
     @Published var backButtonEnabled: Bool = false
     @Published var fileTransferModel: FileTransferProgressView.Model? = nil
-    @Published var errorAlert: AlertModel? = nil
+    @Published var alertModel: AlertModel? = nil
     
     @Published private var currentPath: URL = .shellRoot
     
@@ -117,12 +117,27 @@ class ContentViewModel: ObservableObject {
         }
     }
     
-    func downloadFile(remotePath: URL) {
+    func requestFileDownload(remotePath: URL) {
         guard let currentDevice else {
             Logger.error("Tried to download file when no serial was selected.")
             return
         }
         
+        let localPath = URL(string: "/Users/Mark/Downloads")! // TODO: Choose directory instead of always goind to Downloads folder.
+        
+        let fileName = remotePath.lastPathComponent
+        let potentialLocalPath = localPath.appending(path: fileName)
+        let fileExists = FileManager.default.fileExists(atPath: potentialLocalPath.path(percentEncoded: false))
+        if fileExists {
+            presentDuplicateFileAlert(fileName: fileName) { [weak self] in
+                self?.downloadFile(serial: currentDevice.serial, remotePath: remotePath, localPath: localPath)
+            }
+        } else {
+            downloadFile(serial: currentDevice.serial, remotePath: remotePath, localPath: localPath)
+        }
+    }
+    
+    private func downloadFile(serial: String, remotePath: URL, localPath: URL) {
         let transferDetails = "\(remotePath.path(percentEncoded: false)) → Downloads"
         
         func updateTransfer(_ percentage: Double) {
@@ -135,7 +150,7 @@ class ContentViewModel: ObservableObject {
         
         updateTransfer(0)
         
-        fileTransferCancellable = adbService.pull(serial: currentDevice.serial, remotePath: remotePath)
+        fileTransferCancellable = adbService.pull(serial: serial, remotePath: remotePath, localPath: localPath)
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .sink(
@@ -146,7 +161,7 @@ class ContentViewModel: ObservableObject {
                         self?.refreshItems()
                     case .failure(_):
                         self?.presentErrorAlert(message: "Download failed") { [weak self] in
-                            self?.downloadFile(remotePath: remotePath)
+                            self?.downloadFile(serial: serial, remotePath: remotePath, localPath: localPath)
                         }
                     }
                 },
@@ -161,12 +176,33 @@ class ContentViewModel: ObservableObject {
             )
     }
     
-    func uploadFile(localPath: URL) {
+    func requestFileUpload(localPath: URL) {
         guard let currentDevice else {
             Logger.error("Tried to upload file when no serial was selected.")
             return
         }
         
+        Task {
+            do {
+                let fileName = localPath.lastPathComponent
+                let potentialRemotePath = currentPath.appending(path: fileName)
+                let fileExists = try await adbService.doesFileExist(serial: currentDevice.serial, remotePath: potentialRemotePath)
+                if fileExists {
+                    presentDuplicateFileAlert(fileName: fileName) { [weak self] in
+                        self?.uploadFile(serial: currentDevice.serial, localPath: localPath)
+                    }
+                } else {
+                    uploadFile(serial: currentDevice.serial, localPath: localPath)
+                }
+            } catch {
+                presentErrorAlert(message: "Failed to upload file.") { [weak self] in
+                    self?.requestFileUpload(localPath: localPath)
+                }
+            }
+        }
+    }
+    
+    private func uploadFile(serial: String, localPath: URL) {
         let transferDetails = "\(localPath.path(percentEncoded: false)) → \(currentPath.path(percentEncoded: false))"
         
         func updateTransfer(_ percentage: Double) {
@@ -179,7 +215,7 @@ class ContentViewModel: ObservableObject {
         
         updateTransfer(0)
         
-        fileTransferCancellable = adbService.push(serial: currentDevice.serial, localPath: localPath, remotePath: currentPath)
+        fileTransferCancellable = adbService.push(serial: serial, localPath: localPath, remotePath: currentPath)
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .sink(
@@ -190,7 +226,7 @@ class ContentViewModel: ObservableObject {
                         self?.refreshItems()
                     case .failure(_):
                         self?.presentErrorAlert(message: "Upload failed") { [weak self] in
-                            self?.uploadFile(localPath: localPath)
+                            self?.uploadFile(serial: serial, localPath: localPath)
                         }
                     }
                 },
@@ -241,12 +277,24 @@ class ContentViewModel: ObservableObject {
         ADBErrorViewModel(adbService: adbService)
     }
     
+    private func presentDuplicateFileAlert(fileName: String, replace: @escaping () -> Void) {
+        alertModel = .init(
+            title: "An item named \(fileName) already exists in this folder.",
+            message: "Would you like to replace the existing item with the one being copied?",
+            primaryButton: .init(title: "Replace", action: replace),
+            cancelButton: .init(title: "Skip", action: { [weak self] in
+                self?.alertModel = nil
+            })
+        )
+    }
+    
     private func presentErrorAlert(message: String, retry: @escaping () -> Void) {
-        errorAlert = .init(
+        alertModel = .init(
+            title: "Something went wrong",
             message: message,
-            retryButton: .init(title: "Retry", action: retry),
+            primaryButton: .init(title: "Retry", action: retry),
             cancelButton: .init(title: "Cancel", action: { [weak self] in
-                self?.errorAlert = nil
+                self?.alertModel = nil
             })
         )
     }
@@ -259,8 +307,9 @@ class ContentViewModel: ObservableObject {
     
     struct AlertModel: Identifiable {
         let id = UUID()
+        let title: String
         let message: String
-        let retryButton: Button
+        let primaryButton: Button
         let cancelButton: Button
         
         struct Button: Identifiable {

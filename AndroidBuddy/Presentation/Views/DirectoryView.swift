@@ -45,7 +45,7 @@ struct DirectoryView: View {
                     viewModel.deleteFile(remotePath: selectedItem.path)
                 }
                 Button("Save to downloads") {
-                    viewModel.downloadFile(remotePath: selectedItem.path)
+                    viewModel.requestFileDownload(remotePath: selectedItem.path)
                 }
             } else { // Multi-item menu.
                 Button("Delete Selected", role: .destructive) { }
@@ -57,7 +57,7 @@ struct DirectoryView: View {
             if selectedItems.count == 1, let selectedItem = selectedItems.first {
                 switch selectedItem.type {
                 case .file:
-                    viewModel.downloadFile(remotePath: selectedItem.path)
+                    viewModel.requestFileDownload(remotePath: selectedItem.path)
                 case .directory:
                     viewModel.navigateToDirectory(path: selectedItem.path)
                 }

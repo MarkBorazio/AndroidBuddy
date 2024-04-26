@@ -17,8 +17,10 @@ struct ManualCommandView: View {
             TextField("Shell Command", text: $shellCommandText)
             Button(
                 action: {
-                    let output = try! shellCommand(args: shellCommandText)
-                    print(output)
+                    Task {
+                        let output = try! await Shell.command(argsString: shellCommandText)
+                        print(output)
+                    }
                 },
                 label: {
                     Text("Run Command")
@@ -38,25 +40,22 @@ struct ManualCommandView: View {
                     Text("Run Command")
                 }
             )
+            
+            Spacer().frame(height: 40)
+            
+            Button(
+                action: {
+                    Task {
+                        let path = URL(string: "/Users/Mark/Downloads/Crash%20Nitro%20Karto%20(USA).iso")!
+                        print("Path \(path)")
+                        let output = FileManager.default.fileExists(atPath: path.path(percentEncoded: false))
+                        print("Output \(output)")
+                    }
+                },
+                label: {
+                    Text("Special Event")
+                }
+            )
         }
-    }
-    
-    @discardableResult
-    private func shellCommand(args: String) throws -> String {
-        let task = Process()
-        let pipe = Pipe()
-        
-        task.standardOutput = pipe
-        task.standardError = pipe
-        task.arguments = ["-c", args]
-        task.executableURL = URL(fileURLWithPath: "/bin/sh")
-        task.standardInput = nil
-
-        try task.run()
-        
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(data: data, encoding: .utf8)!
-        
-        return output
     }
 }

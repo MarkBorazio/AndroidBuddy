@@ -62,10 +62,10 @@ struct ContentView: View {
         }
         .environmentObject(viewModel)
         .alert(
-            "Something went wrong",
-            dataSource: $viewModel.errorAlert,
+            LocalizedStringKey(viewModel.alertModel?.title ?? "Alert"),
+            dataSource: $viewModel.alertModel,
             actions: { data in
-                Button(data.retryButton.title, action: data.retryButton.action)
+                Button(data.primaryButton.title, action: data.primaryButton.action)
                 Button(data.cancelButton.title, role: .cancel, action: data.cancelButton.action)
             },
             message: { data in
@@ -102,7 +102,7 @@ struct ContentView: View {
             else {
                 return
             }
-            viewModel.uploadFile(localPath: url)
+            viewModel.requestFileUpload(localPath: url)
         })
         return true
     }

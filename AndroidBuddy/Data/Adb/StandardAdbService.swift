@@ -92,9 +92,9 @@ class StandardAdbService: ADBService {
         return try await ADB.list(serial: serial, path: path)
     }
     
-    func pull(serial: String, remotePath: URL) -> any Publisher<FileTransferResponse, Error> {
-        Logger.info("Pulling \(remotePath.path(percentEncoded: false))")
-        return ADB.pull(serial: serial, remotePath: remotePath)
+    func pull(serial: String, remotePath: URL, localPath: URL) -> any Publisher<FileTransferResponse, Error> {
+        Logger.info("Pulling \(remotePath.path(percentEncoded: false)) to \(localPath.path(percentEncoded: false))")
+        return ADB.pull(serial: serial, remotePath: remotePath, localPath: localPath)
             .eraseToAnyPublisher()
             .tryMap { try FileTransferResponse(rawOutput: $0) }
             .removeDuplicates()
@@ -111,5 +111,16 @@ class StandardAdbService: ADBService {
     func delete(serial: String, remotePath: URL) async throws {
         Logger.info("Deleting \(remotePath.path(percentEncoded: false)) for \(serial).")
         try await ADB.delete(serial: serial, remotePath: remotePath)
+    }
+    
+    func doesFileExist(serial: String, remotePath: URL) async throws -> Bool {
+        Logger.info("Checking if \(remotePath.path(percentEncoded: false)) exists for device \(serial).")
+        do {
+            let list = try await list(serial: serial, path: remotePath)
+            print(list)
+            return true // If file does not exist, error is thrown. Therefore, if we reach this point, file must exist.
+        } catch ListCommandResponse.ListCommandResponseError.noSuchFileOrDirectory  {
+            return false
+        }
     }
 }

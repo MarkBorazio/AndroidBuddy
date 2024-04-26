@@ -32,6 +32,14 @@ struct ListCommandResponse {
     init(path: URL, rawResponse: String) throws {
         self.path = path
         
+        if rawResponse.hasPrefix("ls:") {
+            if rawResponse.contains("No such file or directory") {
+                throw ListCommandResponseError.noSuchFileOrDirectory
+            } else {
+                throw ADB.AdbError.responseParseError
+            }
+        }
+        
         let rawLines = rawResponse.components(separatedBy: "\n")
             .dropFirst() // First line tells us the total of something (not sure what though)
             .filter { !$0.isEmpty } // Remove newline at end
@@ -112,5 +120,11 @@ struct ListCommandResponse {
             case directory
             case symlink // TODO: Add resolved path here (will probably need to run `readlink -f <path>`)
         }
+    }
+    
+    // We use this error instead of a standard ADB response parsing error because
+    // we need to be able to tell if a file exists at a path or not.
+    enum ListCommandResponseError: Error {
+        case noSuchFileOrDirectory
     }
 }

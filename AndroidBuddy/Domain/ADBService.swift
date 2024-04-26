@@ -15,9 +15,10 @@ protocol ADBService {
     
     func resetServer()
     func list(serial: String, path: URL) async throws -> ListCommandResponse
-    func pull(serial: String, remotePath: URL) -> any Publisher<FileTransferResponse, Error>
+    func pull(serial: String, remotePath: URL, localPath: URL) -> any Publisher<FileTransferResponse, Error>
     func push(serial: String, localPath: URL, remotePath: URL) -> any Publisher<FileTransferResponse, Error>
     func delete(serial: String, remotePath: URL) async throws
+    func doesFileExist(serial: String, remotePath: URL) async throws -> Bool
 }
 
 enum ADBServiceState {

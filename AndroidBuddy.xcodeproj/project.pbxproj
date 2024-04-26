@@ -43,6 +43,7 @@
 		4DE114922BD43858005E9679 /* FileTransferProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DE114912BD43858005E9679 /* FileTransferProgressView.swift */; };
 		4DF0C6112BD94F67009862E5 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6102BD94F67009862E5 /* Logger.swift */; };
 		4DF0C6152BDA5730009862E5 /* Alert+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6142BDA5730009862E5 /* Alert+DataSource.swift */; };
+		4DF0C61B2BDB7EF6009862E5 /* Shell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61A2BDB7EF6009862E5 /* Shell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -101,6 +102,7 @@
 		4DE114912BD43858005E9679 /* FileTransferProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTransferProgressView.swift; sourceTree = "<group>"; };
 		4DF0C6102BD94F67009862E5 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		4DF0C6142BDA5730009862E5 /* Alert+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alert+DataSource.swift"; sourceTree = "<group>"; };
+		4DF0C61A2BDB7EF6009862E5 /* Shell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,6 +210,7 @@
 			isa = PBXGroup;
 			children = (
 				4D2D350A2BBAA67F00E0E733 /* Adb */,
+				4DF0C61C2BDBB5F9009862E5 /* Shell */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -322,6 +325,14 @@
 				4DF0C6142BDA5730009862E5 /* Alert+DataSource.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		4DF0C61C2BDBB5F9009862E5 /* Shell */ = {
+			isa = PBXGroup;
+			children = (
+				4DF0C61A2BDB7EF6009862E5 /* Shell.swift */,
+			);
+			path = Shell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -486,6 +497,7 @@
 				4D2D35102BBAA88F00E0E733 /* StandardAdbService.swift in Sources */,
 				4DF0C6112BD94F67009862E5 /* Logger.swift in Sources */,
 				4D5077C92BCA6B70008E099B /* StandardDependencies.swift in Sources */,
+				4DF0C61B2BDB7EF6009862E5 /* Shell.swift in Sources */,
 				4DF0C6152BDA5730009862E5 /* Alert+DataSource.swift in Sources */,
 				4D1319632BC839BA004CA803 /* ADBErrorViewModel.swift in Sources */,
 				4D2D35172BBBCE0800E0E733 /* DirectoryView.swift in Sources */,

@@ -18,6 +18,7 @@ class MockAdbService {
     private var pullBlock: () -> any Publisher<FileTransferResponse, Error>
     private var pushBlock: () -> any Publisher<FileTransferResponse, Error>
     private var deleteBlock: () -> Void
+    private var doesFileExistBlock: () -> Bool
     
     init(
         adbState: ADBServiceState,
@@ -26,7 +27,8 @@ class MockAdbService {
         list: @escaping (URL) -> ListCommandResponse = defaultListBlock,
         pull: @escaping () -> any Publisher<FileTransferResponse, Error> = defaultPullBlock,
         push: @escaping () -> any Publisher<FileTransferResponse, Error> = defaultPushBlock,
-        delete: @escaping () -> Void = defaultDeleteBlock
+        delete: @escaping () -> Void = defaultDeleteBlock,
+        doesFileExist: @escaping () -> Bool = defaultDoesFileExistBlock
     ) {
         self.connectedDevices = CurrentValueSubject(connectedDevices).eraseToAnyPublisher()
         state = CurrentValueSubject(adbState).eraseToAnyPublisher()
@@ -36,6 +38,7 @@ class MockAdbService {
         pullBlock = pull
         pushBlock = push
         deleteBlock = delete
+        doesFileExistBlock = doesFileExist
     }
     
     private static func getResponse(fileName: String) -> String {
@@ -67,21 +70,23 @@ extension MockAdbService {
     }
     
     private static var defaultDeleteBlock: () -> Void = {}
+    
+    private static var defaultDoesFileExistBlock: () -> Bool = { true }
 }
 
 // MARK: - ADB Service Implementation
 
 extension MockAdbService: ADBService {
-    
+
     func resetServer() {
-        
+        resetServerBlock()
     }
     
     func list(serial: String, path: URL) async throws -> ListCommandResponse {
         listBlock(path)
     }
     
-    func pull(serial: String, remotePath: URL) -> any Publisher<FileTransferResponse, Error> {
+    func pull(serial: String, remotePath: URL, localPath: URL) -> any Publisher<FileTransferResponse, Error> {
         pullBlock()
     }
     
@@ -91,5 +96,9 @@ extension MockAdbService: ADBService {
     
     func delete(serial: String, remotePath: URL) async throws {
         deleteBlock()
+    }
+    
+    func doesFileExist(serial: String, remotePath: URL) async throws -> Bool {
+        doesFileExistBlock()
     }
 }
