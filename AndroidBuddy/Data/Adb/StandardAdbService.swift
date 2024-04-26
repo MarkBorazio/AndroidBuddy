@@ -113,13 +113,28 @@ class StandardAdbService: ADBService {
         try await ADB.delete(serial: serial, remotePath: remotePath)
     }
     
+    func createNewFolder(serial: String, remotePath: URL) async throws {
+        Logger.info("Creating new directory at \(remotePath.path(percentEncoded: false)) for \(serial).")
+        let output = try await ADB.createNewDirectory(serial: serial, remotePath: remotePath)
+        try CreateDirectoryResponse.checkForErrors(rawOutput: output)
+    }
+    
+    func rename(serial: String, remoteSourcePath: URL, remoteDestinationPath: URL) async throws {
+        Logger.info("Renaming \(remoteSourcePath.path(percentEncoded: false)) to \(remoteDestinationPath.path(percentEncoded: false)) for device \(serial).")
+        let fileOrDirectoryExists = try await doesFileExist(serial: serial, remotePath: remoteDestinationPath)
+        guard !fileOrDirectoryExists else {
+            throw ADBServiceError.fileOrDirectoryAlreadyExists
+        }
+        let output = try await ADB.move(serial: serial, remoteSourcePath: remoteSourcePath, remoteDestinationPath: remoteDestinationPath)
+        try MoveResponse.checkForErrors(rawOutput: output)
+    }
+    
     func doesFileExist(serial: String, remotePath: URL) async throws -> Bool {
         Logger.info("Checking if \(remotePath.path(percentEncoded: false)) exists for device \(serial).")
         do {
-            let list = try await list(serial: serial, path: remotePath)
-            print(list)
-            return true // If file does not exist, error is thrown. Therefore, if we reach this point, file must exist.
-        } catch ListCommandResponse.ListCommandResponseError.noSuchFileOrDirectory  {
+            let _ = try await list(serial: serial, path: remotePath)
+            return true // If the file does not exist, an error is thrown. Therefore, if we reach this point, the file must exist.
+        } catch ADBServiceError.noSuchFileOrDirectory {
             return false
         }
     }

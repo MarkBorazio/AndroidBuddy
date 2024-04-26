@@ -52,7 +52,8 @@ struct ContentView: View {
             ToolbarItem(placement: .navigation) {
                 backButton
             }
-            ToolbarItem(placement: .primaryAction) {
+            ToolbarItemGroup(placement: .primaryAction) {
+                createNewFolderButton
                 refreshButton
             }
         }
@@ -74,7 +75,7 @@ struct ContentView: View {
         )
     }
     
-    var backButton: some View {
+    private var backButton: some View {
         Button {
             viewModel.back()
         } label: {
@@ -83,11 +84,19 @@ struct ContentView: View {
         .disabled(!viewModel.backButtonEnabled)
     }
     
-    var refreshButton: some View {
+    private var refreshButton: some View {
         Button {
             viewModel.refreshItems()
         } label: {
             Label("Refresh", systemImage: "arrow.clockwise")
+        }
+    }
+    
+    private var createNewFolderButton: some View {
+        Button {
+            viewModel.createNewFolder()
+        } label: {
+            Label("Create New Folder", systemImage: "folder.fill.badge.plus")
         }
     }
     

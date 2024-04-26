@@ -44,6 +44,8 @@
 		4DF0C6112BD94F67009862E5 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6102BD94F67009862E5 /* Logger.swift */; };
 		4DF0C6152BDA5730009862E5 /* Alert+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6142BDA5730009862E5 /* Alert+DataSource.swift */; };
 		4DF0C61B2BDB7EF6009862E5 /* Shell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61A2BDB7EF6009862E5 /* Shell.swift */; };
+		4DF0C61E2BDBFE06009862E5 /* CreateDirectoryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61D2BDBFE06009862E5 /* CreateDirectoryResponse.swift */; };
+		4DF0C6202BDC2346009862E5 /* MoveResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -103,6 +105,8 @@
 		4DF0C6102BD94F67009862E5 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		4DF0C6142BDA5730009862E5 /* Alert+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alert+DataSource.swift"; sourceTree = "<group>"; };
 		4DF0C61A2BDB7EF6009862E5 /* Shell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shell.swift; sourceTree = "<group>"; };
+		4DF0C61D2BDBFE06009862E5 /* CreateDirectoryResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDirectoryResponse.swift; sourceTree = "<group>"; };
+		4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -165,6 +169,8 @@
 				4D2D35122BBAA9B400E0E733 /* ListCommandResponse.swift */,
 				4D2D35412BBFEF4C00E0E733 /* DevicesResponse.swift */,
 				4DE1148D2BD42A76005E9679 /* FileTransferResponse.swift */,
+				4DF0C61D2BDBFE06009862E5 /* CreateDirectoryResponse.swift */,
+				4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -481,6 +487,7 @@
 				4DDD83052BBA7CCB003F7203 /* AndroidBuddyApp.swift in Sources */,
 				4D2D35482BC157B900E0E733 /* URLExtensions.swift in Sources */,
 				4D2D35262BBEA65300E0E733 /* AsyncCombineExtensions.swift in Sources */,
+				4DF0C61E2BDBFE06009862E5 /* CreateDirectoryResponse.swift in Sources */,
 				4D5077C72BCA6807008E099B /* ADBService.swift in Sources */,
 				4D2D351E2BBE710000E0E733 /* ManualCommandView.swift in Sources */,
 				4DE1148E2BD42A76005E9679 /* FileTransferResponse.swift in Sources */,
@@ -493,6 +500,7 @@
 				4D2D351B2BBC027900E0E733 /* ContentViewModel.swift in Sources */,
 				4D1319672BC83C66004CA803 /* ViewConstants.swift in Sources */,
 				4D5077CB2BCA83F0008E099B /* MockAdbService.swift in Sources */,
+				4DF0C6202BDC2346009862E5 /* MoveResponse.swift in Sources */,
 				4D2D35462BC13C5F00E0E733 /* SideBarView.swift in Sources */,
 				4D2D35102BBAA88F00E0E733 /* StandardAdbService.swift in Sources */,
 				4DF0C6112BD94F67009862E5 /* Logger.swift in Sources */,

@@ -119,7 +119,7 @@ class ContentViewModel: ObservableObject {
     
     func requestFileDownload(remotePath: URL) {
         guard let currentDevice else {
-            Logger.error("Tried to download file when no serial was selected.")
+            Logger.error("Tried to download file when no device was selected.")
             return
         }
         
@@ -178,7 +178,7 @@ class ContentViewModel: ObservableObject {
     
     func requestFileUpload(localPath: URL) {
         guard let currentDevice else {
-            Logger.error("Tried to upload file when no serial was selected.")
+            Logger.error("Tried to upload file when no device was selected.")
             return
         }
         
@@ -243,9 +243,10 @@ class ContentViewModel: ObservableObject {
     
     func deleteFile(remotePath: URL) {
         guard let currentDevice else {
-            Logger.error("Tried to delete file when no serial was selected.")
+            Logger.error("Tried to delete file when no device was selected.")
             return
         }
+        
         Task {
             do {
                 try await adbService.delete(serial: currentDevice.serial, remotePath: remotePath)
@@ -271,6 +272,56 @@ class ContentViewModel: ObservableObject {
     
     func navigateToDirectory(path: URL) {
         currentPath = path
+    }
+    
+    func createNewFolder() {
+        guard let currentDevice else {
+            Logger.error("Tried to create new folder when no device was selected.")
+            return
+        }
+        
+        let folderName = "untitled folder"
+        func newDirectory(suffix: Int) -> URL {
+            currentPath.appendingPathComponent("\(folderName) \(suffix)")
+        }
+        
+        var remotePath = currentPath.appendingPathComponent(folderName)
+        var suffix = 2
+        let paths = items.map(\.path)
+        while paths.contains(remotePath) {
+            remotePath = currentPath.appendingPathComponent("\(folderName) \(suffix)")
+            suffix += 1
+        }
+        
+        Task {
+            do {
+                try await adbService.createNewFolder(serial: currentDevice.serial, remotePath: remotePath)
+            } catch {
+                presentErrorAlert(message: "Failed to create folder.") { [weak self] in
+                    self?.createNewFolder()
+                }
+            }
+            refreshItems() // Yes, do this regardless of success or failure
+        }
+    }
+    
+    func rename(remoteSource: URL, newName: String) {
+        guard let currentDevice else {
+            Logger.error("Tried to rename when no device was selected.")
+            return
+        }
+        
+        let remoteDestination = remoteSource.deletingLastPathComponent().appendingPathComponent(newName)
+        Task {
+            do {
+                try await adbService.rename(serial: currentDevice.serial, remoteSourcePath: remoteSource, remoteDestinationPath: remoteDestination)
+                refreshItems()
+            } catch {
+                presentErrorAlert(message: "Failed to rename item.") { [weak self] in
+                    self?.rename(remoteSource: remoteSource, newName: newName)
+                }
+            }
+        }
     }
     
     func createAdbErrorViewModel() -> ADBErrorViewModel {

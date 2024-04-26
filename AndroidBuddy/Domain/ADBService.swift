@@ -18,6 +18,8 @@ protocol ADBService {
     func pull(serial: String, remotePath: URL, localPath: URL) -> any Publisher<FileTransferResponse, Error>
     func push(serial: String, localPath: URL, remotePath: URL) -> any Publisher<FileTransferResponse, Error>
     func delete(serial: String, remotePath: URL) async throws
+    func createNewFolder(serial: String, remotePath: URL) async throws
+    func rename(serial: String, remoteSourcePath: URL, remoteDestinationPath: URL) async throws
     func doesFileExist(serial: String, remotePath: URL) async throws -> Bool
 }
 
@@ -26,4 +28,9 @@ enum ADBServiceState {
     case settingUp
     case running
     case error
+}
+
+enum ADBServiceError: Error {
+    case noSuchFileOrDirectory
+    case fileOrDirectoryAlreadyExists
 }
