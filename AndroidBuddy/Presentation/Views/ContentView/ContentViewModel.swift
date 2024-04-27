@@ -93,6 +93,7 @@ class ContentViewModel: ObservableObject {
                 let response = try await adbService.list(serial: currentDevice.serial, path: currentPath)
                 items = Self.mapListResponseToItems(response)
             } catch {
+                Logger.error("Shit", error: error)
                 presentErrorAlert(message: "Failed to load directory.") { [weak self] in
                     self?.refreshItems()
                 }
@@ -100,7 +101,7 @@ class ContentViewModel: ObservableObject {
         }
     }
     
-    private static func mapListResponseToItems(_ response: ListCommandResponse) -> [DirectoryViewRow.Item] {
+    private static func mapListResponseToItems(_ response: ListResponse) -> [DirectoryViewRow.Item] {
         return response.items.map { responseItem in
             let itemType: DirectoryViewRow.Item.ItemType = switch responseItem.fileType {
             case .directory: .directory
@@ -317,6 +318,7 @@ class ContentViewModel: ObservableObject {
                 try await adbService.rename(serial: currentDevice.serial, remoteSourcePath: remoteSource, remoteDestinationPath: remoteDestination)
                 refreshItems()
             } catch {
+                Logger.error("Failed to rename item", error: error)
                 presentErrorAlert(message: "Failed to rename item.") { [weak self] in
                     self?.rename(remoteSource: remoteSource, newName: newName)
                 }

@@ -87,7 +87,7 @@ class StandardAdbService: ADBService {
         }
     }
     
-    func list(serial: String, path: URL) async throws -> ListCommandResponse {
+    func list(serial: String, path: URL) async throws -> ListResponse {
         Logger.info("Listing devices for \(serial) at path \(path.path(percentEncoded: false))")
         return try await ADB.list(serial: serial, path: path)
     }

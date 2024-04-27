@@ -22,6 +22,7 @@ struct DirectoryView: View {
                     renamableIdFocus: $renamableIdFocus,
                     onRename: { newName in
                         viewModel.rename(remoteSource: item.path, newName: newName)
+                        selection = []
                     }
                 )
             }

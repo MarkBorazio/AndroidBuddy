@@ -14,7 +14,7 @@ class MockAdbService {
     var state: any Publisher<ADBServiceState, Never>
     
     private var resetServerBlock: () -> Void
-    private var listBlock: (URL) -> ListCommandResponse
+    private var listBlock: (URL) -> ListResponse
     private var pullBlock: () -> any Publisher<FileTransferResponse, Error>
     private var pushBlock: () -> any Publisher<FileTransferResponse, Error>
     private var deleteBlock: () -> Void
@@ -26,7 +26,7 @@ class MockAdbService {
         adbState: ADBServiceState,
         connectedDevices: [Device],
         resetServer: @escaping () -> Void = defaultResetServerBlock,
-        list: @escaping (URL) -> ListCommandResponse = defaultListBlock,
+        list: @escaping (URL) -> ListResponse = defaultListBlock,
         pull: @escaping () -> any Publisher<FileTransferResponse, Error> = defaultPullBlock,
         push: @escaping () -> any Publisher<FileTransferResponse, Error> = defaultPushBlock,
         delete: @escaping () -> Void = defaultDeleteBlock,
@@ -60,9 +60,9 @@ extension MockAdbService {
     
     private static var defaultResetServerBlock: () -> Void = {}
     
-    private static var defaultListBlock: (URL) -> ListCommandResponse = { path in
+    private static var defaultListBlock: (URL) -> ListResponse = { path in
         let response = getResponse(fileName: "MockListResponse")
-        return try! ListCommandResponse(path: path, rawResponse: response)
+        return try! ListResponse(path: path, rawResponse: response)
     }
     
     private static var defaultPullBlock: () -> any Publisher<FileTransferResponse, Error> = {
@@ -92,7 +92,7 @@ extension MockAdbService: ADBService {
         resetServerBlock()
     }
     
-    func list(serial: String, path: URL) async throws -> ListCommandResponse {
+    func list(serial: String, path: URL) async throws -> ListResponse {
         listBlock(path)
     }
     

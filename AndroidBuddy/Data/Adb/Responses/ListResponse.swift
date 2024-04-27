@@ -1,5 +1,5 @@
 //
-//  ListCommandResponse.swift
+//  ListResponse.swift
 //  AndroidBuddy
 //
 //  Created by Mark Borazio [Personal] on 1/4/2024.
@@ -18,7 +18,7 @@ import Foundation
 /// -rw-r--r--   1 root   root      54435 2022-01-01 11:00 audit_filter_table
 /// lrw-r--r--   1 root   root         11 2022-01-01 11:00 bin -> /system/bin
 /// ```
-struct ListCommandResponse {
+struct ListResponse {
     
     private static let dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -48,20 +48,51 @@ struct ListCommandResponse {
     }
     
     private static func parseRawLine(_ line: String, path: URL) throws -> Item? {
-        let components = line.components(separatedBy: " ")
-            .filter { !$0.isEmpty }
+        var parsedLine = line
+        func extractNextComponent() -> String {
+            let component = parsedLine.poppingPrefix(upTo: " ")
+            parsedLine.trimPrefix(while: { $0 == " " })
+            return component
+        }
         
-        let permissions = components[0]
+        let permissions = extractNextComponent()
         
         /// Handle some kind of unknown case.
         /// The full line looks something like this:
         /// ```
         /// d?????????   ? ?      ?             ?                ? data_mirror
         /// ```
+        /// We need to check for it before anything else as it has less components than expected.
         if permissions.contains("?") {
             return nil
         }
         
+        let numberOfComponents = line.components(separatedBy: " ")
+            .filter { !$0.isEmpty }
+            .count
+        
+        guard numberOfComponents >= 8 else {
+            throw ADB.AdbError.responseParseError
+        }
+        
+        let numberOfLinksRaw = extractNextComponent()
+        let owner = extractNextComponent()
+        let group = extractNextComponent()
+        let sizeRaw = extractNextComponent()
+        let date = extractNextComponent()
+        let time = extractNextComponent()
+        
+        // Name should be the remainder of the string after extracting the properties above
+        let name = parsedLine // TODO: Figure out how to properly parse name... We probably will need to do a second command here...
+        
+        guard
+            let numberOfLinks = Int(numberOfLinksRaw),
+            let size = Int(sizeRaw),
+            let dateTime = Self.dateFormatter.date(from: "\(date) \(time)")
+        else {
+            throw ADB.AdbError.responseParseError
+        }
+
         let rawFileType = permissions.first
         let fileType: Item.FileType
         switch rawFileType {
@@ -70,25 +101,6 @@ struct ListCommandResponse {
         case "l": fileType = .symlink
         default:
             return nil
-        }
-        
-        
-        guard 
-            components.count >= 8,
-            let numberOfLinks = Int(components[1]),
-            let size = Int(components[4])
-        else {
-            throw ADB.AdbError.responseParseError
-        }
-            
-        let owner = components[2]
-        let group = components[3]
-        let date = components[5]
-        let time = components[6]
-        let name = components[7..<components.count].joined(separator: " ") // TODO: Figure out how to properly parse name... We probably will need to do a second command here...
-        
-        guard let dateTime = Self.dateFormatter.date(from: "\(date) \(time)") else {
-            throw ADB.AdbError.responseParseError
         }
         
         return Item(

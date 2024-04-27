@@ -12,10 +12,10 @@ enum ADB {
     
     private static let executableUrl = Bundle.main.url(forResource: "adb", withExtension: nil)!
     
-    static func list(serial: String, path: URL) async throws -> ListCommandResponse {
+    static func list(serial: String, path: URL) async throws -> ListResponse {
         let args = ["-s", serial, "shell", "ls", "-lL", "\(path.pathForShellCommand)"]
         let output = try await command(args: args)
-        return try ListCommandResponse(path: path, rawResponse: output)
+        return try ListResponse(path: path, rawResponse: output)
     }
     
     static func pull(serial: String, remotePath: URL, localPath: URL) -> any Publisher<String, Error> {
@@ -78,7 +78,7 @@ enum ADB {
     }
     
     static func commandPublisher(args: [String]) -> any Publisher<String, Error> {
-        
+        Logger.verbose("Sending ADB command (publisher). Args: \(args.joined(separator: " "))")
         return Deferred {
             // Setup the PTY handles
             var primaryDescriptor: Int32 = 0
@@ -147,7 +147,8 @@ enum ADB {
     
     @discardableResult
     static func command(args: [String]) async throws -> String {
-        try await withCheckedThrowingContinuation { continuation in
+        Logger.verbose("Sending ADB command. Args: \(args.joined(separator: " "))")
+        return try await withCheckedThrowingContinuation { continuation in
             let pipe = Pipe()
             
             let process = Process()
@@ -160,15 +161,14 @@ enum ADB {
                 try process.run()
                 let data = try pipe.fileHandleForReading.readToEnd() ?? Data()
                 
-                guard let output = String(data: data, encoding: .utf8) else {
+                guard let rawOutput = String(data: data, encoding: .utf8) else {
                     throw AdbError.dataNotUtf8
                 }
                 
-                Logger.verbose(output)
+                Logger.verbose(rawOutput)
 
-                try checkForErrors(output)
-                
-                let sanitisedOutput = output.trimmingCharacters(in: .whitespacesAndNewlines)
+                try checkForErrors(rawOutput)
+                let sanitisedOutput = sanistiseOutput(rawOutput)
                 continuation.resume(returning: sanitisedOutput)
             } catch {
                 Logger.error("ADB error.", error: error)
@@ -182,7 +182,6 @@ enum ADB {
     // Errors must be checked prior to calling this
     private static func sanistiseOutput(_ rawOutput: String) -> String {
         return rawOutput
-            .trimmingCharacters(in: .whitespacesAndNewlines)
             .components(separatedBy: .newlines)
             .filter { !$0.hasPrefix("*") } // Lines that start with "*" are just logging statements that can be discarded
             .joined(separator: "\n")

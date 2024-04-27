@@ -34,16 +34,12 @@ struct DirectoryViewRow: View {
         item.id == renamableIdFocus
     }
     
-    private var textFieldBinding: Binding<String> {
-        isRenaming ? $renamableText : .constant(item.name)
-    }
-    
     var body: some View {
         Label(
             title: {
                 ZStack(alignment: .leading) {
                     Text(item.name)
-                        .opacity(isRenaming ? 0 : 1)
+                        .opacity(isRenaming ? 0 : 1) // Hide when renaming
                     
                     TextField("", text: $renamableText)
                         .focused($renamableIdFocus, equals: item.id)
@@ -53,7 +49,7 @@ struct DirectoryViewRow: View {
                         .onSubmit {
                             submit()
                         }
-                        .opacity(isRenaming ? 1 : 0)
+                        .opacity(isRenaming ? 1 : 0) // Hide when not renaming
                 }
             },
             icon: {
