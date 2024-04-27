@@ -15,7 +15,7 @@ class ContentViewModel: ObservableObject {
     @Published var title: String = ""
     @Published var currentDeviceSerial: String? = nil
     @Published var allDevices: [Device] = []
-    @Published var items: [DirectoryView.Item] = []
+    @Published var items: [DirectoryViewRow.Item] = []
     @Published var backButtonEnabled: Bool = false
     @Published var fileTransferModel: FileTransferProgressView.Model? = nil
     @Published var alertModel: AlertModel? = nil
@@ -100,15 +100,15 @@ class ContentViewModel: ObservableObject {
         }
     }
     
-    private static func mapListResponseToItems(_ response: ListCommandResponse) -> [DirectoryView.Item] {
+    private static func mapListResponseToItems(_ response: ListCommandResponse) -> [DirectoryViewRow.Item] {
         return response.items.map { responseItem in
-            let itemType: DirectoryView.Item.ItemType = switch responseItem.fileType {
+            let itemType: DirectoryViewRow.Item.ItemType = switch responseItem.fileType {
             case .directory: .directory
             case .file: .file
             case .symlink: .directory
             }
             
-            return DirectoryView.Item(
+            return DirectoryViewRow.Item(
                 path: responseItem.path,
                 name: responseItem.name,
                 isSymlink: responseItem.fileType == .symlink,

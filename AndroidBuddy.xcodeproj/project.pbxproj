@@ -46,6 +46,7 @@
 		4DF0C61B2BDB7EF6009862E5 /* Shell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61A2BDB7EF6009862E5 /* Shell.swift */; };
 		4DF0C61E2BDBFE06009862E5 /* CreateDirectoryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61D2BDBFE06009862E5 /* CreateDirectoryResponse.swift */; };
 		4DF0C6202BDC2346009862E5 /* MoveResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */; };
+		4DF0C6252BDD3709009862E5 /* DirectoryViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6242BDD3709009862E5 /* DirectoryViewRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,6 +108,7 @@
 		4DF0C61A2BDB7EF6009862E5 /* Shell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shell.swift; sourceTree = "<group>"; };
 		4DF0C61D2BDBFE06009862E5 /* CreateDirectoryResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDirectoryResponse.swift; sourceTree = "<group>"; };
 		4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveResponse.swift; sourceTree = "<group>"; };
+		4DF0C6242BDD3709009862E5 /* DirectoryViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryViewRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -316,7 +318,7 @@
 				4D1319652BC83AFE004CA803 /* ADBErrorView */,
 				4D1319642BC83AF0004CA803 /* ContentView */,
 				4DE114912BD43858005E9679 /* FileTransferProgressView.swift */,
-				4D2D35162BBBCE0800E0E733 /* DirectoryView.swift */,
+				4DF0C6212BDD36E5009862E5 /* DirectoryView */,
 				4D13195E2BC83056004CA803 /* LoadingView.swift */,
 				4D2D351D2BBE710000E0E733 /* ManualCommandView.swift */,
 				4D2D353C2BBFE21D00E0E733 /* NoDevicesView.swift */,
@@ -339,6 +341,15 @@
 				4DF0C61A2BDB7EF6009862E5 /* Shell.swift */,
 			);
 			path = Shell;
+			sourceTree = "<group>";
+		};
+		4DF0C6212BDD36E5009862E5 /* DirectoryView */ = {
+			isa = PBXGroup;
+			children = (
+				4D2D35162BBBCE0800E0E733 /* DirectoryView.swift */,
+				4DF0C6242BDD3709009862E5 /* DirectoryViewRow.swift */,
+			);
+			path = DirectoryView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -501,6 +512,7 @@
 				4D1319672BC83C66004CA803 /* ViewConstants.swift in Sources */,
 				4D5077CB2BCA83F0008E099B /* MockAdbService.swift in Sources */,
 				4DF0C6202BDC2346009862E5 /* MoveResponse.swift in Sources */,
+				4DF0C6252BDD3709009862E5 /* DirectoryViewRow.swift in Sources */,
 				4D2D35462BC13C5F00E0E733 /* SideBarView.swift in Sources */,
 				4D2D35102BBAA88F00E0E733 /* StandardAdbService.swift in Sources */,
 				4DF0C6112BD94F67009862E5 /* Logger.swift in Sources */,
