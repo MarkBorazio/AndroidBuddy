@@ -146,7 +146,8 @@ class ContentViewModel: ObservableObject {
             fileTransferModel = .init(
                 title: "Downloading...",
                 completionPercentage: percentage,
-                transferDetails: transferDetails
+                transferDetails: transferDetails,
+                transferType: .download
             )
         }
         
@@ -211,7 +212,8 @@ class ContentViewModel: ObservableObject {
             fileTransferModel = .init(
                 title: "Uploading...",
                 completionPercentage: percentage,
-                transferDetails: transferDetails
+                transferDetails: transferDetails,
+                transferType: .upload
             )
         }
         
@@ -339,7 +341,8 @@ class ContentViewModel: ObservableObject {
         fileTransferModel = .init(
             title: "Installing \(fileName)...",
             completionPercentage: nil,
-            transferDetails: ""
+            transferDetails: "",
+            transferType: .installation
         )
         
         fileTransferCancellable = adbService.installAPK(serial: currentDevice.serial, localPath: localFilePath)

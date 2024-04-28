@@ -14,6 +14,13 @@ struct FileTransferProgressView: View {
         let title: String
         let completionPercentage: Double?
         let transferDetails: String
+        let transferType: TransferType
+        
+        enum TransferType {
+            case upload
+            case download
+            case installation
+        }
     }
     
     let model: Model
@@ -28,7 +35,7 @@ struct FileTransferProgressView: View {
     
     var body: some View {
         HStack {
-            Image(systemName: "arrow.down.circle")
+            imageIcon
                 .resizable()
                 .scaledToFill()
                 .fixedSize(horizontal: false, vertical: true)
@@ -51,20 +58,40 @@ struct FileTransferProgressView: View {
         .frame(width: 500)
         .padding(20)
     }
+    
+    private var imageIcon: Image {
+        let systemName = switch model.transferType {
+        case .download: "arrow.down.circle"
+        case .upload: "arrow.up.circle"
+        case .installation: "iphone.and.arrow.forward"
+        }
+        return Image(systemName: systemName)
+    }
 }
 
-#Preview("Determinate") {
+#Preview("Download - Determinate") {
     FileTransferProgressView(model: .init(
         title: "Downloading...",
         completionPercentage: 0.35,
-        transferDetails: "/sdcard/roms/SuperMarioStrikers.iso → Downloads"
+        transferDetails: "/sdcard/roms/SuperMarioStrikers.iso → Downloads",
+        transferType: .download
     ))
 }
 
-#Preview("Indeterminate") {
+#Preview("Upload - Determinate") {
+    FileTransferProgressView(model: .init(
+        title: "Uploading...",
+        completionPercentage: 0.35,
+        transferDetails: "/sdcard/roms/SuperMarioStrikers.iso → Downloads",
+        transferType: .upload
+    ))
+}
+
+#Preview("Installation - Indeterminate") {
     FileTransferProgressView(model: .init(
         title: "Installing youtube.apk...",
         completionPercentage: nil,
-        transferDetails: ""
+        transferDetails: "",
+        transferType: .installation
     ))
 }
