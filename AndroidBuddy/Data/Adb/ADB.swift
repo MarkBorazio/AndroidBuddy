@@ -112,8 +112,7 @@ enum ADB {
                     Logger.verbose(rawOutput)
                     guard !rawOutput.isEmpty else { return }
                     do {
-                        try checkForErrors(rawOutput)
-                        let sanitisedOutput = sanistiseOutput(rawOutput)
+                        let sanitisedOutput = try sanitiseOutput(rawOutput)
                         Logger.verbose(sanitisedOutput)
                         subject.send(sanitisedOutput)
                     } catch {
@@ -173,8 +172,7 @@ enum ADB {
                 
                 Logger.verbose(rawOutput)
 
-                try checkForErrors(rawOutput)
-                let sanitisedOutput = sanistiseOutput(rawOutput)
+                let sanitisedOutput = try sanitiseOutput(rawOutput)
                 continuation.resume(returning: sanitisedOutput)
             } catch {
                 Logger.error("ADB error.", error: error)
@@ -185,33 +183,24 @@ enum ADB {
         }
     }
     
-    // Errors must be checked prior to calling this
-    private static func sanistiseOutput(_ rawOutput: String) -> String {
-        return rawOutput            
+    private static func sanitiseOutput(_ rawOutput: String) throws -> String {
+        let components = rawOutput
             .trimmingPrefixCharacters(in: .whitespacesAndNewlines) // Don't trim trailing spaces and file names, as that is needed for accurate file names
             .components(separatedBy: .newlines)
-            .filter { !$0.hasPrefix("*") } // Lines that start with "*" are just logging statements that can be discarded
-            .joined(separator: "\n")
-    }
-    
-    private static func checkForErrors(_ rawOutput: String) throws {
-        try checkForDaemonError(rawOutput) // Should check first
-        try checkForCommandError(rawOutput)
-    }
-    
-    private static func checkForDaemonError(_ rawOutput: String) throws {
-        let components = rawOutput.components(separatedBy: .newlines)
+        
         let errorLine = "* failed to start daemon"
         if components.contains(errorLine) {
             throw AdbError.daemonError
         }
-    }
-    
-    // From what I can tell, command errors start with "adb:" on the first line
-    private static func checkForCommandError(_ rawOutput: String) throws {
-        if rawOutput.hasPrefix("adb:") {
+        
+        let adbErrorPrefix = "adb:"
+        if components.contains(where: { $0.hasPrefix(adbErrorPrefix) }) {
             throw AdbError.commandError(output: rawOutput)
         }
+        
+        return components
+            .filter { !$0.hasPrefix("*") } // Lines that start with "*" are just logging statements that can be discarded
+            .joined(separator: "\n")
     }
     
     enum AdbError: Error {
