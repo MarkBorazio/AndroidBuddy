@@ -105,10 +105,12 @@ enum ADB {
                 primaryHandle.readabilityHandler = { handle in
                     let data = handle.availableData
                     guard let rawOutput = String(data: data, encoding: .utf8) else { return }
+                    Logger.verbose(rawOutput)
                     guard !rawOutput.isEmpty else { return }
                     do {
                         try checkForErrors(rawOutput)
                         let sanitisedOutput = sanistiseOutput(rawOutput)
+                        Logger.verbose(sanitisedOutput)
                         subject.send(sanitisedOutput)
                     } catch {
                         Logger.error("ADB readabilityHandler error.", error: error)
@@ -181,7 +183,8 @@ enum ADB {
     
     // Errors must be checked prior to calling this
     private static func sanistiseOutput(_ rawOutput: String) -> String {
-        return rawOutput
+        return rawOutput            
+            .trimmingPrefixCharacters(in: .whitespacesAndNewlines) // Don't trim trailing spaces and file names, as that is needed for accurate file names
             .components(separatedBy: .newlines)
             .filter { !$0.hasPrefix("*") } // Lines that start with "*" are just logging statements that can be discarded
             .joined(separator: "\n")

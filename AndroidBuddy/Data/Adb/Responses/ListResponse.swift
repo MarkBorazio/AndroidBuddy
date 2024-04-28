@@ -82,7 +82,7 @@ struct ListResponse {
         let date = extractNextComponent()
         let time = extractNextComponent()
         
-        // Name should be the remainder of the string after extracting the properties above
+        // Name should be the remainder of the string after having extracted the properties above
         let name = parsedLine // TODO: Figure out how to properly parse name... We probably will need to do a second command here...
         
         guard
