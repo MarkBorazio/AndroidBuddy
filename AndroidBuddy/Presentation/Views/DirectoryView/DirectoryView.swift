@@ -49,7 +49,7 @@ struct DirectoryView: View {
                     renamableIdFocus = selectedItem.id
                 }
                 Button("Delete", role: .destructive) {
-                    viewModel.deleteFile(remotePath: selectedItem.path)
+                    viewModel.requestItemDeletion(item: selectedItem)
                 }
             } else { // Multi-item menu.
                 Button("Delete Selected", role: .destructive) { }

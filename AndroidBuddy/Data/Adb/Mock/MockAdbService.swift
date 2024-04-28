@@ -104,7 +104,7 @@ extension MockAdbService: ADBService {
         pushBlock()
     }
     
-    func delete(serial: String, remotePath: URL) async throws {
+    func delete(serial: String, remotePath: URL, isDirectory: Bool) async throws {
         deleteBlock()
     }
     

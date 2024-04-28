@@ -28,10 +28,14 @@ enum ADB {
         return commandPublisher(args: args)
     }
     
-    // TODO: Return String so that we know if it was successful?
-    static func delete(serial: String, remotePath: URL) async throws {
+    static func deleteFile(serial: String, remotePath: URL) async throws -> String {
         let args = ["-s", serial, "shell", "rm", "-f", "\(remotePath.pathForShellCommand)"]
-        try await command(args: args)
+        return try await command(args: args)
+    }
+    
+    static func deleteDirectory(serial: String, remotePath: URL) async throws -> String {
+        let args = ["-s", serial, "shell", "rm", "-rf", "\(remotePath.pathForShellCommand)"]
+        return try await command(args: args)
     }
     
     static func getBluetoothName(serial: String) async throws -> String {

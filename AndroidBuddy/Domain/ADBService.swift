@@ -17,7 +17,7 @@ protocol ADBService {
     func list(serial: String, path: URL) async throws -> ListResponse
     func pull(serial: String, remotePath: URL, localPath: URL) -> any Publisher<FileTransferResponse, Error>
     func push(serial: String, localPath: URL, remotePath: URL) -> any Publisher<FileTransferResponse, Error>
-    func delete(serial: String, remotePath: URL) async throws
+    func delete(serial: String, remotePath: URL, isDirectory: Bool) async throws
     func createNewFolder(serial: String, remotePath: URL) async throws
     func rename(serial: String, remoteSourcePath: URL, remoteDestinationPath: URL) async throws
     func doesFileExist(serial: String, remotePath: URL) async throws -> Bool

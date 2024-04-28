@@ -48,6 +48,7 @@
 		4DF0C6202BDC2346009862E5 /* MoveResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */; };
 		4DF0C6252BDD3709009862E5 /* DirectoryViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6242BDD3709009862E5 /* DirectoryViewRow.swift */; };
 		4DF0C6272BDD749C009862E5 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6262BDD749C009862E5 /* StringExtensions.swift */; };
+		4DF0C6292BDE4199009862E5 /* DeleteResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6282BDE4199009862E5 /* DeleteResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -111,6 +112,7 @@
 		4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveResponse.swift; sourceTree = "<group>"; };
 		4DF0C6242BDD3709009862E5 /* DirectoryViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryViewRow.swift; sourceTree = "<group>"; };
 		4DF0C6262BDD749C009862E5 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
+		4DF0C6282BDE4199009862E5 /* DeleteResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteResponse.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,6 +177,7 @@
 				4DE1148D2BD42A76005E9679 /* FileTransferResponse.swift */,
 				4DF0C61D2BDBFE06009862E5 /* CreateDirectoryResponse.swift */,
 				4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */,
+				4DF0C6282BDE4199009862E5 /* DeleteResponse.swift */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -507,6 +510,7 @@
 				4DE1148E2BD42A76005E9679 /* FileTransferResponse.swift in Sources */,
 				4D2D35132BBAA9B400E0E733 /* ListResponse.swift in Sources */,
 				4DE114922BD43858005E9679 /* FileTransferProgressView.swift in Sources */,
+				4DF0C6292BDE4199009862E5 /* DeleteResponse.swift in Sources */,
 				4DF0C6272BDD749C009862E5 /* StringExtensions.swift in Sources */,
 				4D13195F2BC83056004CA803 /* LoadingView.swift in Sources */,
 				4D1319612BC8385C004CA803 /* ADBErrorView.swift in Sources */,

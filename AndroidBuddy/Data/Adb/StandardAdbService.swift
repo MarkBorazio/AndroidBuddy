@@ -108,9 +108,14 @@ class StandardAdbService: ADBService {
             .removeDuplicates()
     }
     
-    func delete(serial: String, remotePath: URL) async throws {
+    func delete(serial: String, remotePath: URL, isDirectory: Bool) async throws {
         Logger.info("Deleting \(remotePath.path(percentEncoded: false)) for \(serial).")
-        try await ADB.delete(serial: serial, remotePath: remotePath)
+        let output = if isDirectory {
+            try await ADB.deleteDirectory(serial: serial, remotePath: remotePath)
+        } else {
+            try await ADB.deleteFile(serial: serial, remotePath: remotePath)
+        }
+        try DeleteResponse.checkForErrors(rawOutput: output)
     }
     
     func createNewFolder(serial: String, remotePath: URL) async throws {

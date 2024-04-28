@@ -93,7 +93,7 @@ class ContentViewModel: ObservableObject {
                 let response = try await adbService.list(serial: currentDevice.serial, path: currentPath)
                 items = Self.mapListResponseToItems(response)
             } catch {
-                Logger.error("Shit", error: error)
+                Logger.error("Failed to load directory.", error: error)
                 presentErrorAlert(message: "Failed to load directory.") { [weak self] in
                     self?.refreshItems()
                 }
@@ -242,19 +242,34 @@ class ContentViewModel: ObservableObject {
             )
     }
     
-    func deleteFile(remotePath: URL) {
+    func requestItemDeletion(item: DirectoryViewRow.Item) {
         guard let currentDevice else {
-            Logger.error("Tried to delete file when no device was selected.")
+            Logger.error("Tried to delete item when no device was selected.")
             return
         }
         
+        presentItemDeletionConfirmationAlert(itemName: item.name) { [weak self] in
+            self?.deleteFile(
+                serial: currentDevice.serial,
+                path: item.path,
+                isDirectory: item.type == .directory
+            )
+        }
+    }
+    
+    func deleteFile(serial: String, path: URL, isDirectory: Bool) {
         Task {
             do {
-                try await adbService.delete(serial: currentDevice.serial, remotePath: remotePath)
+                try await adbService.delete(
+                    serial: serial,
+                    remotePath: path,
+                    isDirectory: isDirectory
+                )
                 refreshItems()
             } catch {
+                Logger.error("Failed to delete item.", error: error)
                 presentErrorAlert(message: "Failed to delete file.") { [weak self] in
-                    self?.deleteFile(remotePath: remotePath)
+                    self?.deleteFile(serial: serial, path: path, isDirectory: isDirectory)
                 }
             }
         }
@@ -298,6 +313,7 @@ class ContentViewModel: ObservableObject {
             do {
                 try await adbService.createNewFolder(serial: currentDevice.serial, remotePath: remotePath)
             } catch {
+                Logger.error("Failed to create folder.", error: error)
                 presentErrorAlert(message: "Failed to create folder.") { [weak self] in
                     self?.createNewFolder()
                 }
@@ -318,7 +334,7 @@ class ContentViewModel: ObservableObject {
                 try await adbService.rename(serial: currentDevice.serial, remoteSourcePath: remoteSource, remoteDestinationPath: remoteDestination)
                 refreshItems()
             } catch {
-                Logger.error("Failed to rename item", error: error)
+                Logger.error("Failed to rename item.", error: error)
                 presentErrorAlert(message: "Failed to rename item.") { [weak self] in
                     self?.rename(remoteSource: remoteSource, newName: newName)
                 }
@@ -330,11 +346,24 @@ class ContentViewModel: ObservableObject {
         ADBErrorViewModel(adbService: adbService)
     }
     
+    private func presentItemDeletionConfirmationAlert(itemName: String, delete: @escaping () -> Void) {
+        alertModel = .init(
+            title: "Are you sure you want to permanently delete \(itemName)?",
+            message: "This action cannot be undone.",
+            primaryButton: nil,
+            destructiveButton: .init(title: "Delete", action: delete),
+            cancelButton: .init(title: "Cancel", action: { [weak self] in
+                self?.alertModel = nil
+            })
+        )
+    }
+    
     private func presentDuplicateFileAlert(fileName: String, replace: @escaping () -> Void) {
         alertModel = .init(
             title: "An item named \(fileName) already exists in this folder.",
             message: "Would you like to replace the existing item with the one being copied?",
             primaryButton: .init(title: "Replace", action: replace),
+            destructiveButton: nil,
             cancelButton: .init(title: "Skip", action: { [weak self] in
                 self?.alertModel = nil
             })
@@ -346,6 +375,7 @@ class ContentViewModel: ObservableObject {
             title: "Something went wrong",
             message: message,
             primaryButton: .init(title: "Retry", action: retry),
+            destructiveButton: nil,
             cancelButton: .init(title: "Cancel", action: { [weak self] in
                 self?.alertModel = nil
             })
@@ -362,7 +392,8 @@ class ContentViewModel: ObservableObject {
         let id = UUID()
         let title: String
         let message: String
-        let primaryButton: Button
+        let primaryButton: Button?
+        let destructiveButton: Button?
         let cancelButton: Button
         
         struct Button: Identifiable {

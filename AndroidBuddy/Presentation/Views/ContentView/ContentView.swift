@@ -66,7 +66,12 @@ struct ContentView: View {
             LocalizedStringKey(viewModel.alertModel?.title ?? "Alert"),
             dataSource: $viewModel.alertModel,
             actions: { data in
-                Button(data.primaryButton.title, action: data.primaryButton.action)
+                if let primaryButton = data.primaryButton {
+                    Button(primaryButton.title, action: primaryButton.action)
+                }
+                if let destructiveButton = data.destructiveButton {
+                    Button(destructiveButton.title, role: .destructive, action: destructiveButton.action)
+                }
                 Button(data.cancelButton.title, role: .cancel, action: data.cancelButton.action)
             },
             message: { data in
@@ -94,6 +99,7 @@ struct ContentView: View {
     
     private var createNewFolderButton: some View {
         Button {
+            // TODO: Auto highlight folder to set the name...
             viewModel.createNewFolder()
         } label: {
             Label("Create New Folder", systemImage: "folder.fill.badge.plus")
