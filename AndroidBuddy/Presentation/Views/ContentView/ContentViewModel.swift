@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import UniformTypeIdentifiers
 
 @MainActor
 class ContentViewModel: ObservableObject {
@@ -177,7 +178,7 @@ class ContentViewModel: ObservableObject {
             )
     }
     
-    func requestFileUpload(localPath: URL) {
+    private func requestFileUpload(localPath: URL) {
         guard let currentDevice else {
             Logger.error("Tried to upload file when no device was selected.")
             return
@@ -275,21 +276,6 @@ class ContentViewModel: ObservableObject {
         }
     }
     
-    func cancelTransfer() {
-        fileTransferCancellable?.cancel()
-        fileTransferCancellable = nil
-        fileTransferModel = nil
-    }
-    
-    func back() {
-        guard backButtonEnabled else { return }
-        currentPath = currentPath.deletingLastPathComponent()
-    }
-    
-    func navigateToDirectory(path: URL) {
-        currentPath = path
-    }
-    
     func createNewFolder() {
         guard let currentDevice else {
             Logger.error("Tried to create new folder when no device was selected.")
@@ -342,6 +328,80 @@ class ContentViewModel: ObservableObject {
         }
     }
     
+    private func installAPK(localFilePath: URL) {
+        guard let currentDevice else {
+            Logger.error("Tried to install APK when no device was selected.")
+            return
+        }
+        
+        let fileName = localFilePath.lastPathComponent
+        
+        fileTransferModel = .init(
+            title: "Installing \(fileName)...",
+            completionPercentage: nil,
+            transferDetails: ""
+        )
+        
+        fileTransferCancellable = adbService.installAPK(serial: currentDevice.serial, localPath: localFilePath)
+            .eraseToAnyPublisher()
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    self?.fileTransferModel = nil
+                    switch completion {
+                    case .finished:
+                        self?.presentAPKInstallingSuccessAlert()
+                    case .failure(_):
+                        self?.presentErrorAlert(message: "Download failed") { [weak self] in
+                            self?.installAPK(localFilePath: localFilePath)
+                        }
+                    }
+                },
+                receiveValue: { _ in }
+            )
+    }
+    
+    static let contentType: UTType = .fileURL
+    static let contentTypeEncoding: UInt = 4
+    
+    func handleItemDrop(providers: [NSItemProvider]) -> Bool {
+        guard let provider = providers.first else { return false }
+        provider.loadDataRepresentation(forTypeIdentifier: Self.contentType.identifier) { [weak self] (data, error) in
+            guard
+                let self,
+                let data = data,
+                let path = NSString(data: data, encoding: Self.contentTypeEncoding),
+                let url = URL(string: path as String)
+            else {
+                return
+            }
+            
+            Task {
+                if url.pathExtension == "apk" {
+                    await self.presentApkFileActionAlert(localFilePath: url)
+                } else {
+                    await self.requestFileUpload(localPath: url)
+                }
+            }
+        }
+        return true
+    }
+    
+    func cancelTransfer() {
+        fileTransferCancellable?.cancel()
+        fileTransferCancellable = nil
+        fileTransferModel = nil
+    }
+    
+    func back() {
+        guard backButtonEnabled else { return }
+        currentPath = currentPath.deletingLastPathComponent()
+    }
+    
+    func navigateToDirectory(path: URL) {
+        currentPath = path
+    }
+    
     func createAdbErrorViewModel() -> ADBErrorViewModel {
         ADBErrorViewModel(adbService: adbService)
     }
@@ -350,11 +410,10 @@ class ContentViewModel: ObservableObject {
         alertModel = .init(
             title: "Are you sure you want to permanently delete \(itemName)?",
             message: "This action cannot be undone.",
-            primaryButton: nil,
-            destructiveButton: .init(title: "Delete", action: delete),
-            cancelButton: .init(title: "Cancel", action: { [weak self] in
-                self?.alertModel = nil
-            })
+            buttons: [
+                .init(title: "Delete", type: .destructive, action: delete),
+                alertCancelButton
+            ]
         )
     }
     
@@ -362,11 +421,10 @@ class ContentViewModel: ObservableObject {
         alertModel = .init(
             title: "An item named \(fileName) already exists in this folder.",
             message: "Would you like to replace the existing item with the one being copied?",
-            primaryButton: .init(title: "Replace", action: replace),
-            destructiveButton: nil,
-            cancelButton: .init(title: "Skip", action: { [weak self] in
-                self?.alertModel = nil
-            })
+            buttons: [
+                .init(title: "Replace", type: .standard, action: replace),
+                alertCancelButton
+            ]
         )
     }
     
@@ -374,11 +432,36 @@ class ContentViewModel: ObservableObject {
         alertModel = .init(
             title: "Something went wrong",
             message: message,
-            primaryButton: .init(title: "Retry", action: retry),
-            destructiveButton: nil,
-            cancelButton: .init(title: "Cancel", action: { [weak self] in
-                self?.alertModel = nil
-            })
+            buttons: [
+                .init(title: "Retry", type: .standard, action: retry),
+                alertCancelButton
+            ]
+        )
+    }
+    
+    private func presentApkFileActionAlert(localFilePath: URL) {
+        alertModel = .init(
+            title: localFilePath.lastPathComponent,
+            message: "Do you want to install this APK or upload it to your device?",
+            buttons: [
+                .init(title: "Install", type: .standard) { [weak self] in
+                    self?.installAPK(localFilePath: localFilePath)
+                },
+                .init(title: "Upload", type: .standard) { [weak self] in
+                    self?.requestFileUpload(localPath: localFilePath)
+                },
+                alertCancelButton
+            ]
+        )
+    }
+    
+    private func presentAPKInstallingSuccessAlert() {
+        alertModel = .init(
+            title: "APK successfully installed.",
+            message: nil,
+            buttons: [
+                .init(title: "OK", type: .standard) {}
+            ]
         )
     }
     
@@ -391,15 +474,26 @@ class ContentViewModel: ObservableObject {
     struct AlertModel: Identifiable {
         let id = UUID()
         let title: String
-        let message: String
-        let primaryButton: Button?
-        let destructiveButton: Button?
-        let cancelButton: Button
+        let message: String?
+        let buttons: [Button]
         
         struct Button: Identifiable {
             let id = UUID()
             let title: String
+            let type: ButtonType
             let action: () -> Void
+            
+            enum ButtonType {
+                case standard
+                case destructive
+                case cancel
+            }
+        }
+    }
+    
+    private var alertCancelButton: AlertModel.Button {
+        .init(title: "Cancel", type: .cancel) { [weak self] in
+            self?.alertModel = nil
         }
     }
 }

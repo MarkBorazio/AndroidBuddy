@@ -17,6 +17,7 @@ class MockAdbService {
     private var listBlock: (URL) -> ListResponse
     private var pullBlock: () -> any Publisher<FileTransferResponse, Error>
     private var pushBlock: () -> any Publisher<FileTransferResponse, Error>
+    private var installAPKBlock: () -> any Publisher<InstallAPKResponse, Error>
     private var deleteBlock: () -> Void
     private var createNewFolderBlock: () -> Void
     private var renameBlock: () -> Void
@@ -29,6 +30,7 @@ class MockAdbService {
         list: @escaping (URL) -> ListResponse = defaultListBlock,
         pull: @escaping () -> any Publisher<FileTransferResponse, Error> = defaultPullBlock,
         push: @escaping () -> any Publisher<FileTransferResponse, Error> = defaultPushBlock,
+        installAPK: @escaping () -> any Publisher<InstallAPKResponse, Error> = defaultInstallAPKBlock,
         delete: @escaping () -> Void = defaultDeleteBlock,
         createNewFolder: @escaping () -> Void = defaultCreateNewFolderBlock,
         rename: @escaping () -> Void = defaultRenameBlock,
@@ -41,6 +43,7 @@ class MockAdbService {
         listBlock = list
         pullBlock = pull
         pushBlock = push
+        installAPKBlock = installAPK
         deleteBlock = delete
         createNewFolderBlock = createNewFolder
         renameBlock = rename
@@ -75,6 +78,11 @@ extension MockAdbService {
         return CurrentValueSubject<FileTransferResponse, Error>(response)
     }
     
+    private static var defaultInstallAPKBlock: () -> any Publisher<InstallAPKResponse, Error> = {
+        let response = try! InstallAPKResponse(rawOutput: "Performing Streamed Install")
+        return CurrentValueSubject<InstallAPKResponse, Error>(response)
+    }
+    
     private static var defaultDeleteBlock: () -> Void = {}
     
     private static var defaultCreateNewFolderBlock: () -> Void = {}
@@ -102,6 +110,10 @@ extension MockAdbService: ADBService {
     
     func push(serial: String, localPath: URL, remotePath: URL) -> any Publisher<FileTransferResponse, Error>{
         pushBlock()
+    }
+    
+    func installAPK(serial: String, localPath: URL) -> any Publisher<InstallAPKResponse, Error> {
+        installAPKBlock()
     }
     
     func delete(serial: String, remotePath: URL, isDirectory: Bool) async throws {

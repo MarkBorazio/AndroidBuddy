@@ -108,6 +108,14 @@ class StandardAdbService: ADBService {
             .removeDuplicates()
     }
     
+    func installAPK(serial: String, localPath: URL) -> any Publisher<InstallAPKResponse, Error> {
+        Logger.info("Installing APK from \(localPath.path(percentEncoded: false))")
+        return ADB.installAPK(serial: serial, localPath: localPath)
+            .eraseToAnyPublisher()
+            .tryMap { try InstallAPKResponse(rawOutput: $0) }
+            .removeDuplicates()
+    }
+    
     func delete(serial: String, remotePath: URL, isDirectory: Bool) async throws {
         Logger.info("Deleting \(remotePath.path(percentEncoded: false)) for \(serial).")
         let output = if isDirectory {

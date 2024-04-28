@@ -6,12 +6,8 @@
 //
 
 import SwiftUI
-import UniformTypeIdentifiers
 
 struct ContentView: View {
-    
-    private static let contentType: UTType = .fileURL
-    private static let contentTypeEncoding: UInt = 4
     
     @StateObject var viewModel: ContentViewModel
     @State private var isDraggingFileOverView = false
@@ -57,7 +53,7 @@ struct ContentView: View {
                 refreshButton
             }
         }
-        .onDrop(of: [Self.contentType], isTargeted: $isDraggingFileOverView, perform: onDropItem)
+        .onDrop(of: [ContentViewModel.contentType], isTargeted: $isDraggingFileOverView, perform: viewModel.handleItemDrop)
         .sheet(item: $viewModel.fileTransferModel) { model in
             FileTransferProgressView(model: model)
         }
@@ -66,16 +62,19 @@ struct ContentView: View {
             LocalizedStringKey(viewModel.alertModel?.title ?? "Alert"),
             dataSource: $viewModel.alertModel,
             actions: { data in
-                if let primaryButton = data.primaryButton {
-                    Button(primaryButton.title, action: primaryButton.action)
+                ForEach(data.buttons) { button in
+                    let role: ButtonRole? = switch button.type {
+                    case .standard: nil
+                    case .destructive: .destructive
+                    case .cancel: .cancel
+                    }
+                    Button(button.title, role: role, action: button.action)
                 }
-                if let destructiveButton = data.destructiveButton {
-                    Button(destructiveButton.title, role: .destructive, action: destructiveButton.action)
-                }
-                Button(data.cancelButton.title, role: .cancel, action: data.cancelButton.action)
             },
             message: { data in
-                Text(data.message)
+                if let message = data.message {
+                    Text(message)
+                }
             }
         )
     }
@@ -104,22 +103,6 @@ struct ContentView: View {
         } label: {
             Label("Create New Folder", systemImage: "folder.fill.badge.plus")
         }
-    }
-    
-    // Handler for when file is dropped onto window
-    private func onDropItem(providers: [NSItemProvider]) -> Bool {
-        guard let provider = providers.first else { return false }
-        provider.loadDataRepresentation(forTypeIdentifier: Self.contentType.identifier, completionHandler: { (data, error) in
-            guard
-                let data = data,
-                let path = NSString(data: data, encoding: Self.contentTypeEncoding),
-                let url = URL(string: path as String)
-            else {
-                return
-            }
-            viewModel.requestFileUpload(localPath: url)
-        })
-        return true
     }
 }
 

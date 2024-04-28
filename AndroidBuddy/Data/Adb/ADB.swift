@@ -27,6 +27,11 @@ enum ADB {
         let args = ["-s", serial, "push", "\(localPath.pathForADBCommand)", "\(remotePath.pathForADBCommand)"]
         return commandPublisher(args: args)
     }
+
+    static func installAPK(serial: String, localPath: URL) -> any Publisher<String, Error> {
+        let args = ["-s", serial, "install", "-r", "\(localPath.pathForADBCommand)"]
+        return commandPublisher(args: args)
+    }
     
     static func deleteFile(serial: String, remotePath: URL) async throws -> String {
         let args = ["-s", serial, "shell", "rm", "-f", "\(remotePath.pathForShellCommand)"]
@@ -185,7 +190,7 @@ enum ADB {
     
     private static func sanitiseOutput(_ rawOutput: String) throws -> String {
         let components = rawOutput
-            .trimmingPrefixCharacters(in: .whitespacesAndNewlines) // Don't trim trailing spaces and file names, as that is needed for accurate file names
+            .trimmingPrefixCharacters(in: .whitespacesAndNewlines) // Don't trim trailing spaces and file names, as some reponses have trailing spaces (like in a file name, for example)
             .components(separatedBy: .newlines)
         
         let errorLine = "* failed to start daemon"
