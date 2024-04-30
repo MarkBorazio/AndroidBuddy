@@ -35,7 +35,7 @@ struct InstallAPKResponse: Equatable {
         } else if sanitisedOutput == "Success" {
             progress = .completed
         } else {
-            throw ADB.AdbError.responseParseError
+            throw ADB.AdbError.responseParseError(output: rawOutput)
         }
     }
 }

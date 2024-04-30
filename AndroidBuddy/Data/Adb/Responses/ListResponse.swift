@@ -32,16 +32,11 @@ struct ListResponse {
     init(path: URL, rawResponse: String) throws {
         self.path = path
         
-        if rawResponse.hasPrefix("ls:") {
-            if rawResponse.contains("No such file or directory") {
-                throw ADBServiceError.noSuchFileOrDirectory
-            } else {
-                throw ADB.AdbError.responseParseError
-            }
+        if rawResponse.contains("No such file or directory") {
+            throw ADBServiceError.noSuchFileOrDirectory
         }
         
-        let rawLines = rawResponse.components(separatedBy: "\n")
-            .dropFirst() // First line tells us the total of something (not sure what though)
+        let rawLines = rawResponse.components(separatedBy: .newlines)
             .filter { !$0.isEmpty } // Remove newline at end
         
         items = try rawLines.compactMap { try Self.parseRawLine($0, path: path) }
@@ -49,6 +44,19 @@ struct ListResponse {
     
     private static func parseRawLine(_ line: String, path: URL) throws -> Item? {
         var parsedLine = line
+        
+        // Some directories have access restrictions. Example:
+        // "ls: ./verity_key: Permission denied"
+        // We can ignore these lines, I guess (or maybe show them in a disabled state, but that seems like too much work).
+        if line.hasPrefix("ls:") {
+            return nil
+        }
+        
+        // The number of items can be filtered out (it will appear in list after access-restricted items)
+        if line.hasPrefix("total ") {
+            return nil
+        }
+        
         func extractNextComponent() -> String {
             let component = parsedLine.poppingPrefix(upTo: " ")
             parsedLine.trimPrefix(while: { $0 == " " })
@@ -72,7 +80,7 @@ struct ListResponse {
             .count
         
         guard numberOfComponents >= 8 else {
-            throw ADB.AdbError.responseParseError
+            throw ADB.AdbError.responseParseError(output: line)
         }
         
         let numberOfLinksRaw = extractNextComponent()
@@ -90,7 +98,7 @@ struct ListResponse {
             let size = Int(sizeRaw),
             let dateTime = Self.dateFormatter.date(from: "\(date) \(time)")
         else {
-            throw ADB.AdbError.responseParseError
+            throw ADB.AdbError.responseParseError(output: line)
         }
 
         let rawFileType = permissions.first

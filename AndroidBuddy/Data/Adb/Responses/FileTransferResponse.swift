@@ -44,7 +44,7 @@ struct FileTransferResponse: Equatable {
             
             let percentageString = String(rawOutput[range]).trimmingCharacters(in: .whitespacesAndNewlines)
             guard let percentageInt = Int(percentageString) else {
-                throw ADB.AdbError.responseParseError
+                throw ADB.AdbError.responseParseError(output: rawOutput)
             }
             
             if percentageInt >= 100 {

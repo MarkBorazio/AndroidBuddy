@@ -213,6 +213,6 @@ enum ADB {
         case commandError(output: String)
         case failedToOpenPty
         case dataNotUtf8
-        case responseParseError
+        case responseParseError(output: String)
     }
 }
