@@ -43,8 +43,6 @@ struct ListResponse {
     }
     
     private static func parseRawLine(_ line: String, path: URL) throws -> Item? {
-        var parsedLine = line
-        
         // Some directories have access restrictions. Example:
         // "ls: ./verity_key: Permission denied"
         // We can ignore these lines, I guess (or maybe show them in a disabled state, but that seems like too much work).
@@ -57,6 +55,10 @@ struct ListResponse {
             return nil
         }
         
+        var parsedLine = line
+        
+        // We extract each component one at a time as the components(separatedBy:) method
+        // will cut out double spaces that may appear in the file name, which we need.
         func extractNextComponent() -> String {
             let component = parsedLine.poppingPrefix(upTo: " ")
             parsedLine.trimPrefix(while: { $0 == " " })
@@ -65,12 +67,9 @@ struct ListResponse {
         
         let permissions = extractNextComponent()
         
-        /// Handle some kind of unknown case.
-        /// The full line looks something like this:
-        /// ```
-        /// d?????????   ? ?      ?             ?                ? data_mirror
-        /// ```
-        /// We need to check for it before anything else as it has less components than expected.
+        // Handle some kind of unknown case. The full line looks something like this:
+        // "d?????????   ? ?      ?             ?                ? data_mirror"
+        // We need to check for it before anything else as it has less components than expected.
         if permissions.contains("?") {
             return nil
         }
