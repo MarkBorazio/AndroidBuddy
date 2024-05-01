@@ -1,5 +1,5 @@
 //
-//  DirectoryViewRow.swift
+//  DirectoryNameColumnValue.swift
 //  AndroidBuddy
 //
 //  Created by Mark Borazio [Personal] on 27/4/2024.
@@ -7,26 +7,10 @@
 
 import SwiftUI
 
-struct DirectoryViewRow: View {
+struct DirectoryNameColumnValue: View {
     
-    struct Item: Identifiable {
-        
-        // Based on assumption that two things can't have same path in unix TODO: I think the assumption is wrong - double check it.
-        var id: URL { path }
-        
-        let path: URL
-        let name: String
-        let isSymlink: Bool
-        let type: ItemType
-        
-        enum ItemType {
-            case file
-            case directory
-        }
-    }
-    
-    let item: Item
-    @FocusState.Binding var renamableIdFocus: Item.ID?
+    let item: DirectoryView.Item
+    @FocusState.Binding var renamableIdFocus: DirectoryView.Item.ID?
     var onRename: (String) -> Void
     @State private var renamableText: String = ""
     
@@ -68,7 +52,7 @@ struct DirectoryViewRow: View {
         renamableIdFocus = nil
     }
     
-    private static func getSymbol(for type: Item.ItemType) -> some View {
+    private static func getSymbol(for type: DirectoryView.Item.ItemType) -> some View {
         let image: some View = switch type {
         case .file: Image(systemName: "doc.fill").foregroundStyle(Color.primary)
         case .directory: Image(systemName: "folder.fill").foregroundStyle(Color.mint)
@@ -78,10 +62,12 @@ struct DirectoryViewRow: View {
 }
 
 #Preview {
-    DirectoryViewRow(
+    DirectoryNameColumnValue(
         item: .init(
             path: URL(string: "/sdcard/roms")!,
             name: "Roms",
+            dateModified: "29 April, 2024 at 4:11 am",
+            size: "24.9 MB",
             isSymlink: false,
             type: .directory
         ),

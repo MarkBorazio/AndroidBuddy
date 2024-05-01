@@ -9,15 +9,32 @@ import SwiftUI
 
 struct DirectoryView: View {
     
+    struct Item: Identifiable {
+        
+        // Based on assumption that two things can't have same path in unix TODO: I think the assumption is wrong - double check it.
+        var id: URL { path }
+        
+        let path: URL
+        let name: String
+        let dateModified: String
+        let size: String
+        let isSymlink: Bool
+        let type: ItemType
+        
+        enum ItemType {
+            case file
+            case directory
+        }
+    }
     
     @EnvironmentObject private var viewModel: ContentViewModel
-    @State private var selection: Set<DirectoryViewRow.Item.ID> = []
-    @FocusState private var renamableIdFocus: DirectoryViewRow.Item.ID?
+    @State private var selection: Set<Item.ID> = []
+    @FocusState private var renamableIdFocus: Item.ID?
     
     var body: some View {
         Table(viewModel.items, selection: $selection) {
             TableColumn("Name") { item in
-                DirectoryViewRow(
+                DirectoryNameColumnValue(
                     item: item,
                     renamableIdFocus: $renamableIdFocus,
                     onRename: { newName in
@@ -26,16 +43,32 @@ struct DirectoryView: View {
                     }
                 )
             }
+
+            TableColumn(
+                Text("Date Modified")
+                    .foregroundColor(.secondary)
+            ) { item in
+                Text(item.dateModified)
+                    .foregroundStyle(Color.secondary)
+            }
+            
+            TableColumn(
+                Text("Size")
+                    .foregroundColor(.secondary)
+            ) { item in
+                Text(item.size)
+                    .foregroundStyle(Color.secondary)
+            }
         }
         .contextMenu(
-            forSelectionType: DirectoryViewRow.Item.ID.self,
+            forSelectionType: Item.ID.self,
             menu: rightClickMenu,
             primaryAction: doubleClickHandler
         )
     }
     
     @ViewBuilder
-    private func rightClickMenu(selectedItemIds: Set<DirectoryViewRow.Item.ID>) -> some View {
+    private func rightClickMenu(selectedItemIds: Set<Item.ID>) -> some View {
         if selectedItemIds.isEmpty {
             EmptyView()
         } else {
@@ -58,7 +91,7 @@ struct DirectoryView: View {
         }
     }
     
-    private func doubleClickHandler(selectedItemIds: Set<DirectoryViewRow.Item.ID>) {
+    private func doubleClickHandler(selectedItemIds: Set<Item.ID>) {
         let selectedItems = getItemsFromIds(selectedItemIds)
         if selectedItems.count == 1, let selectedItem = selectedItems.first {
             switch selectedItem.type {
@@ -70,7 +103,7 @@ struct DirectoryView: View {
         }
     }
     
-    private func getItemsFromIds(_ ids: Set<DirectoryViewRow.Item.ID>) -> [DirectoryViewRow.Item] {
+    private func getItemsFromIds(_ ids: Set<Item.ID>) -> [Item] {
         ids.flatMap { id in
             viewModel.items.filter { $0.id == id }
         }

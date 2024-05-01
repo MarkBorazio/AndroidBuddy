@@ -16,7 +16,7 @@ class ContentViewModel: ObservableObject {
     @Published var title: String = ""
     @Published var currentDeviceSerial: String? = nil
     @Published var allDevices: [Device] = []
-    @Published var items: [DirectoryViewRow.Item] = []
+    @Published var items: [DirectoryView.Item] = []
     @Published var backButtonEnabled: Bool = false
     @Published var fileTransferModel: FileTransferProgressView.Model? = nil
     @Published var alertModel: AlertModel? = nil
@@ -32,6 +32,12 @@ class ContentViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var fileTransferCancellable: AnyCancellable? = nil
     private let adbService: ADBService
+    
+    private static let byteCountFormatter: ByteCountFormatter = {
+        let formatter = ByteCountFormatter()
+        formatter.countStyle = .file
+        return formatter
+    }()
     
     init(adbService: ADBService) {
         self.adbService = adbService
@@ -102,17 +108,24 @@ class ContentViewModel: ObservableObject {
         }
     }
     
-    private static func mapListResponseToItems(_ response: ListResponse) -> [DirectoryViewRow.Item] {
+    private static func mapListResponseToItems(_ response: ListResponse) -> [DirectoryView.Item] {
         return response.items.map { responseItem in
-            let itemType: DirectoryViewRow.Item.ItemType = switch responseItem.fileType {
+            let itemType: DirectoryView.Item.ItemType = switch responseItem.fileType {
             case .directory: .directory
             case .file: .file
             case .symlink: .directory
             }
             
-            return DirectoryViewRow.Item(
+            let sizeString = switch itemType {
+            case .file: byteCountFormatter.string(fromByteCount: Int64(responseItem.size))
+            case .directory: "--"
+            }
+            
+            return DirectoryView.Item(
                 path: responseItem.path,
                 name: responseItem.name,
+                dateModified: responseItem.lastModifiedDate.formatted(date: .abbreviated, time: .shortened),
+                size: sizeString,
                 isSymlink: responseItem.fileType == .symlink,
                 type: itemType
             )
@@ -245,7 +258,7 @@ class ContentViewModel: ObservableObject {
             )
     }
     
-    func requestItemDeletion(item: DirectoryViewRow.Item) {
+    func requestItemDeletion(item: DirectoryView.Item) {
         guard let currentDevice else {
             Logger.error("Tried to delete item when no device was selected.")
             return
@@ -355,7 +368,7 @@ class ContentViewModel: ObservableObject {
                     case .finished:
                         self?.presentAPKInstallingSuccessAlert()
                     case let .failure(error):
-                        self?.presentErrorAlert(title: "Download Failed", error: error) { [weak self] in
+                        self?.presentErrorAlert(title: "Installation Failed", error: error) { [weak self] in
                             self?.installAPK(localFilePath: localFilePath)
                         }
                     }

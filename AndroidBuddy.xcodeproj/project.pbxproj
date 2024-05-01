@@ -48,7 +48,7 @@
 		4DF0C61B2BDB7EF6009862E5 /* Shell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61A2BDB7EF6009862E5 /* Shell.swift */; };
 		4DF0C61E2BDBFE06009862E5 /* CreateDirectoryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61D2BDBFE06009862E5 /* CreateDirectoryResponse.swift */; };
 		4DF0C6202BDC2346009862E5 /* MoveResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */; };
-		4DF0C6252BDD3709009862E5 /* DirectoryViewRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6242BDD3709009862E5 /* DirectoryViewRow.swift */; };
+		4DF0C6252BDD3709009862E5 /* DirectoryNameColumnValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6242BDD3709009862E5 /* DirectoryNameColumnValue.swift */; };
 		4DF0C6272BDD749C009862E5 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6262BDD749C009862E5 /* StringExtensions.swift */; };
 		4DF0C6292BDE4199009862E5 /* DeleteResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6282BDE4199009862E5 /* DeleteResponse.swift */; };
 		4DF0C62D2BDEBCB3009862E5 /* InstallAPKResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C62C2BDEBCB3009862E5 /* InstallAPKResponse.swift */; };
@@ -115,7 +115,7 @@
 		4DF0C61A2BDB7EF6009862E5 /* Shell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shell.swift; sourceTree = "<group>"; };
 		4DF0C61D2BDBFE06009862E5 /* CreateDirectoryResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDirectoryResponse.swift; sourceTree = "<group>"; };
 		4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveResponse.swift; sourceTree = "<group>"; };
-		4DF0C6242BDD3709009862E5 /* DirectoryViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryViewRow.swift; sourceTree = "<group>"; };
+		4DF0C6242BDD3709009862E5 /* DirectoryNameColumnValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryNameColumnValue.swift; sourceTree = "<group>"; };
 		4DF0C6262BDD749C009862E5 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		4DF0C6282BDE4199009862E5 /* DeleteResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteResponse.swift; sourceTree = "<group>"; };
 		4DF0C62C2BDEBCB3009862E5 /* InstallAPKResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallAPKResponse.swift; sourceTree = "<group>"; };
@@ -378,7 +378,7 @@
 			isa = PBXGroup;
 			children = (
 				4D2D35162BBBCE0800E0E733 /* DirectoryView.swift */,
-				4DF0C6242BDD3709009862E5 /* DirectoryViewRow.swift */,
+				4DF0C6242BDD3709009862E5 /* DirectoryNameColumnValue.swift */,
 			);
 			path = DirectoryView;
 			sourceTree = "<group>";
@@ -547,7 +547,7 @@
 				4D5077CB2BCA83F0008E099B /* MockAdbService.swift in Sources */,
 				4DF0C62D2BDEBCB3009862E5 /* InstallAPKResponse.swift in Sources */,
 				4DF0C6202BDC2346009862E5 /* MoveResponse.swift in Sources */,
-				4DF0C6252BDD3709009862E5 /* DirectoryViewRow.swift in Sources */,
+				4DF0C6252BDD3709009862E5 /* DirectoryNameColumnValue.swift in Sources */,
 				4D2D35462BC13C5F00E0E733 /* SideBarView.swift in Sources */,
 				4D2D35102BBAA88F00E0E733 /* StandardAdbService.swift in Sources */,
 				4DF0C6112BD94F67009862E5 /* Logger.swift in Sources */,
