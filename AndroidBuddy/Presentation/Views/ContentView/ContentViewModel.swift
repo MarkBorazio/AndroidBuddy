@@ -95,7 +95,7 @@ class ContentViewModel: ObservableObject {
                 items = Self.mapListResponseToItems(response)
             } catch {
                 Logger.error("Failed to load directory.", error: error)
-                presentErrorAlert(message: "Failed to load directory.") { [weak self] in
+                presentErrorAlert(title: "Failed To Load Directory", error: error) { [weak self] in
                     self?.refreshItems()
                 }
             }
@@ -162,8 +162,8 @@ class ContentViewModel: ObservableObject {
                     switch completion {
                     case .finished:
                         self?.refreshItems()
-                    case .failure(_):
-                        self?.presentErrorAlert(message: "Download failed") { [weak self] in
+                    case let .failure(error):
+                        self?.presentErrorAlert(title: "Download Failed", error: error) { [weak self] in
                             self?.downloadFile(serial: serial, remotePath: remotePath, localPath: localPath)
                         }
                     }
@@ -198,7 +198,7 @@ class ContentViewModel: ObservableObject {
                     uploadFile(serial: currentDevice.serial, localPath: localPath)
                 }
             } catch {
-                presentErrorAlert(message: "Failed to upload file.") { [weak self] in
+                presentErrorAlert(title: "Failed To Upload File", error: error) { [weak self] in
                     self?.requestFileUpload(localPath: localPath)
                 }
             }
@@ -228,8 +228,8 @@ class ContentViewModel: ObservableObject {
                     switch completion {
                     case .finished:
                         self?.refreshItems()
-                    case .failure(_):
-                        self?.presentErrorAlert(message: "Upload failed") { [weak self] in
+                    case let .failure(error):
+                        self?.presentErrorAlert(title: "Upload Failed", error: error) { [weak self] in
                             self?.uploadFile(serial: serial, localPath: localPath)
                         }
                     }
@@ -271,7 +271,7 @@ class ContentViewModel: ObservableObject {
                 refreshItems()
             } catch {
                 Logger.error("Failed to delete item.", error: error)
-                presentErrorAlert(message: "Failed to delete file.") { [weak self] in
+                presentErrorAlert(title: "Failed To Delete File", error: error) { [weak self] in
                     self?.deleteFile(serial: serial, path: path, isDirectory: isDirectory)
                 }
             }
@@ -302,7 +302,7 @@ class ContentViewModel: ObservableObject {
                 try await adbService.createNewFolder(serial: currentDevice.serial, remotePath: remotePath)
             } catch {
                 Logger.error("Failed to create folder.", error: error)
-                presentErrorAlert(message: "Failed to create folder.") { [weak self] in
+                presentErrorAlert(title: "Failed To Create Folder", error: error) { [weak self] in
                     self?.createNewFolder()
                 }
             }
@@ -323,7 +323,7 @@ class ContentViewModel: ObservableObject {
                 refreshItems()
             } catch {
                 Logger.error("Failed to rename item.", error: error)
-                presentErrorAlert(message: "Failed to rename item.") { [weak self] in
+                presentErrorAlert(title: "Failed To Rename Item", error: error) { [weak self] in
                     self?.rename(remoteSource: remoteSource, newName: newName)
                 }
             }
@@ -354,8 +354,8 @@ class ContentViewModel: ObservableObject {
                     switch completion {
                     case .finished:
                         self?.presentAPKInstallingSuccessAlert()
-                    case .failure(_):
-                        self?.presentErrorAlert(message: "Download failed") { [weak self] in
+                    case let .failure(error):
+                        self?.presentErrorAlert(title: "Download Failed", error: error) { [weak self] in
                             self?.installAPK(localFilePath: localFilePath)
                         }
                     }
@@ -431,9 +431,16 @@ class ContentViewModel: ObservableObject {
         )
     }
     
-    private func presentErrorAlert(message: String, retry: @escaping () -> Void) {
+    private func presentErrorAlert(title: String, error: Error, retry: @escaping () -> Void) {
+        // We'll see how this goes for now. We might remove this if it looks weird.
+        let message = if case let ADB.AdbError.adbError(output) = error {
+            output
+        } else {
+            "\(error)"
+        }
+        
         alertModel = .init(
-            title: "Something went wrong",
+            title: title,
             message: message,
             buttons: [
                 .init(title: "Retry", type: .standard, action: retry),

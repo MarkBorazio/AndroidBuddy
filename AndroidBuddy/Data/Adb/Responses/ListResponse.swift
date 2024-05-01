@@ -79,7 +79,7 @@ struct ListResponse {
             .count
         
         guard numberOfComponents >= 8 else {
-            throw ADB.AdbError.responseParseError(output: line)
+            throw ADB.AdbError.responseParseError
         }
         
         let numberOfLinksRaw = extractNextComponent()
@@ -97,7 +97,7 @@ struct ListResponse {
             let size = Int(sizeRaw),
             let dateTime = Self.dateFormatter.date(from: "\(date) \(time)")
         else {
-            throw ADB.AdbError.responseParseError(output: line)
+            throw ADB.AdbError.responseParseError
         }
 
         let rawFileType = permissions.first

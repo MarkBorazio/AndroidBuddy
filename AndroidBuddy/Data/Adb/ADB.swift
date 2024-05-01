@@ -193,14 +193,12 @@ enum ADB {
             .trimmingPrefixCharacters(in: .whitespacesAndNewlines) // Don't trim trailing spaces and file names, as some reponses have trailing spaces (like in a file name, for example)
             .components(separatedBy: .newlines)
         
-        let errorLine = "* failed to start daemon"
-        if components.contains(errorLine) {
+        if components.contains("* failed to start daemon") {
             throw AdbError.daemonError
         }
         
-        let adbErrorPrefix = "adb:"
-        if components.contains(where: { $0.hasPrefix(adbErrorPrefix) }) {
-            throw AdbError.commandError(output: rawOutput)
+        if components.contains(where: { $0.hasPrefix("adb:") }) {
+            throw AdbError.adbError(output: rawOutput)
         }
         
         return components
@@ -210,9 +208,10 @@ enum ADB {
     
     enum AdbError: Error {
         case daemonError
-        case commandError(output: String)
+        case adbError(output: String) // When error starts with "adb:"
+        case commandError(output: String) // When error starts with command (eg: "ls:")
         case failedToOpenPty
         case dataNotUtf8
-        case responseParseError(output: String)
+        case responseParseError
     }
 }
