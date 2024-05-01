@@ -29,6 +29,8 @@
 		4D5077CB2BCA83F0008E099B /* MockAdbService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5077CA2BCA83F0008E099B /* MockAdbService.swift */; };
 		4D5077CE2BCAE0B9008E099B /* MockListResponse in Resources */ = {isa = PBXBuildFile; fileRef = 4D5077CD2BCAE0B9008E099B /* MockListResponse */; };
 		4D5077D02BCAE252008E099B /* MockDevicesResponse in Resources */ = {isa = PBXBuildFile; fileRef = 4D5077CF2BCAE252008E099B /* MockDevicesResponse */; };
+		4D80BD0F2BE272E8009A2835 /* DebugCommandMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D80BD0E2BE272E8009A2835 /* DebugCommandMenu.swift */; };
+		4D80BD122BE277AB009A2835 /* DebugCommandMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D80BD112BE277AB009A2835 /* DebugCommandMenuViewModel.swift */; };
 		4DDD83052BBA7CCB003F7203 /* AndroidBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */; };
 		4DDD83072BBA7CCB003F7203 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83062BBA7CCB003F7203 /* ContentView.swift */; };
 		4DDD83092BBA7CCC003F7203 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4DDD83082BBA7CCC003F7203 /* Assets.xcassets */; };
@@ -92,6 +94,8 @@
 		4D5077CA2BCA83F0008E099B /* MockAdbService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAdbService.swift; sourceTree = "<group>"; };
 		4D5077CD2BCAE0B9008E099B /* MockListResponse */ = {isa = PBXFileReference; lastKnownFileType = text; path = MockListResponse; sourceTree = "<group>"; };
 		4D5077CF2BCAE252008E099B /* MockDevicesResponse */ = {isa = PBXFileReference; lastKnownFileType = text; path = MockDevicesResponse; sourceTree = "<group>"; };
+		4D80BD0E2BE272E8009A2835 /* DebugCommandMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugCommandMenu.swift; sourceTree = "<group>"; };
+		4D80BD112BE277AB009A2835 /* DebugCommandMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugCommandMenuViewModel.swift; sourceTree = "<group>"; };
 		4DDD83012BBA7CCB003F7203 /* AndroidBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidBuddyApp.swift; sourceTree = "<group>"; };
 		4DDD83062BBA7CCB003F7203 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -189,6 +193,7 @@
 			isa = PBXGroup;
 			children = (
 				4DF0C6162BDA6E95009862E5 /* Views */,
+				4D80BD0D2BE272BB009A2835 /* Commands */,
 				4DF0C6172BDA6EB0009862E5 /* Extensions */,
 				4D1319662BC83C66004CA803 /* ViewConstants.swift */,
 			);
@@ -258,6 +263,23 @@
 				4D5077C42BC98A29008E099B /* Device.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		4D80BD0D2BE272BB009A2835 /* Commands */ = {
+			isa = PBXGroup;
+			children = (
+				4D80BD102BE27796009A2835 /* DebugCommandMenu */,
+			);
+			path = Commands;
+			sourceTree = "<group>";
+		};
+		4D80BD102BE27796009A2835 /* DebugCommandMenu */ = {
+			isa = PBXGroup;
+			children = (
+				4D80BD112BE277AB009A2835 /* DebugCommandMenuViewModel.swift */,
+				4D80BD0E2BE272E8009A2835 /* DebugCommandMenu.swift */,
+			);
+			path = DebugCommandMenu;
 			sourceTree = "<group>";
 		};
 		4DDD82F82BBA7CCB003F7203 = {
@@ -518,6 +540,7 @@
 				4D13195F2BC83056004CA803 /* LoadingView.swift in Sources */,
 				4D1319612BC8385C004CA803 /* ADBErrorView.swift in Sources */,
 				4D5077C52BC98A29008E099B /* Device.swift in Sources */,
+				4D80BD0F2BE272E8009A2835 /* DebugCommandMenu.swift in Sources */,
 				4D2D353D2BBFE21D00E0E733 /* NoDevicesView.swift in Sources */,
 				4D2D351B2BBC027900E0E733 /* ContentViewModel.swift in Sources */,
 				4D1319672BC83C66004CA803 /* ViewConstants.swift in Sources */,
@@ -529,6 +552,7 @@
 				4D2D35102BBAA88F00E0E733 /* StandardAdbService.swift in Sources */,
 				4DF0C6112BD94F67009862E5 /* Logger.swift in Sources */,
 				4D5077C92BCA6B70008E099B /* StandardDependencies.swift in Sources */,
+				4D80BD122BE277AB009A2835 /* DebugCommandMenuViewModel.swift in Sources */,
 				4DF0C61B2BDB7EF6009862E5 /* Shell.swift in Sources */,
 				4DF0C6152BDA5730009862E5 /* Alert+DataSource.swift in Sources */,
 				4D1319632BC839BA004CA803 /* ADBErrorViewModel.swift in Sources */,

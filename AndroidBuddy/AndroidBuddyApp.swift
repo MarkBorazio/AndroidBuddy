@@ -14,5 +14,10 @@ struct AndroidBuddyApp: App {
         WindowGroup {
             ContentView(adbService: StandardDependencies.shared.adbService)
         }
+        .commands {
+            #if DEBUG
+            DebugCommandMenu()
+            #endif
+        }
     }
 }
