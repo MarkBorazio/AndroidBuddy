@@ -110,26 +110,38 @@ enum ADB {
             
             let subject = PassthroughSubject<String, Error>()
             
+            // This queue exists because the process can exit and the .finished completion be sent when
+            // the readabilityHandler is in the middle of executing it's block.
+            // This isn't the greatest solution; I think it's possible that the process can finish before
+            // the readability handler is called for the last time, but so far I haven't noticed that happen.
+            let syncQueue = DispatchQueue(label: "androidBuddy.commandPublisher.syncQueue")
+            
             DispatchQueue.global(qos: .userInitiated).async {
                 primaryHandle.readabilityHandler = { handle in
                     let data = handle.availableData
-                    guard let rawOutput = String(data: data, encoding: .utf8) else { return }
-                    Logger.verbose(rawOutput)
-                    guard !rawOutput.isEmpty else { return }
-                    do {
-                        let sanitisedOutput = try sanitiseOutput(rawOutput)
-                        Logger.verbose(sanitisedOutput)
-                        subject.send(sanitisedOutput)
-                    } catch {
-                        Logger.error("ADB readabilityHandler error.", error: error)
-                        subject.send(completion: .failure(error))
+                    syncQueue.async {
+                        do {
+                            guard let rawOutput = String(data: data, encoding: .utf8) else {
+                                throw AdbError.dataNotUtf8
+                            }
+                            Logger.verbose(rawOutput)
+                            guard !rawOutput.isEmpty else { return }
+                            let sanitisedOutput = try sanitiseOutput(rawOutput)
+                            Logger.verbose(sanitisedOutput)
+                            subject.send(sanitisedOutput)
+                        } catch {
+                            Logger.error("ADB readabilityHandler error.", error: error)
+                            subject.send(completion: .failure(error))
+                        }
                     }
                 }
                 
                 do {
                     try process.run()
                     process.waitUntilExit()
-                    subject.send(completion: .finished)
+                    syncQueue.async {
+                        subject.send(completion: .finished)
+                    }
                 } catch {
                     Logger.error("ADB error.", error: error)
                     subject.send(completion: .failure(error))
@@ -167,16 +179,23 @@ enum ADB {
             process.arguments = args
             process.executableURL = executableUrl
             
+            // Run process here in it's own do block so that if there is an error running it,
+            // we can return early and not run the `terminate` function
+            // as that would otherwise result in a crash.
             do {
                 try process.run()
-                let data = try pipe.fileHandleForReading.readToEnd() ?? Data()
+            } catch {
+                Logger.error("Failed to run process.", error: error)
+                continuation.resume(throwing: error)
+                return
+            }
                 
+            do {
+                let data = try pipe.fileHandleForReading.readToEnd() ?? Data()
                 guard let rawOutput = String(data: data, encoding: .utf8) else {
                     throw AdbError.dataNotUtf8
                 }
-                
                 Logger.verbose(rawOutput)
-
                 let sanitisedOutput = try sanitiseOutput(rawOutput)
                 continuation.resume(returning: sanitisedOutput)
             } catch {
