@@ -43,7 +43,8 @@ struct DirectoryView: View {
                     }
                 )
             }
-
+            .width(min: 200)
+            
             TableColumn(
                 Text("Date Modified")
                     .foregroundColor(.secondary)
@@ -51,14 +52,20 @@ struct DirectoryView: View {
                 Text(item.dateModified)
                     .foregroundStyle(Color.secondary)
             }
+            .width(170)
+
             
             TableColumn(
                 Text("Size")
                     .foregroundColor(.secondary)
             ) { item in
-                Text(item.size)
-                    .foregroundStyle(Color.secondary)
+                HStack {
+                    Spacer()
+                    Text(item.size)
+                        .foregroundStyle(Color.secondary)
+                }
             }
+            .width(90)
         }
         .contextMenu(
             forSelectionType: Item.ID.self,
