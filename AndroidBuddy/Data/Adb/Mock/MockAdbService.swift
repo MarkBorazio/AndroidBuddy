@@ -15,6 +15,7 @@ class MockAdbService {
     
     private var resetServerBlock: () -> Void
     private var listBlock: (URL) -> ListResponse
+    private var getBlueoothNameBlock: () -> String?
     private var pullBlock: () -> any Publisher<FileTransferResponse, Error>
     private var pushBlock: () -> any Publisher<FileTransferResponse, Error>
     private var installAPKBlock: () -> any Publisher<InstallAPKResponse, Error>
@@ -28,6 +29,7 @@ class MockAdbService {
         connectedDevices: [Device],
         resetServer: @escaping () -> Void = defaultResetServerBlock,
         list: @escaping (URL) -> ListResponse = defaultListBlock,
+        getBluetoothName: @escaping () -> String? = defaultGetBluetoothNameBlock,
         pull: @escaping () -> any Publisher<FileTransferResponse, Error> = defaultPullBlock,
         push: @escaping () -> any Publisher<FileTransferResponse, Error> = defaultPushBlock,
         installAPK: @escaping () -> any Publisher<InstallAPKResponse, Error> = defaultInstallAPKBlock,
@@ -41,6 +43,7 @@ class MockAdbService {
 
         resetServerBlock = resetServer
         listBlock = list
+        getBlueoothNameBlock = getBluetoothName
         pullBlock = pull
         pushBlock = push
         installAPKBlock = installAPK
@@ -66,6 +69,10 @@ extension MockAdbService {
     private static var defaultListBlock: (URL) -> ListResponse = { path in
         let response = getResponse(fileName: "MockListResponse")
         return try! ListResponse(path: path, rawResponse: response)
+    }
+    
+    private static var defaultGetBluetoothNameBlock: () -> String? = {
+        return "Mock Device Name"
     }
     
     private static var defaultPullBlock: () -> any Publisher<FileTransferResponse, Error> = {
@@ -102,6 +109,10 @@ extension MockAdbService: ADBService {
     
     func list(serial: String, path: URL) async throws -> ListResponse {
         listBlock(path)
+    }
+    
+    func getBluetoothName(serial: String) async throws -> String? {
+        getBlueoothNameBlock()
     }
     
     func pull(serial: String, remotePath: URL, localPath: URL) -> any Publisher<FileTransferResponse, Error> {

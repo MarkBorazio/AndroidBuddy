@@ -29,6 +29,7 @@
 		4D5077CB2BCA83F0008E099B /* MockAdbService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5077CA2BCA83F0008E099B /* MockAdbService.swift */; };
 		4D5077CE2BCAE0B9008E099B /* MockListResponse in Resources */ = {isa = PBXBuildFile; fileRef = 4D5077CD2BCAE0B9008E099B /* MockListResponse */; };
 		4D5077D02BCAE252008E099B /* MockDevicesResponse in Resources */ = {isa = PBXBuildFile; fileRef = 4D5077CF2BCAE252008E099B /* MockDevicesResponse */; };
+		4D6749402BE54CD700D633B7 /* BluetoothNameResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D67493F2BE54CD700D633B7 /* BluetoothNameResponse.swift */; };
 		4D80BD0F2BE272E8009A2835 /* DebugCommandMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D80BD0E2BE272E8009A2835 /* DebugCommandMenu.swift */; };
 		4D80BD122BE277AB009A2835 /* DebugCommandMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D80BD112BE277AB009A2835 /* DebugCommandMenuViewModel.swift */; };
 		4DDD83052BBA7CCB003F7203 /* AndroidBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */; };
@@ -94,6 +95,7 @@
 		4D5077CA2BCA83F0008E099B /* MockAdbService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAdbService.swift; sourceTree = "<group>"; };
 		4D5077CD2BCAE0B9008E099B /* MockListResponse */ = {isa = PBXFileReference; lastKnownFileType = text; path = MockListResponse; sourceTree = "<group>"; };
 		4D5077CF2BCAE252008E099B /* MockDevicesResponse */ = {isa = PBXFileReference; lastKnownFileType = text; path = MockDevicesResponse; sourceTree = "<group>"; };
+		4D67493F2BE54CD700D633B7 /* BluetoothNameResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothNameResponse.swift; sourceTree = "<group>"; };
 		4D80BD0E2BE272E8009A2835 /* DebugCommandMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugCommandMenu.swift; sourceTree = "<group>"; };
 		4D80BD112BE277AB009A2835 /* DebugCommandMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugCommandMenuViewModel.swift; sourceTree = "<group>"; };
 		4DDD83012BBA7CCB003F7203 /* AndroidBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -185,6 +187,7 @@
 				4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */,
 				4DF0C6282BDE4199009862E5 /* DeleteResponse.swift */,
 				4DF0C62C2BDEBCB3009862E5 /* InstallAPKResponse.swift */,
+				4D67493F2BE54CD700D633B7 /* BluetoothNameResponse.swift */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -531,6 +534,7 @@
 				4D2D35262BBEA65300E0E733 /* AsyncCombineExtensions.swift in Sources */,
 				4DF0C61E2BDBFE06009862E5 /* CreateDirectoryResponse.swift in Sources */,
 				4D5077C72BCA6807008E099B /* ADBService.swift in Sources */,
+				4D6749402BE54CD700D633B7 /* BluetoothNameResponse.swift in Sources */,
 				4D2D351E2BBE710000E0E733 /* ManualCommandView.swift in Sources */,
 				4DE1148E2BD42A76005E9679 /* FileTransferResponse.swift in Sources */,
 				4D2D35132BBAA9B400E0E733 /* ListResponse.swift in Sources */,

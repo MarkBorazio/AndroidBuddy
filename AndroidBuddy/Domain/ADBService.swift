@@ -15,6 +15,7 @@ protocol ADBService {
     
     func resetServer()
     func list(serial: String, path: URL) async throws -> ListResponse
+    func getBluetoothName(serial: String) async throws -> String?
     func pull(serial: String, remotePath: URL, localPath: URL) -> any Publisher<FileTransferResponse, Error>
     func push(serial: String, localPath: URL, remotePath: URL) -> any Publisher<FileTransferResponse, Error>
     func installAPK(serial: String, localPath: URL) -> any Publisher<InstallAPKResponse, Error>

@@ -57,8 +57,8 @@ class StandardAdbService: ADBService {
         Logger.verbose("...got devices.")
         for serial in devicesResponse.connectedDeviceSerials {
             Logger.verbose("Getting bluetooth name for \(serial)...")
-            let name = try await ADB.getBluetoothName(serial: serial)
-            Logger.verbose("...got Bluetooth name for \(serial).")
+            let name = try await getBluetoothName(serial: serial)
+            Logger.verbose("...got Bluetooth name for \(serial), which is \(String(describing: name)).")
             let device = Device(bluetoothName: name, serial: serial)
             devices.append(device)
         }
@@ -90,6 +90,12 @@ class StandardAdbService: ADBService {
     func list(serial: String, path: URL) async throws -> ListResponse {
         Logger.info("Listing devices for \(serial) at path \(path.path(percentEncoded: false))")
         return try await ADB.list(serial: serial, path: path)
+    }
+    
+    func getBluetoothName(serial: String) async throws -> String? {
+        Logger.verbose("Getting Blueooth name for \(serial)")
+        let output = try await ADB.getBluetoothName(serial: serial)
+        return BluetoothNameResponse.extractName(output)
     }
     
     func pull(serial: String, remotePath: URL, localPath: URL) -> any Publisher<FileTransferResponse, Error> {
