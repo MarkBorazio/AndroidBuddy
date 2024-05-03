@@ -21,7 +21,7 @@ class ContentViewModel: ObservableObject {
     @Published var fileTransferModel: FileTransferProgressView.Model? = nil
     @Published var alertModel: AlertModel? = nil
     
-    @Published private var currentPath: URL = .shellRoot
+    @Published var currentPath: URL = .shellRoot
     
     
     var currentDevice: Device? {

@@ -32,46 +32,60 @@ struct DirectoryView: View {
     @FocusState private var renamableIdFocus: Item.ID?
     
     var body: some View {
-        Table(viewModel.items, selection: $selection) {
-            TableColumn("Name") { item in
-                DirectoryNameColumnValue(
-                    item: item,
-                    renamableIdFocus: $renamableIdFocus,
-                    onRename: { newName in
-                        viewModel.rename(remoteSource: item.path, newName: newName)
-                        selection = []
-                    }
-                )
-            }
-            .width(min: 200)
-            
-            TableColumn(
-                Text("Date Modified")
-                    .foregroundColor(.secondary)
-            ) { item in
-                Text(item.dateModified)
-                    .foregroundStyle(Color.secondary)
-            }
-            .width(170)
-
-            
-            TableColumn(
-                Text("Size")
-                    .foregroundColor(.secondary)
-            ) { item in
-                HStack {
-                    Spacer()
-                    Text(item.size)
+        ScrollViewReader { proxy in
+            Table(viewModel.items, selection: $selection) {
+                TableColumn("Name") { item in
+                    DirectoryNameColumnValue(
+                        item: item,
+                        renamableIdFocus: $renamableIdFocus,
+                        onRename: { newName in
+                            viewModel.rename(remoteSource: item.path, newName: newName)
+                            selection = []
+                        }
+                    )
+                    .id(item.name)
+                }
+                .width(min: 200)
+                
+                TableColumn(
+                    Text("Date Modified")
+                        .foregroundColor(.secondary)
+                ) { item in
+                    Text(item.dateModified)
                         .foregroundStyle(Color.secondary)
                 }
+                .width(170)
+                
+                
+                TableColumn(
+                    Text("Size")
+                        .foregroundColor(.secondary)
+                ) { item in
+                    HStack {
+                        Spacer()
+                        Text(item.size)
+                            .foregroundStyle(Color.secondary)
+                    }
+                }
+                .width(90)
             }
-            .width(90)
+            .contextMenu(
+                forSelectionType: Item.ID.self,
+                menu: rightClickMenu,
+                primaryAction: doubleClickHandler
+            )
+            .onChange(of: viewModel.currentDeviceSerial) { _ in
+                scrollToTop(proxy: proxy)
+            }
+            .onChange(of: viewModel.currentPath) { _ in
+                scrollToTop(proxy: proxy)
+            }
         }
-        .contextMenu(
-            forSelectionType: Item.ID.self,
-            menu: rightClickMenu,
-            primaryAction: doubleClickHandler
-        )
+    }
+    
+    private func scrollToTop(proxy: ScrollViewProxy) {
+        guard let firstId = viewModel.items.first?.id else { return }
+        proxy.scrollTo(firstId)
     }
     
     @ViewBuilder
