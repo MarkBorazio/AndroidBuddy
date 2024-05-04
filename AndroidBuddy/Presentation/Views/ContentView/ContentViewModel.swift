@@ -516,9 +516,15 @@ class ContentViewModel: ObservableObject {
         // We'll see how this goes for now. We might remove this if it looks weird.
         let message = if case let ADB.AdbError.adbError(output) = error {
             output
+        } else if case let ADB.AdbError.commandError(output) = error {
+            output
         } else {
             "\(error)"
         }
+        
+        let sanitisedMessage = message
+            .replacingOccurrences(of: #"\n"#, with: "")
+            .replacingOccurrences(of: #"\"#, with: #""#)
         
         alertModel = .init(
             title: title,
