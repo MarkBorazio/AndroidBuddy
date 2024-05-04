@@ -73,6 +73,11 @@ struct DirectoryView: View {
                 menu: rightClickMenu,
                 primaryAction: doubleClickHandler
             )
+            .contextMenu { // When right clicking part of table that isn't an item
+                Button("Create New Folder") {
+                    viewModel.createNewFolder()
+                }
+            }
             .onChange(of: viewModel.currentDeviceSerial) { _ in
                 scrollToTop(proxy: proxy)
             }
