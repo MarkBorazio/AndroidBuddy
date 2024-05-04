@@ -23,7 +23,6 @@ class ContentViewModel: ObservableObject {
     
     @Published var currentPath: URL = .shellRoot
     
-    
     var currentDevice: Device? {
         guard let currentDeviceSerial else { return nil }
         return allDevices.first { $0.serial == currentDeviceSerial }
@@ -132,28 +131,46 @@ class ContentViewModel: ObservableObject {
         }
     }
     
-    func requestFileDownload(remotePath: URL) {
+    func requestFileDownload(remotePaths: [URL]) {
         guard let currentDevice else {
             Logger.error("Tried to download file when no device was selected.")
             return
         }
         
-        let localPath = URL(string: "/Users/Mark/Downloads")! // TODO: Choose directory instead of always goind to Downloads folder.
+        let localPath = URL(string: "/Users/Mark/Downloads")! // TODO: Choose directory instead of always going to Downloads folder.
         
-        let fileName = remotePath.lastPathComponent
-        let potentialLocalPath = localPath.appending(path: fileName)
-        let fileExists = FileManager.default.fileExists(atPath: potentialLocalPath.path(percentEncoded: false))
-        if fileExists {
-            presentDuplicateFileAlert(fileName: fileName) { [weak self] in
-                self?.downloadFile(serial: currentDevice.serial, remotePath: remotePath, localPath: localPath)
+        Task {
+            var pathsToDownload: [URL] = remotePaths
+            for remotePath in remotePaths {
+                let fileName = remotePath.lastPathComponent
+                let potentialLocalPath = localPath.appending(path: fileName)
+                let fileExists = FileManager.default.fileExists(atPath: potentialLocalPath.path(percentEncoded: false))
+                if fileExists {
+                    let result = await presentDuplicateFileAlert(fileName: fileName)
+                    switch result {
+                    case .replace: break
+                    case .skip: pathsToDownload.removeAll { $0 == remotePath }
+                    case .cancel: return
+                    }
+                }
             }
-        } else {
-            downloadFile(serial: currentDevice.serial, remotePath: remotePath, localPath: localPath)
+            
+            guard !pathsToDownload.isEmpty else { return }
+            
+            downloadFiles(serial: currentDevice.serial, remotePaths: pathsToDownload, localPath: localPath)
         }
     }
     
-    private func downloadFile(serial: String, remotePath: URL, localPath: URL) {
-        let transferDetails = "\(remotePath.path(percentEncoded: false)) → Downloads"
+    private func downloadFiles(serial: String, remotePaths: [URL], localPath: URL) {
+        guard let nextRemotePath = remotePaths.first else {
+            fileTransferModel = nil
+            refreshItems()
+            return
+        }
+        
+        let remainingRemotePaths = Array(remotePaths.dropFirst())
+        let remoteFileName = nextRemotePath.path(percentEncoded: false)
+        let transferDetails = "\(remoteFileName) → Downloads"
         
         func updateTransfer(_ percentage: Double) {
             fileTransferModel = .init(
@@ -166,7 +183,7 @@ class ContentViewModel: ObservableObject {
         
         updateTransfer(0)
         
-        fileTransferCancellable = adbService.pull(serial: serial, remotePath: remotePath, localPath: localPath)
+        fileTransferCancellable = adbService.pull(serial: serial, remotePath: nextRemotePath, localPath: localPath)
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .sink(
@@ -174,10 +191,10 @@ class ContentViewModel: ObservableObject {
                     self?.fileTransferModel = nil
                     switch completion {
                     case .finished:
-                        self?.refreshItems()
+                        self?.downloadFiles(serial: serial, remotePaths: remainingRemotePaths, localPath: localPath)
                     case let .failure(error):
-                        self?.presentErrorAlert(title: "Download Failed", error: error) { [weak self] in
-                            self?.downloadFile(serial: serial, remotePath: remotePath, localPath: localPath)
+                        self?.presentErrorAlert(title: "Failed To Download \(remoteFileName)", error: error) { [weak self] in
+                            self?.downloadFiles(serial: serial, remotePaths: remotePaths, localPath: localPath)
                         }
                     }
                 },
@@ -431,6 +448,31 @@ class ContentViewModel: ObservableObject {
                 alertCancelButton
             ]
         )
+    }
+    
+    private enum DuplicateFileAlertResult {
+        case replace
+        case skip
+        case cancel
+    }
+    private func presentDuplicateFileAlert(fileName: String) async -> DuplicateFileAlertResult {
+        await withCheckedContinuation { continuation in
+            alertModel = .init(
+                title: "An item named \(fileName) already exists in this folder.",
+                message: "Would you like to replace the existing item with the one being copied?",
+                buttons: [
+                    .init(title: "Replace", type: .standard) {
+                        continuation.resume(returning: .replace)
+                    },
+                    .init(title: "Skip", type: .standard) {
+                        continuation.resume(returning: .skip)
+                    },
+                    .init(title: "Cancel", type: .cancel) {
+                        continuation.resume(returning: .cancel)
+                    }
+                ]
+            )
+        }
     }
     
     private func presentDuplicateFileAlert(fileName: String, replace: @escaping () -> Void) {

@@ -96,7 +96,7 @@ struct DirectoryView: View {
             let selectedItems = getItemsFromIds(selectedItemIds)
             if selectedItems.count == 1, let selectedItem = selectedItems.first { // Single item menu.
                 Button("Save to downloads") {
-                    viewModel.requestFileDownload(remotePath: selectedItem.path)
+                    viewModel.requestFileDownload(remotePaths: [selectedItem.path])
                 }
                 Button("Rename") {
                     selection = [selectedItem.id]
@@ -106,8 +106,12 @@ struct DirectoryView: View {
                     viewModel.requestItemDeletion(item: selectedItem)
                 }
             } else { // Multi-item menu.
-                Button("Delete Selected", role: .destructive) { }
-                Button("Save to downloads") {}
+                Button("Delete Selected", role: .destructive) {
+                    print("TODO")
+                }
+                Button("Save to downloads") {
+                    viewModel.requestFileDownload(remotePaths: selectedItems.map(\.path))
+                }
             }
         }
     }
@@ -117,7 +121,7 @@ struct DirectoryView: View {
         if selectedItems.count == 1, let selectedItem = selectedItems.first {
             switch selectedItem.type {
             case .file:
-                viewModel.requestFileDownload(remotePath: selectedItem.path)
+                viewModel.requestFileDownload(remotePaths: [selectedItem.path])
             case .directory:
                 viewModel.navigateToDirectory(path: selectedItem.path)
             }
