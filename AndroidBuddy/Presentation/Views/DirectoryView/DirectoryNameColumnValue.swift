@@ -54,8 +54,15 @@ struct DirectoryNameColumnValue: View {
     
     private static func getSymbol(for type: DirectoryView.Item.ItemType) -> some View {
         let image: some View = switch type {
-        case .file: Image(systemName: "doc.fill").foregroundStyle(Color.primary)
-        case .directory: Image(systemName: "folder.fill").foregroundStyle(Color.mint)
+        case .file: 
+            Image(systemName: "doc.fill")
+                .foregroundStyle(Gradient(colors: [Color.primary]))
+        case .directory: 
+            Image(systemName: "folder.fill")
+                .foregroundStyle(Gradient(colors: [
+                    Color(red: 132/255, green: 214/255, blue: 252/255),
+                    Color(red: 111/255, green: 187/255, blue: 247/255)
+                ]))
         }
         return image.frame(width: 20, height: 20)
     }
