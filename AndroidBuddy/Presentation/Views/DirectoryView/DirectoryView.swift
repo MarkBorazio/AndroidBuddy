@@ -56,7 +56,6 @@ struct DirectoryView: View {
                 }
                 .width(170)
                 
-                
                 TableColumn(
                     Text("Size")
                         .foregroundColor(.secondary)
@@ -94,24 +93,20 @@ struct DirectoryView: View {
             EmptyView()
         } else {
             let selectedItems = getItemsFromIds(selectedItemIds)
-            if selectedItems.count == 1, let selectedItem = selectedItems.first { // Single item menu.
-                Button("Save to downloads") {
-                    viewModel.requestFileDownload(remotePaths: [selectedItem.path])
-                }
+            
+            Button("Save to downloads") {
+                viewModel.requestFileDownload(remotePaths: selectedItems.map(\.path))
+            }
+            
+            if selectedItems.count == 1, let selectedItem = selectedItems.first {
                 Button("Rename") {
                     selection = [selectedItem.id]
                     renamableIdFocus = selectedItem.id
                 }
-                Button("Delete", role: .destructive) {
-                    viewModel.requestItemDeletion(item: selectedItem)
-                }
-            } else { // Multi-item menu.
-                Button("Delete Selected", role: .destructive) {
-                    print("TODO")
-                }
-                Button("Save to downloads") {
-                    viewModel.requestFileDownload(remotePaths: selectedItems.map(\.path))
-                }
+            }
+            
+            Button("Delete", role: .destructive) {
+                viewModel.requestItemDeletion(items: selectedItems)
             }
         }
     }

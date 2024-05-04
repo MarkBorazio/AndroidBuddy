@@ -275,34 +275,50 @@ class ContentViewModel: ObservableObject {
             )
     }
     
-    func requestItemDeletion(item: DirectoryView.Item) {
+    func requestItemDeletion(items: [DirectoryView.Item]) {
         guard let currentDevice else {
             Logger.error("Tried to delete item when no device was selected.")
             return
         }
         
-        presentItemDeletionConfirmationAlert(itemName: item.name) { [weak self] in
-            self?.deleteFile(
-                serial: currentDevice.serial,
-                path: item.path,
-                isDirectory: item.type == .directory
-            )
+        func deletion() {
+            deleteFiles(serial: currentDevice.serial, items: items)
+        }
+        
+        if items.count > 1 {
+            presentDeletionConfirmationAlertPlural(itemCount: items.count, delete: deletion)
+        } else if items.count == 1 {
+            presentDeletionConfirmationAlertSingular(itemName: items[0].name, delete: deletion)
         }
     }
     
-    func deleteFile(serial: String, path: URL, isDirectory: Bool) {
+    private func deleteFiles(serial: String, items: [DirectoryView.Item]) {
         Task {
             do {
-                try await adbService.delete(
-                    serial: serial,
-                    remotePath: path,
-                    isDirectory: isDirectory
-                )
+                try await withThrowingTaskGroup(of: Void.self) { group in
+                    for item in items {
+                        group.addTask { [weak self] in
+                            try await self?.adbService.delete(
+                                serial: serial,
+                                remotePath: item.path,
+                                isDirectory: item.type == .directory
+                            )
+                        }
+                    }
+                    try await group.waitForAll()
+                }
                 refreshItems()
             } catch {
                 Logger.error("Failed to delete item.", error: error)
-                presentErrorAlert(title: "Failed To Delete File", error: error) { [weak self] in
-                    self?.deleteFile(serial: serial, path: path, isDirectory: isDirectory)
+                presentErrorAlert(title: "Failed To Delete", error: error) { [weak self] in
+                    if items.count > 1 {
+                        // It's possible that half the files get deleted and then this errors out.
+                        // In this case if we recursively re-run the deletion function with the same parameters,
+                        // we will be attempting to delete files that don't exist anymore.
+                        self?.refreshItems()
+                    } else {
+                        self?.deleteFiles(serial: serial, items: items)
+                    }
                 }
             }
         }
@@ -439,9 +455,19 @@ class ContentViewModel: ObservableObject {
         ADBErrorViewModel(adbService: adbService)
     }
     
-    private func presentItemDeletionConfirmationAlert(itemName: String, delete: @escaping () -> Void) {
+    private func presentDeletionConfirmationAlertPlural(itemCount: Int, delete: @escaping () -> Void) {
+        let title = "Are you sure you want to permanently delete \(itemCount) items?"
+        presentDeletionConfirmationAlert(title: title, delete: delete)
+    }
+    
+    private func presentDeletionConfirmationAlertSingular(itemName: String, delete: @escaping () -> Void) {
+        let title = "Are you sure you want to permanently delete \(itemName)?"
+        presentDeletionConfirmationAlert(title: title, delete: delete)
+    }
+    
+    private func presentDeletionConfirmationAlert(title: String, delete: @escaping () -> Void) {
         alertModel = .init(
-            title: "Are you sure you want to permanently delete \(itemName)?",
+            title: title,
             message: "This action cannot be undone.",
             buttons: [
                 .init(title: "Delete", type: .destructive, action: delete),
