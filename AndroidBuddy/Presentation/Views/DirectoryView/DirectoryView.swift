@@ -9,67 +9,51 @@ import SwiftUI
 
 struct DirectoryView: View {
     
-    struct Item: Identifiable {
-        
-        // Based on assumption that two things can't have same path in unix TODO: I think the assumption is wrong - double check it.
-        var id: URL { path }
-        
-        let path: URL
-        let name: String
-        let dateModified: String
-        let size: String
-        let isSymlink: Bool
-        let type: ItemType
-        
-        enum ItemType {
-            case file
-            case directory
-        }
-    }
-    
     @EnvironmentObject private var viewModel: ContentViewModel
-    @State private var selection: Set<Item.ID> = []
-    @FocusState private var renamableIdFocus: Item.ID?
+    @State private var selectedItemIds: Set<DirectoryItem.ID> = []
+    @FocusState private var renamableIdFocus: DirectoryItem.ID?
+    @State private var hoveredItemId: DirectoryItem.ID?
     
     var body: some View {
         ScrollViewReader { proxy in
-            Table(viewModel.items, selection: $selection) {
-                TableColumn("Name") { item in
-                    DirectoryNameColumnValue(
-                        item: item,
-                        renamableIdFocus: $renamableIdFocus,
-                        onRename: { newName in
-                            viewModel.rename(remoteSource: item.path, newName: newName)
-                            selection = []
-                        }
-                    )
-                    .id(item.name)
-                }
-                .width(min: 200)
-                
-                TableColumn(
-                    Text("Date Modified")
-                        .foregroundColor(.secondary)
-                ) { item in
-                    Text(item.dateModified)
-                        .foregroundStyle(Color.secondary)
-                }
-                .width(170)
-                
-                TableColumn(
-                    Text("Size")
-                        .foregroundColor(.secondary)
-                ) { item in
-                    HStack {
-                        Spacer()
-                        Text(item.size)
+            Table(
+                of: DirectoryItem.self,
+                selection: $selectedItemIds,
+                columns: {
+                    TableColumn("Name") { item in
+                        nameCell(item)
+                    }
+                    .width(min: 200)
+                    
+                    TableColumn(
+                        Text("Date Modified")
+                            .foregroundColor(.secondary)
+                    ) { item in
+                        Text(item.dateModified)
                             .foregroundStyle(Color.secondary)
                     }
+                    .width(170)
+                    
+                    TableColumn(
+                        Text("Size")
+                            .foregroundColor(.secondary)
+                    ) { item in
+                        HStack {
+                            Spacer()
+                            Text(item.size)
+                                .foregroundStyle(Color.secondary)
+                        }
+                    }
+                    .width(90)
+                },
+                rows: {
+                    ForEach(viewModel.items) { item in
+                        TableRow(item)
+                    }
                 }
-                .width(90)
-            }
+            )
             .contextMenu(
-                forSelectionType: Item.ID.self,
+                forSelectionType: DirectoryItem.ID.self,
                 menu: rightClickMenu,
                 primaryAction: doubleClickHandler
             )
@@ -79,21 +63,70 @@ struct DirectoryView: View {
                 }
             }
             .onChange(of: viewModel.currentDeviceSerial) { _ in
-                scrollToTop(proxy: proxy)
+                onItemReload(proxy: proxy)
             }
             .onChange(of: viewModel.currentPath) { _ in
-                scrollToTop(proxy: proxy)
+                onItemReload(proxy: proxy)
             }
         }
     }
     
-    private func scrollToTop(proxy: ScrollViewProxy) {
-        guard let firstId = viewModel.items.first?.id else { return }
-        proxy.scrollTo(firstId)
+    // There's a bit of bullshit going on here with the dragging.
+    // There seems to be no good way to make use of the built-in selection and highlighting
+    // that Table offers, and also have things be draggable at the same time.
+    // To get around this, items are only draggable only when they are selected.
+    // If we ever update to MacOS 14, we can apply the draggable and dropDestination methods
+    // to the TableRow directly instead of just on this view.
+    // Also, forget about making things draggable to other apps like Finder; that requires
+    // implementation of the NSFilePromiseProviderDelegate which isn't supported by SwiftUI.
+    // Implementing it with a UIView wrapper would mess with the other gestures.
+    private func nameCell(_ item: DirectoryItem) -> some View {
+        DirectoryNameCell(
+            item: item,
+            renamableIdFocus: $renamableIdFocus,
+            onRename: { newName in
+                viewModel.rename(remoteSource: item.path, newName: newName)
+                selectedItemIds = []
+            }
+        )
+        .border(hoveredItemId == item.id ? Color.accentColor : Color.clear, width: 1)
+        .id(item.name)
+        .if(selectedItemIds.contains(item.id)) { view in
+            view.draggable(draggableItems(item: item))
+        }
+        .if(item.type == .directory) { view in
+            view.dropDestination(
+                for: TransferableDirectoryItems.self,
+                action: { transferableItems, location in
+                    let flattenedTransferrableItems = transferableItems.flatMap { $0.items }
+                    guard
+                        !flattenedTransferrableItems.contains(where: { $0.id == item.id }), // Don't want to move folder to self
+                        item.type == .directory,
+                        !flattenedTransferrableItems.isEmpty
+                    else {
+                        return false
+                    }
+                    
+                    let paths = flattenedTransferrableItems.map(\.path)
+                    viewModel.move(remoteSources: paths, remoteDestination: item.path)
+                    return true
+                },
+                isTargeted: { isTargeted in
+                    hoveredItemId = isTargeted ? item.id : nil
+                }
+            )
+        }
+    }
+    
+    private func onItemReload(proxy: ScrollViewProxy) {
+        selectedItemIds = []
+        if let firstId = viewModel.items.first?.id {
+            proxy.scrollTo(firstId)
+        }
     }
     
     @ViewBuilder
-    private func rightClickMenu(selectedItemIds: Set<Item.ID>) -> some View {
+    private func rightClickMenu(selectedItemIds: Set<DirectoryItem.ID>) -> some View {
         if selectedItemIds.isEmpty {
             EmptyView()
         } else {
@@ -105,7 +138,7 @@ struct DirectoryView: View {
             
             if selectedItems.count == 1, let selectedItem = selectedItems.first {
                 Button("Rename") {
-                    selection = [selectedItem.id]
+                    self.selectedItemIds = [selectedItem.id]
                     renamableIdFocus = selectedItem.id
                 }
             }
@@ -116,7 +149,7 @@ struct DirectoryView: View {
         }
     }
     
-    private func doubleClickHandler(selectedItemIds: Set<Item.ID>) {
+    private func doubleClickHandler(selectedItemIds: Set<DirectoryItem.ID>) {
         let selectedItems = getItemsFromIds(selectedItemIds)
         if selectedItems.count == 1, let selectedItem = selectedItems.first {
             switch selectedItem.type {
@@ -128,7 +161,17 @@ struct DirectoryView: View {
         }
     }
     
-    private func getItemsFromIds(_ ids: Set<Item.ID>) -> [Item] {
+    // If attempting to drag an item that is already selected, also drag any other selected items.
+    private func draggableItems(item: DirectoryItem) -> TransferableDirectoryItems {
+        let items = if selectedItemIds.contains(item.id) {
+            getItemsFromIds(selectedItemIds)
+        } else {
+            [item]
+        }
+        return TransferableDirectoryItems(items: items)
+    }
+    
+    private func getItemsFromIds(_ ids: Set<DirectoryItem.ID>) -> [DirectoryItem] {
         ids.flatMap { id in
             viewModel.items.filter { $0.id == id }
         }

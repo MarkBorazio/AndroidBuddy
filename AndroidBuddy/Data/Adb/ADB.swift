@@ -53,8 +53,9 @@ enum ADB {
         return try await command(args: args)
     }
     
-    static func move(serial: String, remoteSourcePath: URL, remoteDestinationPath: URL) async throws -> String {
-        let args = ["-s", serial, "shell", "mv", remoteSourcePath.pathForShellCommand, remoteDestinationPath.pathForShellCommand]
+    static func move(serial: String, remoteSourcePaths: [URL], remoteDestinationPath: URL) async throws -> String {
+        let sourcePathArgs = remoteSourcePaths.map(\.pathForShellCommand)
+        let args = ["-s", serial, "shell", "mv", "-n"] + sourcePathArgs + [remoteDestinationPath.pathForShellCommand]
         return try await command(args: args)
     }
     

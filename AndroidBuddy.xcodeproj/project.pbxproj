@@ -30,6 +30,8 @@
 		4D5077CE2BCAE0B9008E099B /* MockListResponse in Resources */ = {isa = PBXBuildFile; fileRef = 4D5077CD2BCAE0B9008E099B /* MockListResponse */; };
 		4D5077D02BCAE252008E099B /* MockDevicesResponse in Resources */ = {isa = PBXBuildFile; fileRef = 4D5077CF2BCAE252008E099B /* MockDevicesResponse */; };
 		4D6749402BE54CD700D633B7 /* BluetoothNameResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D67493F2BE54CD700D633B7 /* BluetoothNameResponse.swift */; };
+		4D6749432BE7E30E00D633B7 /* ConditionalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6749422BE7E30E00D633B7 /* ConditionalView.swift */; };
+		4D6749462BE80B9E00D633B7 /* DirectoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6749452BE80B9E00D633B7 /* DirectoryItem.swift */; };
 		4D80BD0F2BE272E8009A2835 /* DebugCommandMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D80BD0E2BE272E8009A2835 /* DebugCommandMenu.swift */; };
 		4D80BD122BE277AB009A2835 /* DebugCommandMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D80BD112BE277AB009A2835 /* DebugCommandMenuViewModel.swift */; };
 		4DDD83052BBA7CCB003F7203 /* AndroidBuddyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */; };
@@ -49,7 +51,7 @@
 		4DF0C61B2BDB7EF6009862E5 /* Shell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61A2BDB7EF6009862E5 /* Shell.swift */; };
 		4DF0C61E2BDBFE06009862E5 /* CreateDirectoryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61D2BDBFE06009862E5 /* CreateDirectoryResponse.swift */; };
 		4DF0C6202BDC2346009862E5 /* MoveResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */; };
-		4DF0C6252BDD3709009862E5 /* DirectoryNameColumnValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6242BDD3709009862E5 /* DirectoryNameColumnValue.swift */; };
+		4DF0C6252BDD3709009862E5 /* DirectoryNameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6242BDD3709009862E5 /* DirectoryNameCell.swift */; };
 		4DF0C6272BDD749C009862E5 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6262BDD749C009862E5 /* StringExtensions.swift */; };
 		4DF0C6292BDE4199009862E5 /* DeleteResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6282BDE4199009862E5 /* DeleteResponse.swift */; };
 		4DF0C62D2BDEBCB3009862E5 /* InstallAPKResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C62C2BDEBCB3009862E5 /* InstallAPKResponse.swift */; };
@@ -96,6 +98,9 @@
 		4D5077CD2BCAE0B9008E099B /* MockListResponse */ = {isa = PBXFileReference; lastKnownFileType = text; path = MockListResponse; sourceTree = "<group>"; };
 		4D5077CF2BCAE252008E099B /* MockDevicesResponse */ = {isa = PBXFileReference; lastKnownFileType = text; path = MockDevicesResponse; sourceTree = "<group>"; };
 		4D67493F2BE54CD700D633B7 /* BluetoothNameResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothNameResponse.swift; sourceTree = "<group>"; };
+		4D6749412BE76C7A00D633B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		4D6749422BE7E30E00D633B7 /* ConditionalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionalView.swift; sourceTree = "<group>"; };
+		4D6749452BE80B9E00D633B7 /* DirectoryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryItem.swift; sourceTree = "<group>"; };
 		4D80BD0E2BE272E8009A2835 /* DebugCommandMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugCommandMenu.swift; sourceTree = "<group>"; };
 		4D80BD112BE277AB009A2835 /* DebugCommandMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugCommandMenuViewModel.swift; sourceTree = "<group>"; };
 		4DDD83012BBA7CCB003F7203 /* AndroidBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -117,7 +122,7 @@
 		4DF0C61A2BDB7EF6009862E5 /* Shell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shell.swift; sourceTree = "<group>"; };
 		4DF0C61D2BDBFE06009862E5 /* CreateDirectoryResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDirectoryResponse.swift; sourceTree = "<group>"; };
 		4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveResponse.swift; sourceTree = "<group>"; };
-		4DF0C6242BDD3709009862E5 /* DirectoryNameColumnValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryNameColumnValue.swift; sourceTree = "<group>"; };
+		4DF0C6242BDD3709009862E5 /* DirectoryNameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryNameCell.swift; sourceTree = "<group>"; };
 		4DF0C6262BDD749C009862E5 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		4DF0C6282BDE4199009862E5 /* DeleteResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteResponse.swift; sourceTree = "<group>"; };
 		4DF0C62C2BDEBCB3009862E5 /* InstallAPKResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstallAPKResponse.swift; sourceTree = "<group>"; };
@@ -195,6 +200,7 @@
 		4D2D351C2BBC028100E0E733 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				4D6749442BE80B8C00D633B7 /* Models */,
 				4DF0C6162BDA6E95009862E5 /* Views */,
 				4D80BD0D2BE272BB009A2835 /* Commands */,
 				4DF0C6172BDA6EB0009862E5 /* Extensions */,
@@ -268,6 +274,14 @@
 			path = Model;
 			sourceTree = "<group>";
 		};
+		4D6749442BE80B8C00D633B7 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				4D6749452BE80B9E00D633B7 /* DirectoryItem.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		4D80BD0D2BE272BB009A2835 /* Commands */ = {
 			isa = PBXGroup;
 			children = (
@@ -308,6 +322,7 @@
 		4DDD83032BBA7CCB003F7203 /* AndroidBuddy */ = {
 			isa = PBXGroup;
 			children = (
+				4D6749412BE76C7A00D633B7 /* Info.plist */,
 				4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */,
 				4D2D351C2BBC028100E0E733 /* Presentation */,
 				4D5077C32BC989F9008E099B /* Domain */,
@@ -365,6 +380,7 @@
 			isa = PBXGroup;
 			children = (
 				4DF0C6142BDA5730009862E5 /* Alert+DataSource.swift */,
+				4D6749422BE7E30E00D633B7 /* ConditionalView.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -381,7 +397,7 @@
 			isa = PBXGroup;
 			children = (
 				4D2D35162BBBCE0800E0E733 /* DirectoryView.swift */,
-				4DF0C6242BDD3709009862E5 /* DirectoryNameColumnValue.swift */,
+				4DF0C6242BDD3709009862E5 /* DirectoryNameCell.swift */,
 			);
 			path = DirectoryView;
 			sourceTree = "<group>";
@@ -545,13 +561,15 @@
 				4D1319612BC8385C004CA803 /* ADBErrorView.swift in Sources */,
 				4D5077C52BC98A29008E099B /* Device.swift in Sources */,
 				4D80BD0F2BE272E8009A2835 /* DebugCommandMenu.swift in Sources */,
+				4D6749462BE80B9E00D633B7 /* DirectoryItem.swift in Sources */,
 				4D2D353D2BBFE21D00E0E733 /* NoDevicesView.swift in Sources */,
 				4D2D351B2BBC027900E0E733 /* ContentViewModel.swift in Sources */,
 				4D1319672BC83C66004CA803 /* ViewConstants.swift in Sources */,
 				4D5077CB2BCA83F0008E099B /* MockAdbService.swift in Sources */,
+				4D6749432BE7E30E00D633B7 /* ConditionalView.swift in Sources */,
 				4DF0C62D2BDEBCB3009862E5 /* InstallAPKResponse.swift in Sources */,
 				4DF0C6202BDC2346009862E5 /* MoveResponse.swift in Sources */,
-				4DF0C6252BDD3709009862E5 /* DirectoryNameColumnValue.swift in Sources */,
+				4DF0C6252BDD3709009862E5 /* DirectoryNameCell.swift in Sources */,
 				4D2D35462BC13C5F00E0E733 /* SideBarView.swift in Sources */,
 				4D2D35102BBAA88F00E0E733 /* StandardAdbService.swift in Sources */,
 				4DF0C6112BD94F67009862E5 /* Logger.swift in Sources */,
@@ -729,6 +747,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AndroidBuddy/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -761,6 +780,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = AndroidBuddy/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

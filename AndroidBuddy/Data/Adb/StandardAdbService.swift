@@ -74,7 +74,7 @@ class StandardAdbService: ADBService {
                 Logger.info("Killing server...")
                 try await ADB.killServer()
                 Logger.info("...server killed.")
-                try await Task.sleep(for: .seconds(3)) // Running kill server and then start server too close together causes issues
+                try await Task.sleep(for: .seconds(5)) // Running kill server and then start server too close together causes issues
                 Logger.info("Starting server...")
                 try await ADB.startServer()
                 Logger.info("...server started.")
@@ -138,13 +138,21 @@ class StandardAdbService: ADBService {
         try CreateDirectoryResponse.checkForErrors(rawOutput: output)
     }
     
+    // TODO: Make use of the move commands "-n" option to avoid calling doesFileExist
     func rename(serial: String, remoteSourcePath: URL, remoteDestinationPath: URL) async throws {
         Logger.info("Renaming \(remoteSourcePath.path(percentEncoded: false)) to \(remoteDestinationPath.path(percentEncoded: false)) for device \(serial).")
         let fileOrDirectoryExists = try await doesFileExist(serial: serial, remotePath: remoteDestinationPath)
         guard !fileOrDirectoryExists else {
             throw ADBServiceError.fileOrDirectoryAlreadyExists
         }
-        let output = try await ADB.move(serial: serial, remoteSourcePath: remoteSourcePath, remoteDestinationPath: remoteDestinationPath)
+        let output = try await ADB.move(serial: serial, remoteSourcePaths: [remoteSourcePath], remoteDestinationPath: remoteDestinationPath)
+        try MoveResponse.checkForErrors(rawOutput: output)
+    }
+    
+    func move(serial: String, remoteSourcePaths: [URL], remoteDestinationPath: URL) async throws {
+        let pathNames = remoteSourcePaths.map { $0.path(percentEncoded: false) }
+        Logger.info("Moving \(pathNames) to \(remoteDestinationPath.path(percentEncoded: false)) for device \(serial).")
+        let output = try await ADB.move(serial: serial, remoteSourcePaths: remoteSourcePaths, remoteDestinationPath: remoteDestinationPath)
         try MoveResponse.checkForErrors(rawOutput: output)
     }
     

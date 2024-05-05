@@ -1,5 +1,5 @@
 //
-//  DirectoryNameColumnValue.swift
+//  DirectoryNameCell.swift
 //  AndroidBuddy
 //
 //  Created by Mark Borazio [Personal] on 27/4/2024.
@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-struct DirectoryNameColumnValue: View {
+struct DirectoryNameCell: View {
     
-    let item: DirectoryView.Item
-    @FocusState.Binding var renamableIdFocus: DirectoryView.Item.ID?
+    let item: DirectoryItem
+    @FocusState.Binding var renamableIdFocus: DirectoryItem.ID?
     var onRename: (String) -> Void
     @State private var renamableText: String = ""
     
@@ -19,6 +19,15 @@ struct DirectoryNameColumnValue: View {
     }
     
     var body: some View {
+        labelView
+            .frame(height: 20)
+            .contentShape(Rectangle())
+            .onChange(of: renamableIdFocus) { value in
+                renamableText = item.name
+            }
+    }
+    
+    private var labelView: some View {
         Label(
             title: {
                 ZStack(alignment: .leading) {
@@ -40,9 +49,6 @@ struct DirectoryNameColumnValue: View {
                 Self.getSymbol(for: item.type)
             }
         )
-        .onChange(of: renamableIdFocus) { value in
-            renamableText = item.name
-        }
     }
     
     private func submit() {
@@ -52,7 +58,7 @@ struct DirectoryNameColumnValue: View {
         renamableIdFocus = nil
     }
     
-    private static func getSymbol(for type: DirectoryView.Item.ItemType) -> some View {
+    private static func getSymbol(for type: DirectoryItem.ItemType) -> some View {
         let image: some View = switch type {
         case .file: 
             Image(systemName: "doc.fill")
@@ -69,7 +75,7 @@ struct DirectoryNameColumnValue: View {
 }
 
 #Preview {
-    DirectoryNameColumnValue(
+    DirectoryNameCell(
         item: .init(
             path: URL(string: "/sdcard/roms")!,
             name: "Roms",

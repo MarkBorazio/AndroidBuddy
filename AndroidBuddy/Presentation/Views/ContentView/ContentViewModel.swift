@@ -16,7 +16,7 @@ class ContentViewModel: ObservableObject {
     @Published var title: String = ""
     @Published var currentDeviceSerial: String? = nil
     @Published var allDevices: [Device] = []
-    @Published var items: [DirectoryView.Item] = []
+    @Published var items: [DirectoryItem] = []
     @Published var backButtonEnabled: Bool = false
     @Published var fileTransferModel: FileTransferProgressView.Model? = nil
     @Published var alertModel: AlertModel? = nil
@@ -107,9 +107,9 @@ class ContentViewModel: ObservableObject {
         }
     }
     
-    private static func mapListResponseToItems(_ response: ListResponse) -> [DirectoryView.Item] {
+    private static func mapListResponseToItems(_ response: ListResponse) -> [DirectoryItem] {
         return response.items.map { responseItem in
-            let itemType: DirectoryView.Item.ItemType = switch responseItem.fileType {
+            let itemType: DirectoryItem.ItemType = switch responseItem.fileType {
             case .directory: .directory
             case .file: .file
             case .symlink: .directory
@@ -120,7 +120,7 @@ class ContentViewModel: ObservableObject {
             case .directory: "--"
             }
             
-            return DirectoryView.Item(
+            return DirectoryItem(
                 path: responseItem.path,
                 name: responseItem.name,
                 dateModified: responseItem.lastModifiedDate.formatted(date: .abbreviated, time: .shortened),
@@ -275,7 +275,7 @@ class ContentViewModel: ObservableObject {
             )
     }
     
-    func requestItemDeletion(items: [DirectoryView.Item]) {
+    func requestItemDeletion(items: [DirectoryItem]) {
         guard let currentDevice else {
             Logger.error("Tried to delete item when no device was selected.")
             return
@@ -292,7 +292,7 @@ class ContentViewModel: ObservableObject {
         }
     }
     
-    private func deleteFiles(serial: String, items: [DirectoryView.Item]) {
+    private func deleteFiles(serial: String, items: [DirectoryItem]) {
         Task {
             do {
                 try await withThrowingTaskGroup(of: Void.self) { group in
@@ -371,6 +371,25 @@ class ContentViewModel: ObservableObject {
                 Logger.error("Failed to rename item.", error: error)
                 presentErrorAlert(title: "Failed To Rename Item", error: error) { [weak self] in
                     self?.rename(remoteSource: remoteSource, newName: newName)
+                }
+            }
+        }
+    }
+    
+    func move(remoteSources: [URL], remoteDestination: URL) {
+        guard let currentDevice else {
+            Logger.error("Tried to move item when no device was selected.")
+            return
+        }
+        
+        Task {
+            do {
+                try await adbService.move(serial: currentDevice.serial, remoteSourcePaths: remoteSources, remoteDestinationPath: remoteDestination)
+                refreshItems()
+            } catch {
+                Logger.error("Failed to move item(s).", error: error)
+                presentErrorAlert(title: "Failed To Move Item(s)", error: error) { [weak self] in
+                    self?.move(remoteSources: remoteSources, remoteDestination: remoteDestination)
                 }
             }
         }

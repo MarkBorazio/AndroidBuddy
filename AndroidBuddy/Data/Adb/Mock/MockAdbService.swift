@@ -22,6 +22,7 @@ class MockAdbService {
     private var deleteBlock: () -> Void
     private var createNewFolderBlock: () -> Void
     private var renameBlock: () -> Void
+    private var moveBlock: () -> Void
     private var doesFileExistBlock: () -> Bool
     
     init(
@@ -36,6 +37,7 @@ class MockAdbService {
         delete: @escaping () -> Void = defaultDeleteBlock,
         createNewFolder: @escaping () -> Void = defaultCreateNewFolderBlock,
         rename: @escaping () -> Void = defaultRenameBlock,
+        move: @escaping () -> Void = defaultMoveBlock,
         doesFileExist: @escaping () -> Bool = defaultDoesFileExistBlock
     ) {
         self.connectedDevices = CurrentValueSubject(connectedDevices).eraseToAnyPublisher()
@@ -50,6 +52,7 @@ class MockAdbService {
         deleteBlock = delete
         createNewFolderBlock = createNewFolder
         renameBlock = rename
+        moveBlock = move
         doesFileExistBlock = doesFileExist
     }
     
@@ -96,6 +99,8 @@ extension MockAdbService {
     
     private static var defaultRenameBlock: () -> Void = {}
     
+    private static var defaultMoveBlock: () -> Void = {}
+    
     private static var defaultDoesFileExistBlock: () -> Bool = { true }
 }
 
@@ -137,6 +142,10 @@ extension MockAdbService: ADBService {
     
     func rename(serial: String, remoteSourcePath: URL, remoteDestinationPath: URL) async throws {
         renameBlock()
+    }
+    
+    func move(serial: String, remoteSourcePaths: [URL], remoteDestinationPath: URL) async throws {
+        moveBlock()
     }
     
     func doesFileExist(serial: String, remotePath: URL) async throws -> Bool {
