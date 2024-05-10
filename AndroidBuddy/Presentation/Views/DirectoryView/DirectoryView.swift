@@ -143,6 +143,12 @@ struct DirectoryView: View {
                 }
             }
             
+            if viewModel.backButtonEnabled {
+                Button("Move to parent") {
+                    viewModel.moveToParent(remoteSources: selectedItems.map(\.path))
+                }
+            }
+            
             Button("Delete", role: .destructive) {
                 viewModel.requestItemDeletion(items: selectedItems)
             }

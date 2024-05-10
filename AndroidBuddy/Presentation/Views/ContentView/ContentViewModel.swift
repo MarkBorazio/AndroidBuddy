@@ -414,6 +414,14 @@ class ContentViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    func moveToParent(remoteSources: [URL]) {
+        // If back is enabled then logically we should have a parent directory
+        guard backButtonEnabled else { return }
+        
+        let parent = currentPath.deletingLastPathComponent()
+        move(remoteSources: remoteSources, remoteDestination: parent)
+    }
+    
     private func installAPK(localFilePath: URL) {
         guard let currentDevice else {
             Logger.error("Tried to install APK when no device was selected.")
