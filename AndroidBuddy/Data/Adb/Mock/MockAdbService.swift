@@ -22,7 +22,7 @@ class MockAdbService {
     private var deleteBlock: () -> Void
     private var createNewFolderBlock: () -> Void
     private var renameBlock: () -> Void
-    private var moveBlock: () -> Void
+    private var moveBlock: () -> InteractiveADBCommand<InteractiveMoveResponse>
     private var doesFileExistBlock: () -> Bool
     
     init(
@@ -37,7 +37,7 @@ class MockAdbService {
         delete: @escaping () -> Void = defaultDeleteBlock,
         createNewFolder: @escaping () -> Void = defaultCreateNewFolderBlock,
         rename: @escaping () -> Void = defaultRenameBlock,
-        move: @escaping () -> Void = defaultMoveBlock,
+        move: @escaping () -> InteractiveADBCommand<InteractiveMoveResponse> = defaultMoveBlock,
         doesFileExist: @escaping () -> Bool = defaultDoesFileExistBlock
     ) {
         self.connectedDevices = CurrentValueSubject(connectedDevices).eraseToAnyPublisher()
@@ -99,7 +99,12 @@ extension MockAdbService {
     
     private static var defaultRenameBlock: () -> Void = {}
     
-    private static var defaultMoveBlock: () -> Void = {}
+    private static var defaultMoveBlock: () -> InteractiveADBCommand<InteractiveMoveResponse> = {
+        InteractiveADBCommand(
+            publisher: Empty(),
+            writeHandler: { _ in }
+        )
+    }
     
     private static var defaultDoesFileExistBlock: () -> Bool = { true }
 }
@@ -144,7 +149,7 @@ extension MockAdbService: ADBService {
         renameBlock()
     }
     
-    func move(serial: String, remoteSourcePaths: [URL], remoteDestinationPath: URL) async throws {
+    func move(serial: String, remoteSourcePaths: [URL], remoteDestinationPath: URL) -> InteractiveADBCommand<InteractiveMoveResponse> {
         moveBlock()
     }
     

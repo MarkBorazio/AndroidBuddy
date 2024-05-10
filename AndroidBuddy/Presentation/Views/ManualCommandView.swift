@@ -33,7 +33,7 @@ struct ManualCommandView: View {
             Button(
                 action: {
                     Task {
-                        try? await ADB.command(args: adbCommandText)
+                        try? await ADB.command(argsString: adbCommandText)
                     }
                 },
                 label: {

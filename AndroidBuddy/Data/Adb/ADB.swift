@@ -10,114 +10,97 @@ import Combine
 
 enum ADB {
     
+    typealias ADBArgs = [String]
+    
     private static let executableUrl = Bundle.main.url(forResource: "adb", withExtension: nil)!
     
-    static func list(serial: String, path: URL) async throws -> ListResponse {
-        let args = ["-s", serial, "shell", "ls", "-lL", "\(path.pathForShellCommand)"]
-        let output = try await command(args: args)
-        return try ListResponse(path: path, rawResponse: output)
+    static func listArgs(serial: String, path: URL) -> ADBArgs {
+        ["-s", serial, "shell", "ls", "-lL", "\(path.pathForShellCommand)"]
     }
     
-    static func pull(serial: String, remotePath: URL, localPath: URL) -> any Publisher<String, Error> {
-        let args = ["-s", serial, "pull", "\(remotePath.pathForADBCommand)", "\(localPath.pathForADBCommand)"]
-        return commandPublisher(args: args)
+    static func pullArgs(serial: String, remotePath: URL, localPath: URL) -> ADBArgs {
+        ["-s", serial, "pull", "\(remotePath.pathForADBCommand)", "\(localPath.pathForADBCommand)"]
     }
     
-    static func push(serial: String, localPath: URL, remotePath: URL) -> any Publisher<String, Error> {
-        let args = ["-s", serial, "push", "\(localPath.pathForADBCommand)", "\(remotePath.pathForADBCommand)"]
-        return commandPublisher(args: args)
+    static func pushArgs(serial: String, localPath: URL, remotePath: URL) -> ADBArgs {
+        ["-s", serial, "push", "\(localPath.pathForADBCommand)", "\(remotePath.pathForADBCommand)"]
     }
 
-    static func installAPK(serial: String, localPath: URL) -> any Publisher<String, Error> {
-        let args = ["-s", serial, "install", "-r", "\(localPath.pathForADBCommand)"]
-        return commandPublisher(args: args)
+    static func installAPKArgs(serial: String, localPath: URL) -> ADBArgs {
+        ["-s", serial, "install", "-r", "\(localPath.pathForADBCommand)"]
     }
     
-    static func deleteFile(serial: String, remotePath: URL) async throws -> String {
-        let args = ["-s", serial, "shell", "rm", "-f", "\(remotePath.pathForShellCommand)"]
-        return try await command(args: args)
+    static func deleteFileArgs(serial: String, remotePath: URL) -> ADBArgs {
+        ["-s", serial, "shell", "rm", "-f", "\(remotePath.pathForShellCommand)"]
     }
     
-    static func deleteDirectory(serial: String, remotePath: URL) async throws -> String {
-        let args = ["-s", serial, "shell", "rm", "-rf", "\(remotePath.pathForShellCommand)"]
-        return try await command(args: args)
+    static func deleteDirectoryArgs(serial: String, remotePath: URL) -> ADBArgs {
+        ["-s", serial, "shell", "rm", "-rf", "\(remotePath.pathForShellCommand)"]
     }
     
-    static func getBluetoothName(serial: String) async throws -> String {
-        let args = ["-s", serial, "shell", "dumpsys", "bluetooth_manager", "|", "grep", "'name:'", "|", "cut", "-c9-"]
-        return try await command(args: args)
+    static func getBluetoothNameArgs(serial: String) -> ADBArgs {
+        ["-s", serial, "shell", "dumpsys", "bluetooth_manager", "|", "grep", "'name:'", "|", "cut", "-c9-"]
     }
     
-    static func createNewDirectory(serial: String, remotePath: URL) async throws -> String {
-        let args = ["-s", serial, "shell", "mkdir", remotePath.pathForShellCommand]
-        return try await command(args: args)
+    static func createNewDirectoryArgs(serial: String, remotePath: URL) -> ADBArgs {
+        ["-s", serial, "shell", "mkdir", remotePath.pathForShellCommand]
     }
     
-    static func move(serial: String, remoteSourcePaths: [URL], remoteDestinationPath: URL) async throws -> String {
-        let sourcePathArgs = remoteSourcePaths.map(\.pathForShellCommand)
-        let args = ["-s", serial, "shell", "mv", "-n"] + sourcePathArgs + [remoteDestinationPath.pathForShellCommand]
-        return try await command(args: args)
+    static func moveArgs(serial: String, remoteSourcePaths: [URL], remoteDestinationPath: URL, interactive: Bool, noClobber: Bool) -> ADBArgs {
+        var args = ["-s", serial, "shell", "mv"]
+        if interactive {
+            args.append("-i")
+        }
+        if noClobber {
+            args.append("-n")
+        }
+        return args + remoteSourcePaths.map(\.pathForShellCommand) + [remoteDestinationPath.pathForShellCommand]
     }
     
-    static func devices() async throws -> DevicesResponse {
-        let args = ["devices", "-l"]
-        let output = try await command(args: args)
-        return DevicesResponse(rawOutput: output)
-    }
+    static let devicesArgs: ADBArgs = ["devices", "-l"]
     
-    static func killServer() async throws {
-        let args = ["kill-server"]
-        try await command(args: args)
-    }
+    static let killServerArgs: ADBArgs = ["kill-server"]
+
+    static let startServerArgs: ADBArgs = ["start-server"]
     
-    static func startServer() async throws {
-        let args = ["start-server"]
-        try await command(args: args)
-    }
-    
-    // Used for debugging - I am not sure how tightly written the regex is - Needs proper tests written for it
-    @discardableResult
-    static func command(args: String) async throws -> String {
-        let regex = try! NSRegularExpression(pattern: #""[^"]*"|\S+"#) // Split args into array - Parts eclosed in quotes *should* be treated as one arg
-        let argsArray = regex.matches(in: args, range: NSRange(args.startIndex..., in: args))
-            .map { String(args[Range($0.range, in: args)!]) }
-            .map { arg in
-                arg.filter { $0 != "\"" }
-            }
-        return try await command(args: argsArray)
-    }
-    
-    static func commandPublisher(args: [String]) -> any Publisher<String, Error> {
+    static func commandPublisher(_ args: ADBArgs) -> InteractiveADBCommand<String> {
         Logger.verbose("Sending ADB command (publisher). Args: \(args.joined(separator: " "))")
-        return Deferred {
-            // Setup the PTY handles
-            var primaryDescriptor: Int32 = 0
-            var replicaDescriptor: Int32 = 0
-            guard openpty(&primaryDescriptor, &replicaDescriptor, nil, nil, nil) != -1 else {
-                return Fail<String, Error>(error: AdbError.failedToOpenPty).eraseToAnyPublisher()
-            }
-            let primaryHandle = FileHandle(fileDescriptor: primaryDescriptor, closeOnDealloc: true)
-            let replicaHandle = FileHandle(fileDescriptor: replicaDescriptor, closeOnDealloc: true)
+        
+        // Setup the PTY handles
+        var primaryDescriptor: Int32 = 0
+        var replicaDescriptor: Int32 = 0
+        guard openpty(&primaryDescriptor, &replicaDescriptor, nil, nil, nil) != -1 else {
+            let failurePublisher = Fail<String, Error>(error: AdbError.failedToOpenPty).eraseToAnyPublisher()
+            let emptyWriteHandler: ADBWriteHandler = { _ in }
+            return InteractiveADBCommand(publisher: failurePublisher, writeHandler: emptyWriteHandler)
+        }
+        let primaryHandle = FileHandle(fileDescriptor: primaryDescriptor, closeOnDealloc: true)
+        let replicaHandle = FileHandle(fileDescriptor: replicaDescriptor, closeOnDealloc: true)
+        let inputPipe = Pipe()
+        
+        let process = Process()
+        process.standardInput = inputPipe
+        process.standardOutput = replicaHandle
+        process.standardError = replicaHandle
+        process.arguments = args
+        process.executableURL = executableUrl
+        process.environment = [
+            "TERM": "SMART"
+        ]
+        
+        // syncQueue exists because the process can exit and the .finished completion be sent when
+        // the readabilityHandler is in the middle of executing it's block.
+        // This isn't the greatest solution; I think it's possible that the process can finish before
+        // the readability handler is called for the last time, but so far I haven't noticed that happen.
+        let syncQueue = DispatchQueue(label: "androidBuddy.commandPublisher.syncQueue")
+        let gloabalQueue = DispatchQueue.global(qos: .userInitiated)
+        
+        let subject = PassthroughSubject<String, Error>()
+        
+        let deferredPublisher = Deferred {
             
-            let process = Process()
-            process.standardInput = replicaHandle
-            process.standardOutput = replicaHandle
-            process.standardError = replicaHandle
-            process.arguments = args
-            process.executableURL = executableUrl
-            process.environment = [
-                "TERM": "SMART"
-            ]
-            
-            let subject = PassthroughSubject<String, Error>()
-            
-            // This queue exists because the process can exit and the .finished completion be sent when
-            // the readabilityHandler is in the middle of executing it's block.
-            // This isn't the greatest solution; I think it's possible that the process can finish before
-            // the readability handler is called for the last time, but so far I haven't noticed that happen.
-            let syncQueue = DispatchQueue(label: "androidBuddy.commandPublisher.syncQueue")
-            
-            DispatchQueue.global(qos: .userInitiated).async {
+            gloabalQueue.async {
+                
                 primaryHandle.readabilityHandler = { handle in
                     let data = handle.availableData
                     syncQueue.async {
@@ -166,16 +149,35 @@ enum ADB {
                 )
                 .eraseToAnyPublisher()
         }
+        
+        let writeHandler: ADBWriteHandler = { input in
+            syncQueue.async {
+                do {
+                    let inputWithNewline = input.appending("\n")
+                    guard let inputData = inputWithNewline.data(using: .utf8) else {
+                        throw AdbError.writeError
+                    }
+                    try inputPipe.fileHandleForWriting.write(contentsOf: inputData)
+                } catch {
+                    Logger.error("ADB writeHandler error.", error: error)
+                    subject.send(completion: .failure(error))
+                }
+            }
+        }
+        
+        return InteractiveADBCommand(publisher: deferredPublisher, writeHandler: writeHandler)
     }
     
     @discardableResult
-    static func command(args: [String]) async throws -> String {
+    static func command(_ args: ADBArgs) async throws -> String {
         Logger.verbose("Sending ADB command. Args: \(args.joined(separator: " "))")
         return try await withCheckedThrowingContinuation { continuation in
             let pipe = Pipe()
+            let testPipe = Pipe()
             
             let process = Process()
             process.standardOutput = pipe
+            process.standardInput = testPipe
             process.standardError = pipe
             process.arguments = args
             process.executableURL = executableUrl
@@ -233,5 +235,18 @@ enum ADB {
         case failedToOpenPty
         case dataNotUtf8
         case responseParseError
+        case writeError
+    }
+    
+    // Used for debugging - I am not sure how tightly written the regex is - Needs proper tests written for it
+    @discardableResult
+    static func command(argsString: String) async throws -> String {
+        let regex = try! NSRegularExpression(pattern: #""[^"]*"|\S+"#) // Split args into array - Parts eclosed in quotes *should* be treated as one arg
+        let argsArray = regex.matches(in: argsString, range: NSRange(argsString.startIndex..., in: argsString))
+            .map { String(argsString[Range($0.range, in: argsString)!]) }
+            .map { arg in
+                arg.filter { $0 != "\"" }
+            }
+        return try await command(argsArray)
     }
 }

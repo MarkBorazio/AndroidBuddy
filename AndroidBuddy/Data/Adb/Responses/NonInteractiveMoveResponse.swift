@@ -1,5 +1,5 @@
 //
-//  MoveResponse.swift
+//  NonInteractiveMoveResponse.swift
 //  AndroidBuddy
 //
 //  Created by Mark Borazio [Personal] on 27/4/2024.
@@ -20,7 +20,7 @@ import Foundation
 /// ```
 /// mv: Donkey Kong Jungle Beat (USA).iso: Read-only file system
 /// ```
-struct MoveResponse {
+struct NonInteractiveMoveResponse {
     
     static func checkForErrors(rawOutput: String) throws {
         if !rawOutput.isEmpty {

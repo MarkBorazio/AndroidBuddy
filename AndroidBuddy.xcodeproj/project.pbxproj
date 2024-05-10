@@ -29,6 +29,8 @@
 		4D5077CB2BCA83F0008E099B /* MockAdbService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5077CA2BCA83F0008E099B /* MockAdbService.swift */; };
 		4D5077CE2BCAE0B9008E099B /* MockListResponse in Resources */ = {isa = PBXBuildFile; fileRef = 4D5077CD2BCAE0B9008E099B /* MockListResponse */; };
 		4D5077D02BCAE252008E099B /* MockDevicesResponse in Resources */ = {isa = PBXBuildFile; fileRef = 4D5077CF2BCAE252008E099B /* MockDevicesResponse */; };
+		4D5700D02BEE631200B7677B /* InteractiveADBCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5700CF2BEE631200B7677B /* InteractiveADBCommand.swift */; };
+		4D5700D22BEE68AC00B7677B /* NonInteractiveMoveResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D5700D12BEE68AC00B7677B /* NonInteractiveMoveResponse.swift */; };
 		4D6749402BE54CD700D633B7 /* BluetoothNameResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D67493F2BE54CD700D633B7 /* BluetoothNameResponse.swift */; };
 		4D6749432BE7E30E00D633B7 /* ConditionalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6749422BE7E30E00D633B7 /* ConditionalView.swift */; };
 		4D6749462BE80B9E00D633B7 /* DirectoryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D6749452BE80B9E00D633B7 /* DirectoryItem.swift */; };
@@ -50,7 +52,7 @@
 		4DF0C6152BDA5730009862E5 /* Alert+DataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6142BDA5730009862E5 /* Alert+DataSource.swift */; };
 		4DF0C61B2BDB7EF6009862E5 /* Shell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61A2BDB7EF6009862E5 /* Shell.swift */; };
 		4DF0C61E2BDBFE06009862E5 /* CreateDirectoryResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61D2BDBFE06009862E5 /* CreateDirectoryResponse.swift */; };
-		4DF0C6202BDC2346009862E5 /* MoveResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */; };
+		4DF0C6202BDC2346009862E5 /* InteractiveMoveResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C61F2BDC2346009862E5 /* InteractiveMoveResponse.swift */; };
 		4DF0C6252BDD3709009862E5 /* DirectoryNameCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6242BDD3709009862E5 /* DirectoryNameCell.swift */; };
 		4DF0C6272BDD749C009862E5 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6262BDD749C009862E5 /* StringExtensions.swift */; };
 		4DF0C6292BDE4199009862E5 /* DeleteResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4DF0C6282BDE4199009862E5 /* DeleteResponse.swift */; };
@@ -97,6 +99,8 @@
 		4D5077CA2BCA83F0008E099B /* MockAdbService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAdbService.swift; sourceTree = "<group>"; };
 		4D5077CD2BCAE0B9008E099B /* MockListResponse */ = {isa = PBXFileReference; lastKnownFileType = text; path = MockListResponse; sourceTree = "<group>"; };
 		4D5077CF2BCAE252008E099B /* MockDevicesResponse */ = {isa = PBXFileReference; lastKnownFileType = text; path = MockDevicesResponse; sourceTree = "<group>"; };
+		4D5700CF2BEE631200B7677B /* InteractiveADBCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveADBCommand.swift; sourceTree = "<group>"; };
+		4D5700D12BEE68AC00B7677B /* NonInteractiveMoveResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NonInteractiveMoveResponse.swift; sourceTree = "<group>"; };
 		4D67493F2BE54CD700D633B7 /* BluetoothNameResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothNameResponse.swift; sourceTree = "<group>"; };
 		4D6749412BE76C7A00D633B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		4D6749422BE7E30E00D633B7 /* ConditionalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionalView.swift; sourceTree = "<group>"; };
@@ -121,7 +125,7 @@
 		4DF0C6142BDA5730009862E5 /* Alert+DataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Alert+DataSource.swift"; sourceTree = "<group>"; };
 		4DF0C61A2BDB7EF6009862E5 /* Shell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shell.swift; sourceTree = "<group>"; };
 		4DF0C61D2BDBFE06009862E5 /* CreateDirectoryResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateDirectoryResponse.swift; sourceTree = "<group>"; };
-		4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoveResponse.swift; sourceTree = "<group>"; };
+		4DF0C61F2BDC2346009862E5 /* InteractiveMoveResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractiveMoveResponse.swift; sourceTree = "<group>"; };
 		4DF0C6242BDD3709009862E5 /* DirectoryNameCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryNameCell.swift; sourceTree = "<group>"; };
 		4DF0C6262BDD749C009862E5 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		4DF0C6282BDE4199009862E5 /* DeleteResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteResponse.swift; sourceTree = "<group>"; };
@@ -185,14 +189,15 @@
 		4D2D35112BBAA9A700E0E733 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
-				4D2D35122BBAA9B400E0E733 /* ListResponse.swift */,
+				4D67493F2BE54CD700D633B7 /* BluetoothNameResponse.swift */,
+				4DF0C61D2BDBFE06009862E5 /* CreateDirectoryResponse.swift */,
+				4DF0C6282BDE4199009862E5 /* DeleteResponse.swift */,
 				4D2D35412BBFEF4C00E0E733 /* DevicesResponse.swift */,
 				4DE1148D2BD42A76005E9679 /* FileTransferResponse.swift */,
-				4DF0C61D2BDBFE06009862E5 /* CreateDirectoryResponse.swift */,
-				4DF0C61F2BDC2346009862E5 /* MoveResponse.swift */,
-				4DF0C6282BDE4199009862E5 /* DeleteResponse.swift */,
 				4DF0C62C2BDEBCB3009862E5 /* InstallAPKResponse.swift */,
-				4D67493F2BE54CD700D633B7 /* BluetoothNameResponse.swift */,
+				4DF0C61F2BDC2346009862E5 /* InteractiveMoveResponse.swift */,
+				4D2D35122BBAA9B400E0E733 /* ListResponse.swift */,
+				4D5700D12BEE68AC00B7677B /* NonInteractiveMoveResponse.swift */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -270,6 +275,7 @@
 			isa = PBXGroup;
 			children = (
 				4D5077C42BC98A29008E099B /* Device.swift */,
+				4D5700CF2BEE631200B7677B /* InteractiveADBCommand.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -548,6 +554,7 @@
 				4DDD83052BBA7CCB003F7203 /* AndroidBuddyApp.swift in Sources */,
 				4D2D35482BC157B900E0E733 /* URLExtensions.swift in Sources */,
 				4D2D35262BBEA65300E0E733 /* AsyncCombineExtensions.swift in Sources */,
+				4D5700D02BEE631200B7677B /* InteractiveADBCommand.swift in Sources */,
 				4DF0C61E2BDBFE06009862E5 /* CreateDirectoryResponse.swift in Sources */,
 				4D5077C72BCA6807008E099B /* ADBService.swift in Sources */,
 				4D6749402BE54CD700D633B7 /* BluetoothNameResponse.swift in Sources */,
@@ -568,7 +575,7 @@
 				4D5077CB2BCA83F0008E099B /* MockAdbService.swift in Sources */,
 				4D6749432BE7E30E00D633B7 /* ConditionalView.swift in Sources */,
 				4DF0C62D2BDEBCB3009862E5 /* InstallAPKResponse.swift in Sources */,
-				4DF0C6202BDC2346009862E5 /* MoveResponse.swift in Sources */,
+				4DF0C6202BDC2346009862E5 /* InteractiveMoveResponse.swift in Sources */,
 				4DF0C6252BDD3709009862E5 /* DirectoryNameCell.swift in Sources */,
 				4D2D35462BC13C5F00E0E733 /* SideBarView.swift in Sources */,
 				4D2D35102BBAA88F00E0E733 /* StandardAdbService.swift in Sources */,
@@ -579,6 +586,7 @@
 				4DF0C6152BDA5730009862E5 /* Alert+DataSource.swift in Sources */,
 				4D1319632BC839BA004CA803 /* ADBErrorViewModel.swift in Sources */,
 				4D2D35172BBBCE0800E0E733 /* DirectoryView.swift in Sources */,
+				4D5700D22BEE68AC00B7677B /* NonInteractiveMoveResponse.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

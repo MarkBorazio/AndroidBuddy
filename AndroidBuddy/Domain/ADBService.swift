@@ -22,9 +22,10 @@ protocol ADBService {
     func delete(serial: String, remotePath: URL, isDirectory: Bool) async throws
     func createNewFolder(serial: String, remotePath: URL) async throws
     func rename(serial: String, remoteSourcePath: URL, remoteDestinationPath: URL) async throws
-    func move(serial: String, remoteSourcePaths: [URL], remoteDestinationPath: URL) async throws
+    func move(serial: String, remoteSourcePaths: [URL], remoteDestinationPath: URL) -> InteractiveADBCommand<InteractiveMoveResponse>
     func doesFileExist(serial: String, remotePath: URL) async throws -> Bool
 }
+
 
 enum ADBServiceState {
     case notRunning

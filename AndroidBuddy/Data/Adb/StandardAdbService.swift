@@ -53,7 +53,8 @@ class StandardAdbService: ADBService {
         var devices: [Device] = []
         
         Logger.verbose("Getting all devices...")
-        let devicesResponse = try await ADB.devices()
+        let rawDevicesResponse = try await ADB.command(ADB.devicesArgs)
+        let devicesResponse = DevicesResponse(rawOutput: rawDevicesResponse)
         Logger.verbose("...got devices.")
         for serial in devicesResponse.connectedDeviceSerials {
             Logger.verbose("Getting bluetooth name for \(serial)...")
@@ -72,11 +73,11 @@ class StandardAdbService: ADBService {
             do {
                 stateSubject.send(.settingUp)
                 Logger.info("Killing server...")
-                try await ADB.killServer()
+                try await ADB.command(ADB.killServerArgs)
                 Logger.info("...server killed.")
                 try await Task.sleep(for: .seconds(5)) // Running kill server and then start server too close together causes issues
                 Logger.info("Starting server...")
-                try await ADB.startServer()
+                try await ADB.command(ADB.startServerArgs)
                 Logger.info("...server started.")
                 let devices = try await getAllDevices()
                 connectedDevicesSubject.send(devices) // Get initial data so there isn't a one second peroid of no data at the start
@@ -89,18 +90,20 @@ class StandardAdbService: ADBService {
     
     func list(serial: String, path: URL) async throws -> ListResponse {
         Logger.info("Listing devices for \(serial) at path \(path.path(percentEncoded: false))")
-        return try await ADB.list(serial: serial, path: path)
+        let output = try await ADB.command(ADB.listArgs(serial: serial, path: path))
+        return try ListResponse(path: path, rawResponse: output)
     }
     
     func getBluetoothName(serial: String) async throws -> String? {
         Logger.verbose("Getting Blueooth name for \(serial)")
-        let output = try await ADB.getBluetoothName(serial: serial)
+        let output = try await ADB.command(ADB.getBluetoothNameArgs(serial: serial))
         return BluetoothNameResponse.extractName(output)
     }
     
     func pull(serial: String, remotePath: URL, localPath: URL) -> any Publisher<FileTransferResponse, Error> {
         Logger.info("Pulling \(remotePath.path(percentEncoded: false)) to \(localPath.path(percentEncoded: false))")
-        return ADB.pull(serial: serial, remotePath: remotePath, localPath: localPath)
+        return ADB.commandPublisher(ADB.pullArgs(serial: serial, remotePath: remotePath, localPath: localPath))
+            .publisher
             .eraseToAnyPublisher()
             .tryMap { try FileTransferResponse(rawOutput: $0) }
             .removeDuplicates()
@@ -108,7 +111,8 @@ class StandardAdbService: ADBService {
     
     func push(serial: String, localPath: URL, remotePath: URL) -> any Publisher<FileTransferResponse, Error> {
         Logger.info("Pushing \(localPath.path(percentEncoded: false)) to \(remotePath.path(percentEncoded: false))")
-        return ADB.push(serial: serial, localPath: localPath, remotePath: remotePath)
+        return ADB.commandPublisher(ADB.pushArgs(serial: serial, localPath: localPath, remotePath: remotePath))
+            .publisher
             .eraseToAnyPublisher()
             .tryMap { try FileTransferResponse(rawOutput: $0) }
             .removeDuplicates()
@@ -116,7 +120,8 @@ class StandardAdbService: ADBService {
     
     func installAPK(serial: String, localPath: URL) -> any Publisher<InstallAPKResponse, Error> {
         Logger.info("Installing APK from \(localPath.path(percentEncoded: false))")
-        return ADB.installAPK(serial: serial, localPath: localPath)
+        return ADB.commandPublisher(ADB.installAPKArgs(serial: serial, localPath: localPath))
+            .publisher
             .eraseToAnyPublisher()
             .tryMap { try InstallAPKResponse(rawOutput: $0) }
             .removeDuplicates()
@@ -125,35 +130,42 @@ class StandardAdbService: ADBService {
     func delete(serial: String, remotePath: URL, isDirectory: Bool) async throws {
         Logger.info("Deleting \(remotePath.path(percentEncoded: false)) for \(serial).")
         let output = if isDirectory {
-            try await ADB.deleteDirectory(serial: serial, remotePath: remotePath)
+            try await ADB.command(ADB.deleteDirectoryArgs(serial: serial, remotePath: remotePath))
         } else {
-            try await ADB.deleteFile(serial: serial, remotePath: remotePath)
+            try await ADB.command(ADB.deleteFileArgs(serial: serial, remotePath: remotePath))
         }
         try DeleteResponse.checkForErrors(rawOutput: output)
     }
     
     func createNewFolder(serial: String, remotePath: URL) async throws {
         Logger.info("Creating new directory at \(remotePath.path(percentEncoded: false)) for \(serial).")
-        let output = try await ADB.createNewDirectory(serial: serial, remotePath: remotePath)
+        let output = try await ADB.command(ADB.createNewDirectoryArgs(serial: serial, remotePath: remotePath))
         try CreateDirectoryResponse.checkForErrors(rawOutput: output)
     }
     
-    // TODO: Make use of the move commands "-n" option to avoid calling doesFileExist
     func rename(serial: String, remoteSourcePath: URL, remoteDestinationPath: URL) async throws {
         Logger.info("Renaming \(remoteSourcePath.path(percentEncoded: false)) to \(remoteDestinationPath.path(percentEncoded: false)) for device \(serial).")
         let fileOrDirectoryExists = try await doesFileExist(serial: serial, remotePath: remoteDestinationPath)
         guard !fileOrDirectoryExists else {
             throw ADBServiceError.fileOrDirectoryAlreadyExists
         }
-        let output = try await ADB.move(serial: serial, remoteSourcePaths: [remoteSourcePath], remoteDestinationPath: remoteDestinationPath)
-        try MoveResponse.checkForErrors(rawOutput: output)
+        let output = try await ADB.command(ADB.moveArgs(serial: serial, remoteSourcePaths: [remoteSourcePath], remoteDestinationPath: remoteDestinationPath, interactive: false, noClobber: true))
+        try NonInteractiveMoveResponse.checkForErrors(rawOutput: output)
     }
     
-    func move(serial: String, remoteSourcePaths: [URL], remoteDestinationPath: URL) async throws {
+    func move(serial: String, remoteSourcePaths: [URL], remoteDestinationPath: URL) -> InteractiveADBCommand<InteractiveMoveResponse> {
         let pathNames = remoteSourcePaths.map { $0.path(percentEncoded: false) }
         Logger.info("Moving \(pathNames) to \(remoteDestinationPath.path(percentEncoded: false)) for device \(serial).")
-        let output = try await ADB.move(serial: serial, remoteSourcePaths: remoteSourcePaths, remoteDestinationPath: remoteDestinationPath)
-        try MoveResponse.checkForErrors(rawOutput: output)
+        return ADB.commandPublisher(ADB.moveArgs(
+            serial: serial,
+            remoteSourcePaths: remoteSourcePaths,
+            remoteDestinationPath: remoteDestinationPath,
+            interactive: true,
+            noClobber: false
+        ))
+        .tryMap {
+            try InteractiveMoveResponse(rawOutput: $0)
+        }
     }
     
     func doesFileExist(serial: String, remotePath: URL) async throws -> Bool {

@@ -382,17 +382,36 @@ class ContentViewModel: ObservableObject {
             return
         }
         
-        Task {
-            do {
-                try await adbService.move(serial: currentDevice.serial, remoteSourcePaths: remoteSources, remoteDestinationPath: remoteDestination)
-                refreshItems()
-            } catch {
-                Logger.error("Failed to move item(s).", error: error)
-                presentErrorAlert(title: "Failed To Move Item(s)", error: error) { [weak self] in
-                    self?.move(remoteSources: remoteSources, remoteDestination: remoteDestination)
+        let command = adbService.move(serial: currentDevice.serial, remoteSourcePaths: remoteSources, remoteDestinationPath: remoteDestination)
+        
+        command.publisher
+            .eraseToAnyPublisher()
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: { [weak self] completion in
+                    self?.refreshItems()
+                    switch completion {
+                    case .finished:
+                        Logger.verbose("Move operation completed successfully.")
+                        break
+                    case let .failure(error):
+                        self?.presentErrorAlert(title: "Failed to move item(s)", error: error)
+                    }
+                },
+                receiveValue: { [weak self] value in
+                    switch value.type {
+                    case .nothing:
+                        break
+                    case let .requestingOverwriteConfirmation(url):
+                        self?.presentFileOverwriteConfirmationAlert(
+                            path: url,
+                            confirm: { command.writeHandler("y") },
+                            deny: { command.writeHandler("n") }
+                        )
+                    }
                 }
-            }
-        }
+            )
+            .store(in: &cancellables)
     }
     
     private func installAPK(localFilePath: URL) {
@@ -532,6 +551,27 @@ class ContentViewModel: ObservableObject {
     }
     
     private func presentErrorAlert(title: String, error: Error, retry: @escaping () -> Void) {
+        alertModel = .init(
+            title: title,
+            message: Self.errorAlertMessage(error: error),
+            buttons: [
+                .init(title: "Retry", type: .standard, action: retry),
+                alertCancelButton
+            ]
+        )
+    }
+    
+    private func presentErrorAlert(title: String, error: Error) {
+        alertModel = .init(
+            title: title,
+            message: Self.errorAlertMessage(error: error),
+            buttons: [
+                .init(title: "OK", type: .standard, action: {})
+            ]
+        )
+    }
+    
+    private static func errorAlertMessage(error: Error) -> String {
         // We'll see how this goes for now. We might remove this if it looks weird.
         let message = if case let ADB.AdbError.adbError(output) = error {
             output
@@ -545,14 +585,7 @@ class ContentViewModel: ObservableObject {
             .replacingOccurrences(of: #"\n"#, with: "")
             .replacingOccurrences(of: #"\"#, with: #""#)
         
-        alertModel = .init(
-            title: title,
-            message: message,
-            buttons: [
-                .init(title: "Retry", type: .standard, action: retry),
-                alertCancelButton
-            ]
-        )
+        return sanitisedMessage
     }
     
     private func presentApkFileActionAlert(localFilePath: URL) {
@@ -577,6 +610,17 @@ class ContentViewModel: ObservableObject {
             message: nil,
             buttons: [
                 .init(title: "OK", type: .standard) {}
+            ]
+        )
+    }
+    
+    private func presentFileOverwriteConfirmationAlert(path: URL, confirm: @escaping () -> Void, deny: @escaping () -> Void) {
+        alertModel = .init(
+            title: "A file named \(path.lastPathComponent) already exists at this location",
+            message: "Do you want to replace it with the file you are moving?",
+            buttons: [
+                .init(title: "Yes", type: .standard, action: confirm),
+                .init(title: "No", type: .standard, action: deny)
             ]
         )
     }
