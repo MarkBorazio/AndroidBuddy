@@ -8,12 +8,12 @@
 import Foundation
 import Combine
 
-/// Invoke this handler to write to the input file for the process of the ADB command
 typealias ADBWriteHandler = ((String) -> Void)
 
-/// A convenience struct that for an interactive ADB command that allows writing to the processes input.
+/// A convenience struct for an interactive ADB command that allows writing to the process' input.
 struct InteractiveADBCommand<T> {
     let publisher: any Publisher<T, Error>
+    /// Invoke this handler to write to the input file for the process of the ADB command.
     let writeHandler: ADBWriteHandler
 }
 
@@ -25,7 +25,6 @@ extension InteractiveADBCommand {
         let transformedPublisher = publisher
             .eraseToAnyPublisher()
             .map(transform)
-            .eraseToAnyPublisher()
         
         return InteractiveADBCommand<G>(publisher: transformedPublisher, writeHandler: writeHandler)
     }
@@ -34,7 +33,6 @@ extension InteractiveADBCommand {
         let transformedPublisher = publisher
             .eraseToAnyPublisher()
             .tryMap(transform)
-            .eraseToAnyPublisher()
         
         return InteractiveADBCommand<G>(publisher: transformedPublisher, writeHandler: writeHandler)
     }

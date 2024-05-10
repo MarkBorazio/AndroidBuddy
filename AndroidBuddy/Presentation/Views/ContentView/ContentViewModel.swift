@@ -616,7 +616,7 @@ class ContentViewModel: ObservableObject {
     
     private func presentFileOverwriteConfirmationAlert(path: URL, confirm: @escaping () -> Void, deny: @escaping () -> Void) {
         alertModel = .init(
-            title: "A file named \(path.lastPathComponent) already exists at this location",
+            title: "An item named \(path.lastPathComponent) already exists at this location",
             message: "Do you want to replace it with the file you are moving?",
             buttons: [
                 .init(title: "Yes", type: .standard, action: confirm),
