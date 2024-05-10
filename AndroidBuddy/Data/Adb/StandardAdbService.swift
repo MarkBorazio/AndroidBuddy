@@ -10,13 +10,13 @@ import Combine
 
 class StandardAdbService: ADBService {
 
-    private var connectedDevicesSubject = CurrentValueSubject<[Device], Error>([])
+    private var connectedDevicesSubject = CurrentValueSubject<[Device], Never>([])
     private var stateSubject = CurrentValueSubject<ADBServiceState, Never>(.notRunning)
     
     private var cancellables = Set<AnyCancellable>()
     private let backgroundQueue = DispatchQueue(label: "AdbService", qos: .background)
     
-    let connectedDevices: any Publisher<[Device], Error>
+    let connectedDevices: any Publisher<[Device], Never>
     let state: any Publisher<ADBServiceState, Never>
     
     init() {
@@ -45,6 +45,7 @@ class StandardAdbService: ADBService {
                 return Empty(completeImmediately: false).eraseToAnyPublisher()
             }
         }
+        .replaceError(with: [Device]())
         .subscribe(connectedDevicesSubject)
         .store(in: &cancellables)
     }

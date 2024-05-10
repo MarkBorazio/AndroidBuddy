@@ -10,7 +10,7 @@ import Combine
 
 protocol ADBService {
     
-    var connectedDevices: any Publisher<[Device], Error> { get }
+    var connectedDevices: any Publisher<[Device], Never> { get }
     var state: any Publisher<ADBServiceState, Never> { get }
     
     func resetServer()

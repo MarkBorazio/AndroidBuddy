@@ -10,7 +10,7 @@ import Combine
 
 class MockAdbService {
     
-    var connectedDevices: any Publisher<[Device], Error>
+    var connectedDevices: any Publisher<[Device], Never>
     var state: any Publisher<ADBServiceState, Never>
     
     private var resetServerBlock: () -> Void
