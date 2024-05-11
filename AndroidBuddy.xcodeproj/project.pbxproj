@@ -790,6 +790,7 @@
 					"$(PROJECT_DIR)/Dependencies/platform-tools/lib64",
 					"$(PROJECT_DIR)/AndroidBuddy/platform-tools/lib64",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.BorazioIndustries.AndroidBuddy;
 				PRODUCT_NAME = "Android Buddy";
@@ -823,6 +824,7 @@
 					"$(PROJECT_DIR)/Dependencies/platform-tools/lib64",
 					"$(PROJECT_DIR)/AndroidBuddy/platform-tools/lib64",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.BorazioIndustries.AndroidBuddy;
 				PRODUCT_NAME = "Android Buddy";
