@@ -6,8 +6,8 @@
 
 A simple Mac application that lets you transfer files to and from your Android device.
 
-[Download the latest release here](https://github.com/MarkBorazio/AndroidBuddy/releases)
-(Requires MacOS 13.5 or later)
+[Download the latest release here](https://github.com/MarkBorazio/AndroidBuddy/releases) (Requires MacOS 13.5 or later)
+> Note: Android Buddy **does not** run in sandbox mode.
 
 # Introduction
 
