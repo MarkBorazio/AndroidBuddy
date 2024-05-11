@@ -99,6 +99,10 @@ class ContentViewModel: ObservableObject {
             .store(in: &cancellables)
     }
     
+    private static func forceRefeshAllDevices() {
+        NotificationCenter.default.post(Notification(name: Self.forceRefreshNotification))
+    }
+    
     func refreshItems() {
         guard let currentDeviceSerial else { return }
         Task {
@@ -405,7 +409,7 @@ class ContentViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink(
                 receiveCompletion: { [weak self] completion in
-                    NotificationCenter.default.post(Notification(name: Self.forceRefreshNotification))
+                    Self.forceRefeshAllDevices()
                     switch completion {
                     case .finished:
                         Logger.verbose("Move operation completed successfully.")
