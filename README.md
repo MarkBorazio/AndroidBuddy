@@ -15,9 +15,10 @@ I created this because I hate Google's Android File Transfer app. Other alternat
 
 # Features
 - Transfer files larger than 4GB
+- Install APKs
 - Delete, move, and rename files and folders
 - Create new folders
-- Instantaneous device detection when plugging in via USB
+- Instantaneous USB device detection
 - Drag and Drop files
 - Supports multiple devices simultaneously
 - Standard MacOS theming (including dark mode support)
@@ -38,6 +39,6 @@ In order to set yourself up for development, you will need:
 - MacOS 13.5 or higher
 - Xcode 15 or higher
 
-Simply clone the repo and open it in Xcode. The only dependency in this app is ADB, which is bundled statically, so Xcode should be able to run things without an issue.
+Simply clone the repository and open it in Xcode. The only dependency in this app is ADB, which is bundled statically, so Xcode should be able to run things without an issue.
 
-This app is built using the SwiftUI and Combine frameworks.
+This app is built using Apple's SwiftUI and Combine frameworks.
