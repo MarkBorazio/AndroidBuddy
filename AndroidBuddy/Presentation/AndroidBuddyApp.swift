@@ -10,14 +10,20 @@ import SwiftUI
 @main
 struct AndroidBuddyApp: App {
     
+    static let usbDebuggingIntructionsWindowId = "usbDebuggingIntructionsWindowId"
+    
     var body: some Scene {
-        WindowGroup("") {
+        WindowGroup {
             ContentView(adbService: StandardDependencies.shared.adbService)
         }
         .commands {
             #if DEBUG
             DebugCommandMenu()
             #endif
+        }
+        
+        WindowGroup(id: Self.usbDebuggingIntructionsWindowId) {
+            EnableUSBDebuggingInstructionsView()
         }
     }
 }

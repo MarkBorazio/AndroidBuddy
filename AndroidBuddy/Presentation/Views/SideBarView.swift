@@ -10,15 +10,29 @@ import SwiftUI
 struct SideBarView: View {
     
     @EnvironmentObject var viewModel: ContentViewModel
+    @Environment(\.openWindow) private var openWindow
     
     var body: some View {
-        List(selection: $viewModel.currentDeviceSerial) {
-            Section("Devices") {
-                ForEach(viewModel.allDevices, id: \.serial) { device in
-                    Text(device.bluetoothName ?? device.serial)
-                        .tag(device.serial)
+        VStack(alignment: .leading) {
+            List(selection: $viewModel.currentDeviceSerial) {
+                Section("Devices") {
+                    ForEach(viewModel.allDevices, id: \.serial) { device in
+                        Text(device.bluetoothName ?? device.serial)
+                            .tag(device.serial)
+                    }
                 }
             }
+            
+            Spacer()
+            
+            Button("Can't see your Device?") {
+                openWindow(id: AndroidBuddyApp.usbDebuggingIntructionsWindowId)
+            }
+            .buttonStyle(.plain)
+            .underline()
+            .foregroundStyle(Color.secondary)
+            .padding(ViewConstants.commonSpacing)
+            
         }
     }
 }

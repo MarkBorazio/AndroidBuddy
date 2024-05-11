@@ -8,9 +8,21 @@
 import SwiftUI
 
 struct NoDevicesView: View {
+    
+    @Environment(\.openWindow) private var openWindow
+    
     var body: some View {
-        Text("No Devices Connected")
-            .font(.largeTitle)
+        VStack(spacing: ViewConstants.commonSpacing) {
+            Text("No Devices Connected")
+                .font(.largeTitle)
+
+            Button("Can't see your Device? Ensure USB Debugging is enabled.") {
+                openWindow(id: AndroidBuddyApp.usbDebuggingIntructionsWindowId)
+            }
+            .buttonStyle(.plain)
+            .underline()
+            .foregroundStyle(Color.accentColor)
+        }
     }
 }
 
