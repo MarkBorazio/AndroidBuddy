@@ -323,14 +323,16 @@ class ContentViewModel: ObservableObject {
                 refreshItems()
             } catch {
                 Logger.error("Failed to delete item.", error: error)
-                presentErrorAlert(title: "Failed To Delete", error: error) { [weak self] in
-                    if items.count > 1 {
-                        // It's possible that half the files get deleted and then this errors out.
-                        // In this case if we recursively re-run the deletion function with the same parameters,
-                        // we will be attempting to delete files that don't exist anymore.
-                        // TODO: Fix here, it isn't retrying...
-                        self?.refreshItems()
-                    } else {
+                let title = "Failed To Delete"
+                if items.count > 1 {
+                    // It's possible that half the files get deleted and then this errors out.
+                    // In this case if we retry, we will recursively re-run the deletion function with the same parameters,
+                    // which will result in attempting to delete files that don't exist anymore.
+                    // In this case we just don't allow a retry. the user will need try to select and delete the remaining items again.
+                    refreshItems()
+                    presentErrorAlert(title: title, error: error)
+                } else {
+                    presentErrorAlert(title: title, error: error) { [weak self] in
                         self?.deleteFiles(serial: serial, items: items)
                     }
                 }
