@@ -11,7 +11,7 @@ import SwiftUI
 struct AndroidBuddyApp: App {
     
     var body: some Scene {
-        WindowGroup {
+        WindowGroup("") {
             ContentView(adbService: StandardDependencies.shared.adbService)
         }
         .commands {

@@ -107,7 +107,7 @@
 		4D6749452BE80B9E00D633B7 /* DirectoryItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryItem.swift; sourceTree = "<group>"; };
 		4D80BD0E2BE272E8009A2835 /* DebugCommandMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugCommandMenu.swift; sourceTree = "<group>"; };
 		4D80BD112BE277AB009A2835 /* DebugCommandMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugCommandMenuViewModel.swift; sourceTree = "<group>"; };
-		4DDD83012BBA7CCB003F7203 /* AndroidBuddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AndroidBuddy.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4DDD83012BBA7CCB003F7203 /* Android Buddy.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Android Buddy.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4DDD83042BBA7CCB003F7203 /* AndroidBuddyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidBuddyApp.swift; sourceTree = "<group>"; };
 		4DDD83062BBA7CCB003F7203 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		4DDD83082BBA7CCC003F7203 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -318,7 +318,7 @@
 		4DDD83022BBA7CCB003F7203 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				4DDD83012BBA7CCB003F7203 /* AndroidBuddy.app */,
+				4DDD83012BBA7CCB003F7203 /* Android Buddy.app */,
 				4DDD83122BBA7CCC003F7203 /* AndroidBuddyTests.xctest */,
 				4DDD831C2BBA7CCC003F7203 /* AndroidBuddyUITests.xctest */,
 			);
@@ -427,7 +427,7 @@
 			packageProductDependencies = (
 			);
 			productName = AndroidBuddy;
-			productReference = 4DDD83012BBA7CCB003F7203 /* AndroidBuddy.app */;
+			productReference = 4DDD83012BBA7CCB003F7203 /* Android Buddy.app */;
 			productType = "com.apple.product-type.application";
 		};
 		4DDD83112BBA7CCC003F7203 /* AndroidBuddyTests */ = {
@@ -768,7 +768,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.BorazioIndustries.AndroidBuddy;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Android Buddy";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -801,7 +801,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.BorazioIndustries.AndroidBuddy;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Android Buddy";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
