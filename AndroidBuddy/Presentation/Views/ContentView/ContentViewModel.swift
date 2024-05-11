@@ -204,6 +204,7 @@ class ContentViewModel: ObservableObject {
                     case .finished:
                         self?.downloadFiles(serial: serial, remotePaths: remainingRemotePaths, localPath: localPath)
                     case let .failure(error):
+                        self?.refreshItems() // In case cancel is pressed
                         self?.presentErrorAlert(title: "Failed To Download \(remoteFileName)", error: error) { [weak self] in
                             self?.downloadFiles(serial: serial, remotePaths: remotePaths, localPath: localPath)
                         }
@@ -266,9 +267,10 @@ class ContentViewModel: ObservableObject {
             .sink(
                 receiveCompletion: { [weak self] completion in
                     self?.fileTransferModel = nil
+                    self?.refreshItems()
                     switch completion {
                     case .finished:
-                        self?.refreshItems()
+                        break
                     case let .failure(error):
                         self?.presentErrorAlert(title: "Upload Failed", error: error) { [weak self] in
                             self?.uploadFile(serial: serial, localPath: localPath)
@@ -326,6 +328,7 @@ class ContentViewModel: ObservableObject {
                         // It's possible that half the files get deleted and then this errors out.
                         // In this case if we recursively re-run the deletion function with the same parameters,
                         // we will be attempting to delete files that don't exist anymore.
+                        // TODO: Fix here, it isn't retrying...
                         self?.refreshItems()
                     } else {
                         self?.deleteFiles(serial: serial, items: items)
@@ -363,7 +366,7 @@ class ContentViewModel: ObservableObject {
                     self?.createNewFolder()
                 }
             }
-            refreshItems() // Yes, do this regardless of success or failure
+            refreshItems()
         }
     }
     
@@ -377,13 +380,13 @@ class ContentViewModel: ObservableObject {
         Task {
             do {
                 try await adbService.rename(serial: currentDeviceSerial, remoteSourcePath: remoteSource, remoteDestinationPath: remoteDestination)
-                refreshItems()
             } catch {
                 Logger.error("Failed to rename item.", error: error)
                 presentErrorAlert(title: "Failed To Rename Item", error: error) { [weak self] in
                     self?.rename(remoteSource: remoteSource, newName: newName)
                 }
             }
+            refreshItems()
         }
     }
     
@@ -509,6 +512,7 @@ class ContentViewModel: ObservableObject {
         fileTransferCancellable?.cancel()
         fileTransferCancellable = nil
         fileTransferModel = nil
+        refreshItems()
     }
     
     func back() {
