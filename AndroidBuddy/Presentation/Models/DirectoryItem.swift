@@ -29,6 +29,7 @@ struct DirectoryItem: Identifiable, Codable {
 
 // This exists so that a view can receive multiple items in one drop.
 struct TransferableDirectoryItems: Codable, Transferable {
+    let sourceDeviceSerial: String
     let items: [DirectoryItem]
     
     static var transferRepresentation: some TransferRepresentation {

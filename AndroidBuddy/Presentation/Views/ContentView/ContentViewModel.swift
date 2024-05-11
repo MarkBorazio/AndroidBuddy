@@ -38,6 +38,8 @@ class ContentViewModel: ObservableObject {
         return formatter
     }()
     
+    private static let forceRefreshNotification = NSNotification.Name(rawValue: "forceRefreshNotification")
+    
     init(adbService: ADBService) {
         self.adbService = adbService
         
@@ -90,13 +92,18 @@ class ContentViewModel: ObservableObject {
                 currentPath = .shellRoot
             }
             .store(in: &cancellables)
+        
+        NotificationCenter.default
+            .publisher(for: Self.forceRefreshNotification)
+            .sink { [weak self] _ in self?.refreshItems() }
+            .store(in: &cancellables)
     }
     
     func refreshItems() {
-        guard let currentDevice else { return }
+        guard let currentDeviceSerial else { return }
         Task {
             do {
-                let response = try await adbService.list(serial: currentDevice.serial, path: currentPath)
+                let response = try await adbService.list(serial: currentDeviceSerial, path: currentPath)
                 items = Self.mapListResponseToItems(response)
             } catch {
                 Logger.error("Failed to load directory.", error: error)
@@ -132,7 +139,7 @@ class ContentViewModel: ObservableObject {
     }
     
     func requestFileDownload(remotePaths: [URL]) {
-        guard let currentDevice else {
+        guard let currentDeviceSerial else {
             Logger.error("Tried to download file when no device was selected.")
             return
         }
@@ -157,7 +164,7 @@ class ContentViewModel: ObservableObject {
             
             guard !pathsToDownload.isEmpty else { return }
             
-            downloadFiles(serial: currentDevice.serial, remotePaths: pathsToDownload, localPath: localPath)
+            downloadFiles(serial: currentDeviceSerial, remotePaths: pathsToDownload, localPath: localPath)
         }
     }
     
@@ -210,7 +217,7 @@ class ContentViewModel: ObservableObject {
     }
     
     private func requestFileUpload(localPath: URL) {
-        guard let currentDevice else {
+        guard let currentDeviceSerial else {
             Logger.error("Tried to upload file when no device was selected.")
             return
         }
@@ -219,13 +226,13 @@ class ContentViewModel: ObservableObject {
             do {
                 let fileName = localPath.lastPathComponent
                 let potentialRemotePath = currentPath.appending(path: fileName)
-                let fileExists = try await adbService.doesFileExist(serial: currentDevice.serial, remotePath: potentialRemotePath)
+                let fileExists = try await adbService.doesFileExist(serial: currentDeviceSerial, remotePath: potentialRemotePath)
                 if fileExists {
                     presentDuplicateFileAlert(fileName: fileName) { [weak self] in
-                        self?.uploadFile(serial: currentDevice.serial, localPath: localPath)
+                        self?.uploadFile(serial: currentDeviceSerial, localPath: localPath)
                     }
                 } else {
-                    uploadFile(serial: currentDevice.serial, localPath: localPath)
+                    uploadFile(serial: currentDeviceSerial, localPath: localPath)
                 }
             } catch {
                 presentErrorAlert(title: "Failed To Upload File", error: error) { [weak self] in
@@ -276,13 +283,13 @@ class ContentViewModel: ObservableObject {
     }
     
     func requestItemDeletion(items: [DirectoryItem]) {
-        guard let currentDevice else {
+        guard let currentDeviceSerial else {
             Logger.error("Tried to delete item when no device was selected.")
             return
         }
         
         func deletion() {
-            deleteFiles(serial: currentDevice.serial, items: items)
+            deleteFiles(serial: currentDeviceSerial, items: items)
         }
         
         if items.count > 1 {
@@ -325,7 +332,7 @@ class ContentViewModel: ObservableObject {
     }
     
     func createNewFolder() {
-        guard let currentDevice else {
+        guard let currentDeviceSerial else {
             Logger.error("Tried to create new folder when no device was selected.")
             return
         }
@@ -345,7 +352,7 @@ class ContentViewModel: ObservableObject {
         
         Task {
             do {
-                try await adbService.createNewFolder(serial: currentDevice.serial, remotePath: remotePath)
+                try await adbService.createNewFolder(serial: currentDeviceSerial, remotePath: remotePath)
             } catch {
                 Logger.error("Failed to create folder.", error: error)
                 presentErrorAlert(title: "Failed To Create Folder", error: error) { [weak self] in
@@ -357,7 +364,7 @@ class ContentViewModel: ObservableObject {
     }
     
     func rename(remoteSource: URL, newName: String) {
-        guard let currentDevice else {
+        guard let currentDeviceSerial else {
             Logger.error("Tried to rename when no device was selected.")
             return
         }
@@ -365,7 +372,7 @@ class ContentViewModel: ObservableObject {
         let remoteDestination = remoteSource.deletingLastPathComponent().appendingPathComponent(newName)
         Task {
             do {
-                try await adbService.rename(serial: currentDevice.serial, remoteSourcePath: remoteSource, remoteDestinationPath: remoteDestination)
+                try await adbService.rename(serial: currentDeviceSerial, remoteSourcePath: remoteSource, remoteDestinationPath: remoteDestination)
                 refreshItems()
             } catch {
                 Logger.error("Failed to rename item.", error: error)
@@ -376,20 +383,29 @@ class ContentViewModel: ObservableObject {
         }
     }
     
-    func move(remoteSources: [URL], remoteDestination: URL) {
-        guard let currentDevice else {
+    func move(sourceDeviceSerial: String, remoteSources: [URL], remoteDestination: URL) {
+        guard let currentDeviceSerial else {
             Logger.error("Tried to move item when no device was selected.")
             return
         }
         
-        let command = adbService.move(serial: currentDevice.serial, remoteSourcePaths: remoteSources, remoteDestinationPath: remoteDestination)
+        // Guard against having two windows open and trying to drag/drop from one device to a different device
+        guard sourceDeviceSerial == currentDeviceSerial else {
+            presentStandardAlert(
+                title: "Failed to move item(s)",
+                message: "Android Buddy does not support directly moving or copying items from one Android device to another."
+            )
+            return
+        }
+        
+        let command = adbService.move(serial: currentDeviceSerial, remoteSourcePaths: remoteSources, remoteDestinationPath: remoteDestination)
         
         command.publisher
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .sink(
                 receiveCompletion: { [weak self] completion in
-                    self?.refreshItems()
+                    NotificationCenter.default.post(Notification(name: Self.forceRefreshNotification))
                     switch completion {
                     case .finished:
                         Logger.verbose("Move operation completed successfully.")
@@ -415,15 +431,18 @@ class ContentViewModel: ObservableObject {
     }
     
     func moveToParent(remoteSources: [URL]) {
+        guard let currentDeviceSerial else {
+            return
+        }
         // If back is enabled then logically we should have a parent directory
         guard backButtonEnabled else { return }
         
         let parent = currentPath.deletingLastPathComponent()
-        move(remoteSources: remoteSources, remoteDestination: parent)
+        move(sourceDeviceSerial: currentDeviceSerial, remoteSources: remoteSources, remoteDestination: parent)
     }
     
     private func installAPK(localFilePath: URL) {
-        guard let currentDevice else {
+        guard let currentDeviceSerial else {
             Logger.error("Tried to install APK when no device was selected.")
             return
         }
@@ -437,7 +456,7 @@ class ContentViewModel: ObservableObject {
             transferType: .installation
         )
         
-        fileTransferCancellable = adbService.installAPK(serial: currentDevice.serial, localPath: localFilePath)
+        fileTransferCancellable = adbService.installAPK(serial: currentDeviceSerial, localPath: localFilePath)
             .eraseToAnyPublisher()
             .receive(on: DispatchQueue.main)
             .sink(
@@ -629,6 +648,16 @@ class ContentViewModel: ObservableObject {
             buttons: [
                 .init(title: "Yes", type: .standard, action: confirm),
                 .init(title: "No", type: .standard, action: deny)
+            ]
+        )
+    }
+    
+    private func presentStandardAlert(title: String, message: String? = nil) {
+        alertModel = .init(
+            title: title,
+            message: message,
+            buttons: [
+                .init(title: "OK", type: .standard, action: {})
             ]
         )
     }

@@ -97,18 +97,18 @@ struct DirectoryView: View {
         .if(item.type == .directory) { view in
             view.dropDestination(
                 for: TransferableDirectoryItems.self,
-                action: { transferableItems, location in
-                    let flattenedTransferrableItems = transferableItems.flatMap { $0.items }
+                action: { transferableItemsArray, location in
                     guard
-                        !flattenedTransferrableItems.contains(where: { $0.id == item.id }), // Don't want to move folder to self
-                        item.type == .directory,
-                        !flattenedTransferrableItems.isEmpty
+                        transferableItemsArray.count == 1,
+                        let transferableItems = transferableItemsArray.first,
+                        !transferableItems.items.contains(where: { $0.id == item.id }), // Don't want to move folder to self
+                        item.type == .directory
                     else {
                         return false
                     }
                     
-                    let paths = flattenedTransferrableItems.map(\.path)
-                    viewModel.move(remoteSources: paths, remoteDestination: item.path)
+                    let paths = transferableItems.items.map(\.path)
+                    viewModel.move(sourceDeviceSerial: transferableItems.sourceDeviceSerial, remoteSources: paths, remoteDestination: item.path)
                     return true
                 },
                 isTargeted: { isTargeted in
@@ -169,12 +169,16 @@ struct DirectoryView: View {
     
     // If attempting to drag an item that is already selected, also drag any other selected items.
     private func draggableItems(item: DirectoryItem) -> TransferableDirectoryItems {
+        guard let serial = viewModel.currentDeviceSerial else {
+            Logger.error("Current device serial was nil when attempting to create TransferableDirectoryItems.")
+            return .init(sourceDeviceSerial: "", items: [])
+        }
         let items = if selectedItemIds.contains(item.id) {
             getItemsFromIds(selectedItemIds)
         } else {
             [item]
         }
-        return TransferableDirectoryItems(items: items)
+        return TransferableDirectoryItems(sourceDeviceSerial: serial, items: items)
     }
     
     private func getItemsFromIds(_ ids: Set<DirectoryItem.ID>) -> [DirectoryItem] {
